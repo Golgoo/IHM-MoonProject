@@ -19,12 +19,16 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     datacolumn.cpp \
-    datatable.cpp
+    datatable.cpp \
+    parser.cpp \
+    csvparser.cpp
 
 HEADERS += \
     mainwindow.h \
     datacolumn.h \
-    datatable.h
+    datatable.h \
+    parser.h \
+    csvparser.h
 
 FORMS += \
     mainwindow.ui

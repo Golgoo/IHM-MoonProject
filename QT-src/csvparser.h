@@ -1,11 +1,14 @@
 #ifndef CSVPARSER_H
 #define CSVPARSER_H
 
+#include "parser.h"
 
-class CSVParser
+class CSVParser : public Parser
 {
 public:
-    CSVParser();
+    CSVParser(QString &content);
+    DataTable parse();
+
 };
 
 #endif // CSVPARSER_H

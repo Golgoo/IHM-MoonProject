@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "datatable.h"
 
 #include <QDebug>
 
@@ -40,7 +41,11 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
     //TODO: code pour traiter ce qu'on a lu dans fichier
-    qDebug() << text << '\n';
+    //qDebug() << text << '\n';
+
+    //DataTable table;
+
+
     file.close();
 
 }

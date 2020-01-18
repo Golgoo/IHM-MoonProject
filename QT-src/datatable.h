@@ -11,6 +11,8 @@ private:
 
 public:
     DataTable();
+    DataTable(std::vector<DataColumn> columns);
+    void addColumn(DataColumn& column);
 };
 
 #endif // DATATABLE_H
