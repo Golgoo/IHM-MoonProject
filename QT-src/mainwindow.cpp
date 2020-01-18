@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
+
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
 MainWindow::MainWindow(QWidget *parent)
@@ -38,6 +40,7 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
     //TODO: code pour traiter ce qu'on a lu dans fichier
+    qDebug() << text << '\n';
     file.close();
 
 }

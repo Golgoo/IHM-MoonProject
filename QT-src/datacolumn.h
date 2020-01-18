@@ -4,8 +4,9 @@
 #include<iostream>
 #include <unordered_set>
 #include <unordered_map>
+#include <vector>
 
-class data_column
+class DataColumn
 {
 
 private:
@@ -16,7 +17,7 @@ private:
     //std::unordered_map pour associer chaque valeur distincte à sa pondération ?
 
 public:
-    data_column(std::string, std::vector<std::string> values);
+    DataColumn(std::string name, std::vector<std::string> values);
     void find_distinct_values();
 };
 

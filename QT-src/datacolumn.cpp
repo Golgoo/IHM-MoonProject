@@ -1,6 +1,6 @@
-#include "data_column.h"
+#include "datacolumn.h"
 
-DataColumn::data_column(std::string name, std::vector<std::string> values)
+DataColumn::DataColumn(std::string name, std::vector<std::string> values)
 {
     this->name = name;
     this->values = values;
