@@ -41,10 +41,11 @@ void MainWindow::on_actionOpen_triggered()
     setWindowTitle(filename);
     QTextStream in(&file);
     QString text = in.readAll();
-    //TODO: code pour traiter ce qu'on a lu dans fichier
-    //qDebug() << text << '\n';
+
     CSVParser parser(text);
-    parser.parse();
+    DataTable table = parser.parse();
+    std::cout << "taille du tableau : " << table.getColumns().size();
+    //afficher ici le tableau
 
     file.close();
 

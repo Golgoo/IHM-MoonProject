@@ -26,3 +26,7 @@ void DataColumn::addValue(std::string& value) {
 std::string DataColumn::getName() {
     return this->name;
 }
+
+std::vector<std::string> DataColumn::getValues() {
+    return this->values;
+}

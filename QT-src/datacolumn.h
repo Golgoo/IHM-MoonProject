@@ -25,6 +25,7 @@ public:
     void addValue(std::string& value);
 
     std::string getName();
+    std::vector<std::string> getValues();
 
 };
 
