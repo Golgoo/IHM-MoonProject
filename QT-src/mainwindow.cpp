@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "datatable.h"
+#include "csvparser.h"
 
 #include <QDebug>
 
@@ -42,9 +43,8 @@ void MainWindow::on_actionOpen_triggered()
     QString text = in.readAll();
     //TODO: code pour traiter ce qu'on a lu dans fichier
     //qDebug() << text << '\n';
-
-    //DataTable table;
-
+    CSVParser parser(text);
+    parser.parse();
 
     file.close();
 

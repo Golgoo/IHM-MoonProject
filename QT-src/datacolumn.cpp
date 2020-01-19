@@ -22,3 +22,7 @@ void DataColumn::setValues(std::vector<std::string>& values) {
 void DataColumn::addValue(std::string& value) {
     this->values.push_back(value);
 }
+
+std::string DataColumn::getName() {
+    return this->name;
+}

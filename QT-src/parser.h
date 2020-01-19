@@ -6,7 +6,7 @@
 
 class Parser
 {
-private:
+protected:
     QString content;
 public:
     Parser(QString& content);

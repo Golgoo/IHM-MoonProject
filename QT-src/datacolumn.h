@@ -24,6 +24,8 @@ public:
     void setValues(std::vector<std::string>& values);
     void addValue(std::string& value);
 
+    std::string getName();
+
 };
 
 #endif // DATA_COLUMN_H

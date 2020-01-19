@@ -1,5 +1,9 @@
 #include "datatable.h"
 
+DataTable::DataTable() {
+
+}
+
 DataTable::DataTable(std::vector<DataColumn> columns)
 {
     this->columns = columns;
