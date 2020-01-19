@@ -17,10 +17,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    datacolumn.cpp \
+    datatable.cpp \
+    parser.cpp \
+    csvparser.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    datacolumn.h \
+    datatable.h \
+    parser.h \
+    csvparser.h
 
 FORMS += \
     mainwindow.ui

@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "datatable.h"
+#include "csvparser.h"
+
+#include <QDebug>
 
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
@@ -37,7 +41,12 @@ void MainWindow::on_actionOpen_triggered()
     setWindowTitle(filename);
     QTextStream in(&file);
     QString text = in.readAll();
-    //TODO: code pour traiter ce qu'on a lu dans fichier
+
+    CSVParser parser(text);
+    DataTable table = parser.parse();
+    std::cout << "taille du tableau : " << table.getColumns().size();
+    //afficher ici le tableau
+
     file.close();
 
 }
