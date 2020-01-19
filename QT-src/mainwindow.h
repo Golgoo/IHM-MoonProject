@@ -9,7 +9,12 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QPrinter>
+#include <QStringList>
 #include <QPrintDialog>
+
+#include <vector>
+
+#include "backgroundcsvreader.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,9 +44,18 @@ private slots:
 
     void on_actionRedo_triggered();
 
+protected:
+    void on_read_operation_finished();
+
+    void on_read_operation_error(QString error);
+
+    void on_read_operation_new_lines(int line_start, vector<QStringList> line);
+
 private:
     Ui::MainWindow *ui;
     /*On crée String contenant nom du fichier avec lequel on va travailler*/
     QString currentFile = "";
+    QFile file ;
+    BackgroundCSVReader * csvReader ;
 };
 #endif // MAINWINDOW_H
