@@ -56,6 +56,6 @@ private:
     /*On crée String contenant nom du fichier avec lequel on va travailler*/
     QString currentFile = "";
     QFile file ;
-    BackgroundCSVReader * csvReader ;
+    BackgroundCSVReader * csvReader = nullptr ;
 };
 #endif // MAINWINDOW_H

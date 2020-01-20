@@ -3,6 +3,7 @@
 #include "backgroundcsvreader.h"
 #include <QDebug>
 #include <QTableWidgetItem>
+#include <QThread>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
 MainWindow::MainWindow(QWidget *parent)
@@ -32,6 +33,7 @@ void MainWindow::on_actionGenerate_triggered()
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
+    qDebug() << "Rentre ici " ;
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
     //QFile file(filename);
     currentFile = filename;
@@ -43,7 +45,7 @@ void MainWindow::on_actionOpen_triggered()
     //QTextStream in(&file);
 
     QThread* thread = new QThread;
-    if(csvReader){
+    if(csvReader != nullptr){
         //Si nouvelle lecture avant que la précédente soit terminée
         delete csvReader;
         csvReader = nullptr;
