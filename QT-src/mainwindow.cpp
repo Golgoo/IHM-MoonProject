@@ -13,8 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
     ui->tableWidget->setRowCount(500);
     ui->tableWidget->setColumnCount(500);
-    this->setCentralWidget(ui->tableWidget);
 
+
+    this->setCentralWidget(ui->groupBox);
 }
 
 MainWindow::~MainWindow()
