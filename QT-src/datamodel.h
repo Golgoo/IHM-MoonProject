@@ -2,7 +2,9 @@
 #define DATAMODEL_H
 
 #include <QAbstractTableModel>
-#include <cstdio>
+#include <QFile>
+#include <QModelIndex>
+#include <QObject>
 
 /*!
  * \brief The DataModel class
@@ -12,8 +14,9 @@
  * Optimisation possible : rajouter son propre cache.
  *
  */
-class DataModel : QAbstractTableModel
+class DataModel : public QAbstractTableModel
 {
+    Q_OBJECT
 public:
     /*!
      * \brief DataModel
@@ -24,7 +27,8 @@ public:
      * Indèxe le numéro du caractère des débuts de ligne QVector<long>
      *
      */
-    DataModel(QString filename);
+    DataModel(QString filename, QChar col_delimiter = ',');
+    ~DataModel();
 
 public:
     /*!
@@ -43,16 +47,25 @@ public:
      * . return items[col];
      *
      */
-    QString getValue(int row, int col);
+    QString getValue(int row, int col) const;
 
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+    inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
+    inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
+
+signals:
+    void error_loading_file(QString error_details) const;
 
 
 private:
-    FILE *f = nullptr; /*< fichier */
+    QFile *f ;
+    int _row_count = 0 ;
+    int _col_count = 0 ;
+    QChar _col_delimiter ;
+    bool isValid(QModelIndex index) const;
 
 };
 

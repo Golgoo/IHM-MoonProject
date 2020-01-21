@@ -6,14 +6,13 @@
 #include <QThread>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
+#include "datamodel.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
-    ui->tableWidget->setRowCount(500);
-    ui->tableWidget->setColumnCount(500);
-
 
     this->setCentralWidget(ui->groupBox);
 }
@@ -43,8 +42,11 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }*/
     setWindowTitle(filename);
+
+    ui->tableView->setModel(new DataModel(filename));
     //QTextStream in(&file);
 
+    /*
     QThread* thread = new QThread;
     if(csvReader != nullptr){
         //Si nouvelle lecture avant que la précédente soit terminée
@@ -67,7 +69,7 @@ void MainWindow::on_actionOpen_triggered()
     thread->start();
     qDebug() <<"Lecture en cours" ;
     //TODO : Feedback
-
+    */
 
 
     //QString text = in.readAll();
@@ -75,6 +77,7 @@ void MainWindow::on_actionOpen_triggered()
     //file.close();
 }
 
+/*
 void MainWindow::on_read_operation_new_lines(int line_start, vector<QStringList> lines)
 {
     int k = 0 ;
@@ -89,6 +92,7 @@ void MainWindow::on_read_operation_new_lines(int line_start, vector<QStringList>
         k = 0 ;
     }
 }
+*/
 
 void MainWindow::on_read_operation_error(QString error)
 {
