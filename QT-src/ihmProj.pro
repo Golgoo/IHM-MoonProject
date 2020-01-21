@@ -17,11 +17,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     backgroundcsvreader.cpp \
+    datamodel.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     backgroundcsvreader.h \
+    datamodel.h \
     mainwindow.h
 
 FORMS += \
