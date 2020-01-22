@@ -9,7 +9,15 @@
 /*!
  * \brief The DataModel class
  *
+ * TODO :
+ * Permettre de réutiliser le même objet
+ * =>update(QString fileName) => clear all + indexer.
+ * =>gérer l'inversions des colonnes. => array<int> _col_shake =>_col_shake[1] = 3 <=> la colonne 1 du modèle correspond à la colonne 3 du fichier
+ * =>Option SVG ( à voir si ça devrait être une autre classe ), prose de garder la configuration des colonnes
+ *          -> proto : void svg(QString filename, boolean shake_cols = false, QChar col_delim = ',');
  *
+ * => Cherche comment customiser les WidgetHeaders ( + boutons gauche/droite pour déplacer les colonnes )
+ *          -> Cherche fct AbstractTableModel pour forcer un refresh ( si les colonnes changent et que ça ne met pas à jour).
  *
  * Optimisation possible : rajouter son propre cache.
  *
