@@ -65,6 +65,7 @@ private:
     int _row_count = 0 ;
     int _col_count = 0 ;
     QChar _col_delimiter ;
+    QVector<qint64> line_idex ;
     bool isValid(QModelIndex index) const;
 
 };

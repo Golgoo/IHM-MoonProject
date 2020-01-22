@@ -2,6 +2,7 @@
 
 #include <QTextStream>
 #include <QStringList>
+#include <QDebug>
 
 DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col_delimiter)
 {
@@ -10,14 +11,18 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         emit error_loading_file("Cannot read file \" " + filename + " \"");
     }else{
         QTextStream ts (f);
+        line_idex.push_back(ts.pos());
         QString tmp = ts.readLine();
         _col_count = tmp.split(this->_col_delimiter).size();
         while(! ts.atEnd()){
-            ts.readLine();
+            if(ts.readLine().isEmpty()) continue;
+            line_idex.push_back(ts.pos());
             _row_count++;
         }
+
         _row_count -- ;
     }
+    qDebug() << line_idex ;
 }
 
 DataModel::~DataModel()
@@ -67,7 +72,7 @@ QString DataModel::getValue(int row, int col) const
     Q_UNUSED(row);
     QStringList items ;
     //index[row]
-    if(! f->seek(0)){
+    if(! f->seek(line_idex.at(row))){
         emit error_loading_file("Error during read of the file");
         return QString("ERR");
     }else{
