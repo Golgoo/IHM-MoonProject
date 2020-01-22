@@ -46,7 +46,6 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }*/
     setWindowTitle(filename);
-<<<<<<< HEAD
     QTextStream in(&file);
     QString text = in.readAll();
 
@@ -56,7 +55,6 @@ void MainWindow::on_actionOpen_triggered()
     //afficher ici le tableau
 
     file.close();
-=======
 
     ui->tableView->setModel(new DataModel(filename));
     //QTextStream in(&file);
@@ -91,7 +89,6 @@ void MainWindow::on_actionOpen_triggered()
     //TODO: code pour traiter ce qu'on a lu dans fichier
     //file.close();
 }
->>>>>>> gautier-branch
 
 /*
 void MainWindow::on_read_operation_new_lines(int line_start, vector<QStringList> lines)

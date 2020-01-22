@@ -30,10 +30,9 @@ HEADERS += \
     datacolumn.h \
     datatable.h \
     parser.h \
-    csvparser.h
-
+    csvparser.h \
     backgroundcsvreader.h \
-    datamodel.h \
+    datamodel.h
 
 FORMS += \
     mainwindow.ui
