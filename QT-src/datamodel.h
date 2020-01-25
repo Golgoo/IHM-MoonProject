@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QModelIndex>
 #include <QObject>
+#include <QSet>
+#include <iterator>
 
 /*!
  * \brief The DataModel class
@@ -57,6 +59,9 @@ public:
      */
     QString getValue(int row, int col) const;
 
+    QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn);
+
+    /*les 4 méthodes de l'interface QAbstractTableModel*/
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
