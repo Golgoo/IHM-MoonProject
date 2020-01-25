@@ -1,25 +1,26 @@
 #ifndef BACKGROUNDCSVREADER_H
 #define BACKGROUNDCSVREADER_H
 
-#include <QObject>
-#include <vector>
+#include <QTextStream>
 #include <QString>
+#include <vector>
+#include <algorithm>
 #include <QStringList>
 #include <QFile>
+#include <QObject>
 
 #pragma once
 
 using namespace std;
 
 /*!
- * \brief The BackgroundCSVReader lit un CSV en arrière plan
+ * \brief The BackgroundCSVReader Classe qui lit un CSV en arrière plan
  * \version 0.0
  *
- * Cette classe lit un CSV en arrière plan et propose trois signaux :
- * Pour communiquer les erreurs / prévenir qu'un bloc de ligne a été lue, prévenir que la lecture est terminée
- *
+ * Cette classe permet de lire un CSV en arrière plan et de retourner des informations sur la lecture en cours
  * Chaque ligne est représentée par un vector<QString>
- * L'ensemble des lignes est représenté par un vector<QListString>
+ * L'ensemble des lignes est représenté par un vector<vector<QString>>
+>>>>>>> vincent-branch
  *
  * Ceci dans le but d'avoir un feedback recommandé pour l'IHM
  *
@@ -75,3 +76,4 @@ public:
 };
 
 #endif
+

@@ -21,12 +21,20 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     tabularview.cpp
+    datacolumn.cpp \
+    datatable.cpp \
+    parser.cpp \
+    csvparser.cpp
 
 HEADERS += \
     tabularview.h \
     backgroundcsvreader.h \
     datamodel.h \
     mainwindow.h
+    datacolumn.h \
+    datatable.h \
+    parser.h \
+    csvparser.h
 
 FORMS += \
     mainwindow.ui \

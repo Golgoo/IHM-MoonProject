@@ -1,9 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include "backgroundcsvreader.h"
 #include <QDebug>
 #include <QTableWidgetItem>
 #include <QThread>
+#include "datatable.h"
+#include "csvparser.h"
+
+#include <QDebug>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
 #include "datamodel.h"
@@ -42,6 +47,16 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }*/
     setWindowTitle(filename);
+
+    QTextStream in(&file);
+    QString text = in.readAll();
+
+    CSVParser parser(text);
+    DataTable table = parser.parse();
+    std::cout << "taille du tableau : " << table.getColumns().size();
+    //afficher ici le tableau
+
+    file.close();
 
 
     ui->tableView->setModel(new DataModel(filename));
