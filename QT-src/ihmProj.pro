@@ -18,6 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     backgroundcsvreader.cpp \
     datamodel.cpp \
+    edge.cpp \
+    graphview.cpp \
     main.cpp \
     mainwindow.cpp \
     datacolumn.cpp \
@@ -27,6 +29,8 @@ SOURCES += \
     csvparser.cpp
 
 HEADERS += \
+    edge.h \
+    graphview.h \
     mainwindow.h \
     datacolumn.h \
     datatable.h \
