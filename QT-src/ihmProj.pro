@@ -22,6 +22,7 @@ SOURCES += \
     mainwindow.cpp \
     datacolumn.cpp \
     datatable.cpp \
+    node.cpp \
     parser.cpp \
     csvparser.cpp
 
@@ -29,6 +30,7 @@ HEADERS += \
     mainwindow.h \
     datacolumn.h \
     datatable.h \
+    node.h \
     parser.h \
     csvparser.h \
     backgroundcsvreader.h \
