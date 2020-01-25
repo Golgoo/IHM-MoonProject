@@ -1,5 +1,6 @@
 #include "edge.h"
 #include "node.h"
+#include <QDebug>
 
 
 Edge::Edge(Node *sourceNode, Node *destNode)
@@ -56,6 +57,7 @@ QRectF Edge::boundingRect() const
 void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     if (!source || !dest)
         return;
+
 
     //si la distance est quasiment 0 on ne dessine pas la ligne
     QLineF line(sourcePoint, destPoint);

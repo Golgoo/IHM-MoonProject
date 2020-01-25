@@ -20,6 +20,10 @@ GraphView::GraphView(QWidget *parent)
     Node *node2 = new Node();
     Node *node3 = new Node();
     Node *node4 = new Node();
+    node1->setPos(-50, -50);
+    node2->setPos(0, -50);
+    node3->setPos(50, -50);
+    node4->setPos(-50, 0);
     scene->addItem(node1);
     scene->addItem(node2);
     scene->addItem(node3);
@@ -28,8 +32,5 @@ GraphView::GraphView(QWidget *parent)
     scene->addItem(new Edge(node2, node3));
     scene->addItem(new Edge(node4, node1));
 
-    node1->setPos(-50, -50);
-    node2->setPos(0, -50);
-    node3->setPos(50, -50);
-    node4->setPos(-50, 0);
+
 }

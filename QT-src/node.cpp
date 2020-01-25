@@ -1,4 +1,5 @@
 #include "node.h"
+#include "edge.h"
 
 Node::Node()
 {
@@ -15,7 +16,7 @@ QVector<Edge*> Node::getEdges() const {
 void Node::addEdge(Edge* edge) {
     edges << edge;
     //ADJUST DISPENSABLE ?
-    //edge->adjust();
+    edge->adjust();
 }
 
 QRectF Node::boundingRect() const {
@@ -39,10 +40,8 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
     case ItemPositionHasChanged:
-        /*
-        for (Edge *edge : qAsConst(edgeList))
+        for (Edge *edge : getEdges())
             edge->adjust();
-        graph->itemMoved();*/
         break;
     default:
         break;

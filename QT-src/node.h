@@ -15,6 +15,8 @@ private:
     QColor color;
     QVector<Edge*> edges;
 
+    QPointF newPos;
+
 public:
     Node();
     QRectF boundingRect() const override;
