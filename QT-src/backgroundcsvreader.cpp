@@ -1,5 +1,7 @@
 #include "backgroundcsvreader.h"
 
+    /* TODO Lire la première line pour déduire les champs _row_count et _col_count */
+    // Lire une ligne est spécifier dans le .h de la fonction startRead();
 #include <QDebug>
 #include <QThread>
 
@@ -44,7 +46,7 @@ void BackgroundCSVReader::process() {
         }
 
         if(! buffer.empty()) {
-            emit new_lines(_readed_row - buffer.size(), buffer);
+            emit new_lines((int)((unsigned long)_readed_row - buffer.size()), buffer);
             buffer.clear();
         }
         emit finished();

@@ -9,23 +9,19 @@
 #include <QFile>
 #include <QObject>
 
-#pragma once
-
-using namespace std;
-
 /*!
  * \brief The BackgroundCSVReader Classe qui lit un CSV en arrière plan
  * \version 0.0
  *
  * Cette classe permet de lire un CSV en arrière plan et de retourner des informations sur la lecture en cours
  * Chaque ligne est représentée par un vector<QString>
- * L'ensemble des lignes est représenté par un vector<vector<QString>>
->>>>>>> vincent-branch
+ * L'ensemble des lignes est représenté par un vector<QListString>
  *
  * Ceci dans le but d'avoir un feedback recommandé pour l'IHM
  *
  */
 
+using namespace std;
 
 class BackgroundCSVReader : public QObject {
     Q_OBJECT

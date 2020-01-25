@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include "backgroundcsvreader.h"
-#include <QDebug>
 #include <QTableWidgetItem>
 #include <QThread>
 #include "datatable.h"
@@ -20,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
     this->setCentralWidget(ui->groupBox);
+
 }
 
 MainWindow::~MainWindow()
