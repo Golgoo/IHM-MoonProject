@@ -1,4 +1,4 @@
-QT       += core gui printsupport
+QT       += core gui printsupport widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,14 +16,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    backgroundcsvreader.cpp \
+    datamodel.cpp \
+    edge.cpp \
+    graphview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tabularview.cpp \
+    datacolumn.cpp \
+    datatable.cpp \
+    node.cpp \
+    parser.cpp \
+    csvparser.cpp
 
 HEADERS += \
-    mainwindow.h
+    tabularview.h \
+    backgroundcsvreader.h \
+    datamodel.h \
+    edge.h \
+    graphview.h \
+    mainwindow.h \
+    datacolumn.h \
+    datatable.h \
+    node.h \
+    parser.h \
+    csvparser.h \
+    backgroundcsvreader.h \
+    datamodel.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    tabularview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
