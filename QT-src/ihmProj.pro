@@ -1,4 +1,4 @@
-QT       += core gui printsupport
+QT       += core gui printsupport widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,13 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    backgroundcsvreader.cpp \
+    datamodel.cpp \
     main.cpp \
     mainwindow.cpp \
     tabularview.cpp
 
 HEADERS += \
-    mainwindow.h \
     tabularview.h
+    backgroundcsvreader.h \
+    datamodel.h \
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui \

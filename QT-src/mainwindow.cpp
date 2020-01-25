@@ -1,7 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "backgroundcsvreader.h"
+#include <QDebug>
+#include <QTableWidgetItem>
+#include <QThread>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
+
+#include "datamodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
+    this->setCentralWidget(ui->groupBox);
 }
 
 MainWindow::~MainWindow()
@@ -27,19 +33,30 @@ void MainWindow::on_actionGenerate_triggered()
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
+    qDebug() << "Rentre ici " ;
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
-    QFile file(filename);
+    //QFile file(filename);
     currentFile = filename;
-    if(!file.open(QIODevice::ReadOnly | QFile::Text)){
+    /*if(!file.open(QIODevice::ReadOnly | QFile::Text)){
         QMessageBox::warning(this, "Attention", "Echec ouverture fichier : "+ file.errorString());
         return;
-    }
+    }*/
     setWindowTitle(filename);
-    QTextStream in(&file);
-    QString text = in.readAll();
-    //TODO: code pour traiter ce qu'on a lu dans fichier
-    file.close();
 
+
+    ui->tableView->setModel(new DataModel(filename));
+}
+
+void MainWindow::on_read_operation_error(QString error)
+{
+     QMessageBox::warning(this, "Attention", error);
+}
+
+void MainWindow::on_read_operation_finished()
+{
+    //TODO : Stop feedback
+    delete csvReader;
+    csvReader = nullptr;
 }
 
 void MainWindow::on_actionSave_as_triggered()
