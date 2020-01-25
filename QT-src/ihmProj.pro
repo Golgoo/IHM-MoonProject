@@ -22,7 +22,7 @@ SOURCES += \
     graphview.cpp \
     main.cpp \
     mainwindow.cpp \
-    tabularview.cpp
+    tabularview.cpp \
     datacolumn.cpp \
     datatable.cpp \
     node.cpp \
