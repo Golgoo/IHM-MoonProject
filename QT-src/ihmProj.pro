@@ -23,7 +23,7 @@ SOURCES += \
     tabularview.cpp
 
 HEADERS += \
-    tabularview.h
+    tabularview.h \
     backgroundcsvreader.h \
     datamodel.h \
     mainwindow.h
