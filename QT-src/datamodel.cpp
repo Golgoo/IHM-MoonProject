@@ -78,7 +78,6 @@ QString DataModel::getValue(int row, int col) const
 {
     Q_UNUSED(row);
     QStringList items ;
-    //index[row]
     if(! f->seek(line_idex.at(row))){
         emit error_loading_file("Error during read of the file");
         return QString("ERR");
@@ -97,27 +96,15 @@ bool DataModel::isValid(QModelIndex index) const
 }
 
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn){
-    QSet<QString> set;
-
-    /*On récupère toutes les valeurs distinctes*/
-    for(int i=0; i<rowCount(); i++){
-        set.insert(getValue(i, indexOfColumn));
-    }
-
-    /*On fournit la pondération*/
     QHash<QString,int> dsHash;
-    QList<QString> listOfDValues = set.values();
-    int nb_occur;
-    for(int i=0; i<set.size(); i++){
-        nb_occur = 0;
-        QString actual_element = listOfDValues.value(i);
-        for(int j=0; j<rowCount(); j++){
-            if(actual_element == getValue(j,indexOfColumn)){
-                qDebug() << actual_element << "trouvé en pos " << j;
-                nb_occur++;
-            }
+    QString tmp ;
+    for(int i=0; i<rowCount(); i++){
+        tmp = getValue(i, indexOfColumn);
+        if(dsHash.contains(tmp)){
+            dsHash.insert(tmp, 0);
+        }else{
+            dsHash.insert(tmp, dsHash.find(tmp).value() ++ );
         }
-        dsHash.insert(actual_element, nb_occur);
     }
     return dsHash;
 }
