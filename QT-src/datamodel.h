@@ -24,6 +24,7 @@
  * Optimisation possible : rajouter son propre cache.
  *
  */
+
 class DataModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -61,6 +62,8 @@ public:
 
     QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn);
 
+    void shiftColumn(int colNumber, int shift = 1);
+
     /*les 4 méthodes de l'interface QAbstractTableModel*/
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 
@@ -80,6 +83,9 @@ private:
     QChar _col_delimiter ;
     QVector<qint64> line_idex ;
     bool isValid(QModelIndex index) const;
+
+    QStringList _headers ;
+    QVector<int> _cols_shifter ;
 
 };
 

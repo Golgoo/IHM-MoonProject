@@ -48,18 +48,25 @@ void MainWindow::on_actionOpen_triggered()
     }*/
     setWindowTitle(filename);
 
-    QTextStream in(&file);
+    /*QTextStream in(&file);
     QString text = in.readAll();
 
     CSVParser parser(text);
     DataTable table = parser.parse();
-    std::cout << "taille du tableau : " << table.getColumns().size();
+    std::cout << "taille du tableau : " << table.getColumns().size();*/
     //afficher ici le tableau
 
-    file.close();
+//    file.close();
 
+    //Cette ligne bind le fichier et le tableau
+    DataModel * model = new DataModel(filename);
+    //Déplace la colonne 1 de 2 crans vers la droite
+    model->shiftColumn(1,2);
+    ui->tableView->setModel(model);
 
-    ui->tableView->setModel(new DataModel(filename));
+    //Et après ça, la colonne 2 ( l'ancienne colonne 3 ) de 1 cran vers la gauche
+    model->shiftColumn(2,-1);
+
 }
 
 void MainWindow::on_read_operation_error(QString error)
@@ -69,9 +76,7 @@ void MainWindow::on_read_operation_error(QString error)
 
 void MainWindow::on_read_operation_finished()
 {
-    //TODO : Stop feedback
-    delete csvReader;
-    csvReader = nullptr;
+    //TODO : Stop feedback &| MAJ Status bar
 }
 
 void MainWindow::on_actionSave_as_triggered()

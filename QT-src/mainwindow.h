@@ -49,13 +49,10 @@ protected:
 
     void on_read_operation_error(QString error);
 
-    void on_read_operation_new_lines(int line_start, vector<QStringList> line);
-
 private:
     Ui::MainWindow *ui;
     /*On crée String contenant nom du fichier avec lequel on va travailler*/
     QString currentFile = "";
     QFile file ;
-    BackgroundCSVReader * csvReader = nullptr ;
 };
 #endif // MAINWINDOW_H

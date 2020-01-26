@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QDebug>
 
+
 DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col_delimiter)
 {
     f = new QFile(filename);
@@ -11,10 +12,10 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         emit error_loading_file("Cannot read file \" " + filename + " \"");
     }else{
         QTextStream ts (f);
-        line_idex.push_back(ts.pos());
-        _row_count++;
-        /*On lit ligne par ligne*/
         QString tmp = ts.readLine();
+        /* On se permet de garder les headers dans la RAM */
+        _headers = tmp.split(col_delimiter);
+
         line_idex.push_back(ts.pos());
 
         /*On récup nb de colonnes de la ligne*/
@@ -27,6 +28,9 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
             line_idex.push_back(ts.pos());
             _row_count++;
         }
+
+        for(int i = 0 ; i < _col_count ; i ++) _cols_shifter.push_back(i);
+
         qDebug() << " Valeurs distinctes de la 1ère colonne " << getDistinctValuesOfColumn(0);
     }
 }
@@ -59,7 +63,7 @@ QVariant DataModel::headerData(int section, Qt::Orientation orientation, int rol
         return QVariant();
     }
     if( orientation == Qt::Horizontal) {
-        return QString("Headers") ;
+        return _headers[_cols_shifter[section]];
     }
     return section + 1 ;
 }
@@ -76,7 +80,6 @@ QVariant DataModel::headerData(int section, Qt::Orientation orientation, int rol
 * */
 QString DataModel::getValue(int row, int col) const
 {
-    Q_UNUSED(row);
     QStringList items ;
     if(! f->seek(line_idex.at(row))){
         emit error_loading_file("Error during read of the file");
@@ -84,7 +87,7 @@ QString DataModel::getValue(int row, int col) const
     }else{
         QString str = f->readLine();
         items = str.split(_col_delimiter);
-        return (items)[col];
+        return (items)[_cols_shifter[col]];
     }
 }
 
@@ -95,15 +98,26 @@ bool DataModel::isValid(QModelIndex index) const
     return ( 0 <= r && r < _row_count ) && ( 0 <= c && c < _col_count) ;
 }
 
+void DataModel::shiftColumn(int colNumber, int shift){
+    int dst = colNumber + shift ;
+    if((colNumber >= 0 && colNumber < _col_count) && (dst >= 0 && dst < _col_count)){
+        _cols_shifter.move(colNumber, dst);
+        qDebug() << _cols_shifter ;
+    }else{
+        // Signal or Exception
+    }
+}
+
+
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn){
     QHash<QString,int> dsHash;
     QString tmp ;
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
-        if(dsHash.contains(tmp)){
-            dsHash.insert(tmp, 0);
+        if(! dsHash.contains(tmp)){
+            dsHash.insert(tmp, 1);
         }else{
-            dsHash.insert(tmp, dsHash.find(tmp).value() ++ );
+            dsHash.find(tmp).value()++;
         }
     }
     return dsHash;
