@@ -49,3 +49,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
 
     return QGraphicsItem::itemChange(change, value);
 }
+
+void Node::adjust() {
+
+}

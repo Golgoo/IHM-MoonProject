@@ -23,6 +23,7 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    void adjust();
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     QVector<Edge*> getEdges() const;

@@ -1,11 +1,16 @@
 #include "edge.h"
 #include "node.h"
+#include "math.h"
 #include <QDebug>
 
 
 Edge::Edge(Node *sourceNode, Node *destNode)
     : source(sourceNode), dest(destNode)
 {
+    setFlag(ItemIsMovable);
+    setFlag(ItemSendsGeometryChanges);
+    setCacheMode(DeviceCoordinateCache);
+    setZValue(-1);
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
@@ -40,6 +45,19 @@ void Edge::adjust()
     }
 }
 
+QPainterPath Edge::shape() const {
+    //TODO : à changer si on veut faire des noeuds de différentes formes (classe abstraite ?)
+    QPainterPath path;
+
+    QRectF rect(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
+                                          destPoint.y() - sourcePoint.y()));
+
+    //path.addRect(topLeftRectX, topLeftRectY, widthRect, heightRect);
+    path.addRect(rect.normalized());
+
+    return path;
+}
+
 QRectF Edge::boundingRect() const
 {
     if (!source || !dest)
@@ -57,7 +75,6 @@ QRectF Edge::boundingRect() const
 void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     if (!source || !dest)
         return;
-
 
     //si la distance est quasiment 0 on ne dessine pas la ligne
     QLineF line(sourcePoint, destPoint);
@@ -82,4 +99,38 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
+}
+
+//TODO: faire que quand on tire un noeud en dhors de la graphics view, il reste collé au bord et ne sorte pas du cadre
+QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
+    switch (change) {
+    case ItemPositionHasChanged:
+        /*QPointF mousePos = value.toPointF();
+        QPointF newPos = mousePos - oldValue;
+        oldValue = mousePos;
+
+        qDebug() << "newPos : " << newPos.x() << " y : " << newPos.y();
+
+        qreal srcPosX = sourcePoint.x();
+        qreal srcPosY = sourcePoint.y();
+        qDebug() << "srcPos : " << srcPosX << " y : " << srcPosY;
+
+        source->setPos(srcPosX + newPos.x(), srcPosY + newPos.y());
+
+        qreal destPosX = destPoint.x();
+        qreal destPosY = destPoint.y();
+        qDebug() << "destPos : " << destPosX << " y : " << destPosY;
+        dest->setPos(destPosX + newPos.x(), destPosY + newPos.y());
+
+        for (Edge* edge : source->getEdges()) {
+           // edge->adjust();
+        }
+
+        for (Edge* edge : dest->getEdges()) {
+            //edge->adjust();
+        }*/
+        break;
+    };
+
+    return QGraphicsItem::itemChange(change, value);
 }

@@ -7,7 +7,8 @@ GraphView::GraphView(QWidget *parent)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 400, 400);
+    scene->setSceneRect(0, 0, 400, 400);
+    //setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
@@ -20,10 +21,10 @@ GraphView::GraphView(QWidget *parent)
     Node *node2 = new Node();
     Node *node3 = new Node();
     Node *node4 = new Node();
-    node1->setPos(-50, -50);
-    node2->setPos(0, -50);
-    node3->setPos(50, -50);
-    node4->setPos(-50, 0);
+    node1->setPos(50, 50);
+    node2->setPos(50, 100);
+    node3->setPos(0, 50);
+    node4->setPos(120, 30);
     scene->addItem(node1);
     scene->addItem(node2);
     scene->addItem(node3);

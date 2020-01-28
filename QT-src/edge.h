@@ -18,6 +18,8 @@ private:
     qreal thickness;
     QColor color;
 
+    QPointF oldValue;
+
 public:
     Edge(Node *sourceNode, Node *destNode);
 
@@ -26,7 +28,10 @@ public:
 
     void adjust();
 
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
     QRectF boundingRect() const override;
+    QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
