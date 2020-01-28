@@ -99,36 +99,45 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
+
+    //DEBUG CODE
+    QRectF rect(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
+                               destPoint.y() - sourcePoint.y()));
+    //painter->drawRect(QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
+                                                 //destPoint.y() - sourcePoint.y())));
+
+    double angleRotate = acos(fabs(destPoint.y() - sourcePoint.y()) / line.length());
+
+    QPointF center = rect.center();
+    /*painter->translate(center);
+    painter->rotate(angleRotate * (180 / M_PI));
+    painter->translate(center);*/
+
+    qDebug() << "angle : " << angleRotate;
+    QTransform t = QTransform().translate(center.x(), center.y()).rotate(angleRotate * (180 / M_PI)).translate(-center.x(), -center.y());
+    QPolygonF rotatedRect =  t.mapToPolygon(rect.toRect());  // mapRect() returns the bounding rect of the rotated rect
+    painter->drawPolygon(rotatedRect);
 }
 
 //TODO: faire que quand on tire un noeud en dhors de la graphics view, il reste collé au bord et ne sorte pas du cadre
 QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
     case ItemPositionHasChanged:
-        /*QPointF mousePos = value.toPointF();
+
+        QPointF mousePos = value.toPointF();
         QPointF newPos = mousePos - oldValue;
         oldValue = mousePos;
 
-        qDebug() << "newPos : " << newPos.x() << " y : " << newPos.y();
-
-        qreal srcPosX = sourcePoint.x();
-        qreal srcPosY = sourcePoint.y();
-        qDebug() << "srcPos : " << srcPosX << " y : " << srcPosY;
-
-        source->setPos(srcPosX + newPos.x(), srcPosY + newPos.y());
-
-        qreal destPosX = destPoint.x();
-        qreal destPosY = destPoint.y();
-        qDebug() << "destPos : " << destPosX << " y : " << destPosY;
-        dest->setPos(destPosX + newPos.x(), destPosY + newPos.y());
+        source->moveBy(newPos.x(), newPos.y());
+        dest->moveBy(newPos.x(), newPos.y());
 
         for (Edge* edge : source->getEdges()) {
-           // edge->adjust();
+            edge->adjust();
         }
 
         for (Edge* edge : dest->getEdges()) {
-            //edge->adjust();
-        }*/
+            edge->adjust();
+        }
         break;
     };
 

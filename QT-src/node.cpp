@@ -1,5 +1,6 @@
 #include "node.h"
 #include "edge.h"
+#include <QDebug>
 
 Node::Node()
 {
@@ -40,8 +41,10 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
     case ItemPositionHasChanged:
-        for (Edge *edge : getEdges())
+        for (Edge *edge : getEdges()) {
             edge->adjust();
+        }
+
         break;
     default:
         break;
