@@ -14,7 +14,7 @@
 
 #include <vector>
 
-#include "backgroundcsvreader.h"
+#include "datamodel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,6 +28,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr); /*Ce widget n'a pas de parent si nullptr*/
     ~MainWindow();
+
+    void set_status(QString status_text);
 
 private slots:
     void on_actionGenerate_triggered();
@@ -54,5 +56,7 @@ private:
     /*On crée String contenant nom du fichier avec lequel on va travailler*/
     QString currentFile = "";
     QFile file ;
+
+    DataModel * _model ;
 };
 #endif // MAINWINDOW_H

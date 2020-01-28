@@ -16,7 +16,7 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         /* On se permet de garder les headers dans la RAM */
         _headers = tmp.split(col_delimiter);
 
-        line_idex.push_back(ts.pos());
+        line_index.push_back(ts.pos());
 
         /*On récup nb de colonnes de la ligne*/
         _col_count = tmp.split(this->_col_delimiter).size();
@@ -25,7 +25,7 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
             if(readedLine.isEmpty()) continue;
 
             /*On récupère index de la ligne par rapport au Stream du fichier ouvert*/
-            line_idex.push_back(ts.pos());
+            line_index.push_back(ts.pos());
             _row_count++;
         }
 
@@ -81,7 +81,7 @@ QVariant DataModel::headerData(int section, Qt::Orientation orientation, int rol
 QString DataModel::getValue(int row, int col) const
 {
     QStringList items ;
-    if(! f->seek(line_idex.at(row))){
+    if(! f->seek(line_index.at(row))){
         emit error_loading_file("Error during read of the file");
         return QString("ERR");
     }else{

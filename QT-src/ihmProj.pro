@@ -16,36 +16,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    backgroundcsvreader.cpp \
     datamodel.cpp \
     edge.cpp \
     graphview.cpp \
     main.cpp \
     mainwindow.cpp \
-    tabularview.cpp \
-    datacolumn.cpp \
-    datatable.cpp \
-    node.cpp \
-    parser.cpp \
-    csvparser.cpp
+    random_generation_dialog.cpp \
+    node.cpp
 
 HEADERS += \
-    tabularview.h \
-    backgroundcsvreader.h \
+    random_generation_dialog.h \
     datamodel.h \
     edge.h \
     graphview.h \
     mainwindow.h \
-    datacolumn.h \
-    datatable.h \
     node.h \
-    parser.h \
-    csvparser.h \
-    backgroundcsvreader.h \
     datamodel.h
 
 FORMS += \
     mainwindow.ui \
+    random_generation_dialog.ui \
     tabularview.ui
 
 # Default rules for deployment.

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "backgroundcsvreader.h"
 #include <QTableWidgetItem>
 #include <QThread>
 #include "datatable.h"
@@ -9,8 +8,6 @@
 
 #include <QDebug>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
-
-#include "datamodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,40 +29,32 @@ void MainWindow::on_actionGenerate_triggered()
 {
     /*On efface pour laisser place à un nouveau fichier*/
     currentFile.clear();
-    //TODO: Code pour générer des données
+
+    _rdm_gene_dial->exec();
+
+    //TODO Ouvrir un formulaire dans une QDialog qui rempli/renvoie une structure :
+    // =>NbLines / NbCols / bounds / etc..
+    // => (if _model != nullptr ) delete _model
+    // => _model = new DataModel(<structure_retournée>);
 }
 
-/*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
-    qDebug() << "Rentre ici " ;
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
-    //QFile file(filename);
     currentFile = filename;
-    /*if(!file.open(QIODevice::ReadOnly | QFile::Text)){
-        QMessageBox::warning(this, "Attention", "Echec ouverture fichier : "+ file.errorString());
-        return;
-    }*/
+
     setWindowTitle(filename);
 
-    /*QTextStream in(&file);
-    QString text = in.readAll();
+    if(_model != nullptr){
+        delete _model;
+        _model = nullptr;
+    }
+    _model = new DataModel(filename);
+    ui->tableView->setModel(_model);
 
-    CSVParser parser(text);
-    DataTable table = parser.parse();
-    std::cout << "taille du tableau : " << table.getColumns().size();*/
-    //afficher ici le tableau
-
-//    file.close();
-
-    //Cette ligne bind le fichier et le tableau
-    DataModel * model = new DataModel(filename);
-    //Déplace la colonne 1 de 2 crans vers la droite
-    model->shiftColumn(1,2);
-    ui->tableView->setModel(model);
-
+    _model->shiftColumn(1,2);
     //Et après ça, la colonne 2 ( l'ancienne colonne 3 ) de 1 cran vers la gauche
-    model->shiftColumn(2,-1);
+    _model->shiftColumn(2,-1);
 
 }
 
@@ -94,6 +83,11 @@ void MainWindow::on_actionSave_as_triggered()
     QString text = "AHHAHAHA"; //:TODO Il faudra mettre ce que l'on voudra stocker dans le fichier dans cette var
     out << text;
     file.close();
+}
+
+void MainWindow::set_status(QString status_text)
+{
+    ui->statusbar->showMessage(status_text);
 }
 
 void MainWindow::on_actionExport_triggered()
