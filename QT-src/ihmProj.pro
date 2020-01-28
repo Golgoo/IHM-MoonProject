@@ -21,22 +21,21 @@ SOURCES += \
     graphview.cpp \
     main.cpp \
     mainwindow.cpp \
-    random_generation_dialog.cpp \
-    node.cpp
+    node.cpp \
+    random_generation_dialog.cpp
 
 HEADERS += \
-    random_generation_dialog.h \
     datamodel.h \
     edge.h \
     graphview.h \
     mainwindow.h \
     node.h \
-    datamodel.h
+    datamodel.h \
+    random_generation_dialog.h
 
 FORMS += \
     mainwindow.ui \
-    random_generation_dialog.ui \
-    tabularview.ui
+    randomgenerationdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

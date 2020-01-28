@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "datamodel.h"
+#include "random_generation_dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -58,5 +59,6 @@ private:
     QFile file ;
 
     DataModel * _model ;
+    RandomGenerationDialog * _rdm_gene_dial ;
 };
 #endif // MAINWINDOW_H
