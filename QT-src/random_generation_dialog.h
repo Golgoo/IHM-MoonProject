@@ -25,7 +25,14 @@ public:
 
 private:
     QTemporaryFile _tmp_file;
+    QVector<QString> _columns ;
+    QString default_column_name = "colonne ";
+    qint8 default_columns_count = 3 ;
     int generateRandomInt();
+
+public slots:
+    void columns_changed(int nb_cols);
+    void column_renamed();
 
 private:
     Ui::RandomGenerationDialog *ui;

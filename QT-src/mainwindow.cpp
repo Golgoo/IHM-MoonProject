@@ -31,12 +31,7 @@ void MainWindow::on_actionGenerate_triggered()
     int execution_code = _rdm_gene_dial->exec();
     if(execution_code == QDialog::Accepted){
         if(_rdm_gene_dial->process_generation()>0){
-            if(_model == nullptr){
-                delete _model ;
-                _model = nullptr;
-            }
-            _model = new DataModel(_rdm_gene_dial->getTemporaryFilename());
-            ui->tableView->setModel(_model);
+            reload_model(_rdm_gene_dial->getTemporaryFilename());
         }else{
             // A voir.
             //TODO _rmd_gene_dial.getErrors() : QStringList // Ou Enum + Map<Enum, QString> .... => getErrorString(Enum)...
@@ -51,20 +46,19 @@ void MainWindow::on_actionOpen_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
     currentFile = filename;
-
     setWindowTitle(filename);
 
+    reload_model(filename);
+}
+
+void MainWindow::reload_model(QString filename)
+{
     if(_model != nullptr){
         delete _model;
         _model = nullptr;
     }
     _model = new DataModel(filename);
     ui->tableView->setModel(_model);
-
-    _model->shiftColumn(1,2);
-    //Et après ça, la colonne 2 ( l'ancienne colonne 3 ) de 1 cran vers la gauche
-    _model->shiftColumn(2,-1);
-
 }
 
 void MainWindow::on_read_operation_error(QString error)

@@ -58,7 +58,9 @@ private:
     QString currentFile = "";
     QFile file ;
 
-    DataModel * _model ;
-    RandomGenerationDialog * _rdm_gene_dial ;
+    DataModel * _model = nullptr;
+    RandomGenerationDialog * _rdm_gene_dial = nullptr ;
+
+    void reload_model(QString filename);
 };
 #endif // MAINWINDOW_H

@@ -45,6 +45,8 @@ DataModel::~DataModel()
 /*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
 QVariant DataModel::data (const QModelIndex & index, int role) const
 {
+    //qDebug() << "Need Data " << index.row() << " - " << index.column() ;
+    //qDebug() << "Model dimension : " << _row_count << " - " << _col_count;
     /*Test si index ne pointe pas hors de la matrice, une valeur inexistante*/
     if(! this->isValid(index)){
         return QVariant();
@@ -81,13 +83,16 @@ QVariant DataModel::headerData(int section, Qt::Orientation orientation, int rol
 QString DataModel::getValue(int row, int col) const
 {
     QStringList items ;
+    QString value ;
     if(! f->seek(line_index.at(row))){
         emit error_loading_file("Error during read of the file");
         return QString("ERR");
     }else{
         QString str = f->readLine();
         items = str.split(_col_delimiter);
-        return (items)[_cols_shifter[col]];
+        value = (items)[_cols_shifter[col]];
+        value.remove('\n');
+        return value;
     }
 }
 
