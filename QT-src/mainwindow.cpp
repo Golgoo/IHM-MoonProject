@@ -6,6 +6,7 @@
 #include <QThread>
 #include "datatable.h"
 #include "csvparser.h"
+#include <QColorDialog>
 
 #include <QDebug>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
@@ -19,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
     this->setCentralWidget(ui->groupBox);
+
+    QColor myColor;
+    //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
+    myTablet = new QColorDialog();
+    QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
 }
 
@@ -128,3 +134,20 @@ void MainWindow::on_actionRedo_triggered()
 {
 
 }
+
+void MainWindow::on_actionChanger_couleur_triggered()
+{
+    qDebug() << "Ahhhh une palette de couleur ?";
+
+    //QColor myColor = QColorDialog::getColor();
+    QColor myColor;
+
+    myTablet->exec();
+}
+
+void MainWindow::onColorTabletChanged(const QColor &color)
+{
+    qDebug() << "couleur gg " << color;
+    //ui->graphicsView->
+}
+

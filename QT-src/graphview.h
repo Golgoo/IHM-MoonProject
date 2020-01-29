@@ -4,11 +4,18 @@
 #include <QGraphicsView>
 #include "datamodel.h"
 
+class Node;
 class GraphView : public QGraphicsView
 {
+Q_OBJECT
+
 private:
      QGraphicsScene *scene = new QGraphicsScene(this);
      int GRAPHICS_VIEW_DIMENSION = 400;
+     QList<Node*> everyNode;
+
+private slots:
+     void updateLastSelectedNode();
 
 public:
     GraphView(QWidget *parent);

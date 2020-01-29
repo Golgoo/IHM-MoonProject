@@ -1,15 +1,15 @@
 #include "graphview.h"
-#include "node.h"
-#include "edge.h"
 #include "datamodel.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QHash>
+#include "node.h"
+#include "edge.h"
+#include "emetteursignal.h"
 
 GraphView::GraphView(QWidget *parent)
     : QGraphicsView(parent)
 {
-
     GRAPHICS_VIEW_DIMENSION = 400;
 
     scene = new QGraphicsScene(this);
@@ -41,7 +41,6 @@ GraphView::GraphView(QWidget *parent)
     scene->addItem(new Edge(node2, node3));
     scene->addItem(new Edge(node4, node1));*/
 
-
 }
 
 void GraphView::setModel(DataModel *model){
@@ -50,6 +49,10 @@ void GraphView::setModel(DataModel *model){
 
 QGraphicsScene *GraphView::getScene(){
     return scene;
+}
+
+void GraphView::updateLastSelectedNode(){
+    qDebug() << "yeeeeeeahhhhhh";
 }
 
 void GraphView::generateGraphUsingDatas()
@@ -81,6 +84,7 @@ void GraphView::generateGraphUsingDatas()
         int indexInColumn = 0;
         for(auto dv : list.at(col).keys()){
             Node *node = new Node(dv);
+            everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);
             //TODO: Enlever le -100, Comment fonctionne repère coordonnées ?
             node->setPos(col*spaceX-100, indexInColumn*spaceY-100);
@@ -93,6 +97,11 @@ void GraphView::generateGraphUsingDatas()
             scene->addItem(node);
         }
     }
+    for(Node *node : everyNode){
+        EmetteurSignal *em = node->sigEmet;
+        QObject::connect(em, SIGNAL(lastSelectedNode()), this, SLOT(updateLastSelectedNode()));
+        qDebug() << "gg " << node->getName();
+    }
 
     /*TODO: Les colonnes peuvent ne pas être de même taille ????*/
     for (int col=0; col<modelOfGraph->columnCount()-1; col++) {
@@ -103,7 +112,6 @@ void GraphView::generateGraphUsingDatas()
             Node *node1 = hashOfNodesOfDV.value(val1);
             Node *node2 = hashOfNodesOfDV.value(val2);
             scene->addItem(new Edge(node1, node2));
-
 
         }
     }

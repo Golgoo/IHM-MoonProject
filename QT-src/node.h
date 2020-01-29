@@ -6,7 +6,7 @@
 #include <cmath>
 
 class Edge;
-
+class EmetteurSignal;
 class Node : public QGraphicsItem
 {
 
@@ -16,7 +16,6 @@ private:
     qreal thickness;
     QColor color;
     QVector<Edge*> edges;
-
     QPointF newPos;
 
 public:
@@ -26,7 +25,10 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void setColor(QColor color);
 
+    EmetteurSignal *sigEmet;
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
     QVector<Edge*> getEdges() const;
     QString getName();

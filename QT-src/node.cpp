@@ -1,13 +1,20 @@
 #include "node.h"
+#include "emetteursignal.h"
 #include "edge.h"
+#include <QDebug>
+#include "ui_mainwindow.h"
+
 
 Node::Node(QString name)
 {
+    /*Cette ligne permet la sélection des sommets*/
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
     this->name = name;
+    sigEmet = new EmetteurSignal;
+    sigEmet->emitLastSelectedNodeSignal();
 }
 
 QVector<Edge*> Node::getEdges() const {
@@ -45,7 +52,15 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::setColor(QColor color){
     this->color = color;
+    //emit lastSelectedNode();
 }
+
+void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
+        qDebug() << "J'ai des tongues " << this;
+        Node *node = this;
+        sigEmet->emitLastSelectedNodeSignal();
+}
+
 
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {

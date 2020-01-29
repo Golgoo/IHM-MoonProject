@@ -19,6 +19,7 @@ SOURCES += \
     backgroundcsvreader.cpp \
     datamodel.cpp \
     edge.cpp \
+    emetteursignal.cpp \
     graphview.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     csvparser.cpp
 
 HEADERS += \
+    emetteursignal.h \
     tabularview.h \
     backgroundcsvreader.h \
     datamodel.h \

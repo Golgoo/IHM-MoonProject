@@ -12,6 +12,8 @@
 #include <QStringList>
 #include <QPrintDialog>
 
+#include <QColorDialog>
+
 #include <vector>
 
 #include "backgroundcsvreader.h"
@@ -44,6 +46,13 @@ private slots:
 
     void on_actionRedo_triggered();
 
+    void on_actionChanger_couleur_triggered();
+
+    void onColorTabletChanged(const QColor &color);
+
+signals:
+    void testSignal(const QColor &color);
+
 protected:
     void on_read_operation_finished();
 
@@ -57,5 +66,7 @@ private:
     QString currentFile = "";
     QFile file ;
     BackgroundCSVReader * csvReader = nullptr ;
+
+    QColorDialog *myTablet;
 };
 #endif // MAINWINDOW_H
