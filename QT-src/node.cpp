@@ -70,6 +70,7 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
         qDebug() << "J'ai des tongues " << this;
         Node *node = this;
         sigEmet->emitLastSelectedNodeSignal(node->getPosDansEveryNode());
+        qDebug() << "Yo voici ma couleur " << node->getColor();
 }
 
 

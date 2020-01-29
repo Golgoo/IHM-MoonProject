@@ -68,7 +68,7 @@ private:
     QString currentFile = "";
     QFile file ;
     BackgroundCSVReader * csvReader = nullptr ;
-    int lastSelectedSommet;
+    int lastSelectedSommet =-1;
     QColorDialog *myTablet;
 };
 #endif // MAINWINDOW_H

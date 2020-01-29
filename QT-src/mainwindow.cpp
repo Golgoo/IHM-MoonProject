@@ -160,8 +160,14 @@ void MainWindow::on_actionChanger_couleur_triggered()
 
 void MainWindow::onColorTabletChanged(const QColor &color)
 {
+    /*Si aucun sommet sélectionner mieux vaut ne pas autoriser ouverture palette*/
+    if(lastSelectedSommet==-1)
+        return;
+
     qDebug() << "couleur gg " << color;
-    ui->graphicsView->getEveryNode().at(lastSelectedSommet)->setColor(color);
+    Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
+    node->setColor(color);
     qDebug() << "Le sommet d'indice " << lastSelectedSommet << " a la couleur " << ui->graphicsView->getEveryNode().at(lastSelectedSommet)->getColor();
+    node->update();
 }
 
