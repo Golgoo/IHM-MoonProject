@@ -40,12 +40,11 @@ void MainWindow::on_actionOpen_triggered()
 {
     qDebug() << "Rentre ici " ;
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
-    //QFile file(filename);
     currentFile = filename;
-    /*if(!file.open(QIODevice::ReadOnly | QFile::Text)){
-        QMessageBox::warning(this, "Attention", "Echec ouverture fichier : "+ file.errorString());
+    if(filename==""){
+        QMessageBox::warning(this, "Warning", "Cannot open file");
         return;
-    }*/
+    }
     setWindowTitle(filename);
 
     QTextStream in(&file);
@@ -105,7 +104,14 @@ void MainWindow::on_actionSave_as_triggered()
 void MainWindow::on_actionExport_triggered()
 {
 
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
+        if (!fileName.isNull())
+        {
+            QPixmap pixMap = this->ui->graphicsView->grab();
+            pixMap.save(fileName);
+        }
 }
+
 
 void MainWindow::on_actionExit_triggered()
 {

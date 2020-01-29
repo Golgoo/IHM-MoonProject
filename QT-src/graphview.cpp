@@ -48,6 +48,10 @@ void GraphView::setModel(DataModel *model){
     modelOfGraph = model;
 }
 
+QGraphicsScene *GraphView::getScene(){
+    return scene;
+}
+
 void GraphView::generateGraphUsingDatas()
 {
     int nb_sommet_in_graph = 0;

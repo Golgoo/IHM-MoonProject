@@ -15,6 +15,7 @@ public:
     DataModel *modelOfGraph;
     void generateGraphUsingDatas();
     void setModel(DataModel *model);
+    QGraphicsScene* getScene();
 };
 
 #endif // GRAPHVIEW_H
