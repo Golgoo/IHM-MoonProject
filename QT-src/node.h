@@ -11,6 +11,7 @@ class Node : public QGraphicsItem
 {
 
 private:
+    QString name;
     qreal radius = 10;
     qreal thickness;
     QColor color;
@@ -19,14 +20,16 @@ private:
     QPointF newPos;
 
 public:
-    Node();
+    Node(QString name = "");
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void setColor(QColor color);
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     QVector<Edge*> getEdges() const;
+    QString getName();
 
     void addEdge(Edge* edge);
 };

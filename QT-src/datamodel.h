@@ -59,7 +59,7 @@ public:
      */
     QString getValue(int row, int col) const;
 
-    QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn);
+    QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn) const;
 
     /*les 4 méthodes de l'interface QAbstractTableModel*/
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;

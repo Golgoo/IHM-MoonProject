@@ -58,8 +58,19 @@ void MainWindow::on_actionOpen_triggered()
 
     file.close();
 
+    DataModel *model = new DataModel(filename);
+    ui->tableView->setModel(model);
 
-    ui->tableView->setModel(new DataModel(filename));
+    //ui->graphicsView->generateGraphUsingDatas(&model);
+    //ui->graphicsView->setModell();
+    ui->graphicsView->modelOfGraph = model;
+    pthread_yield();
+    qDebug() << "modèle finit de construire ??";
+
+    /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
+    qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
+    ui->graphicsView->setModel(model);
+    ui->graphicsView->generateGraphUsingDatas();
 }
 
 void MainWindow::on_read_operation_error(QString error)

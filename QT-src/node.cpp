@@ -1,12 +1,13 @@
 #include "node.h"
 #include "edge.h"
 
-Node::Node()
+Node::Node(QString name)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
+    this->name = name;
 }
 
 QVector<Edge*> Node::getEdges() const {
@@ -17,6 +18,10 @@ void Node::addEdge(Edge* edge) {
     edges << edge;
     //ADJUST DISPENSABLE ?
     edge->adjust();
+}
+
+QString Node::getName() {
+    return name;
 }
 
 QRectF Node::boundingRect() const {
@@ -33,8 +38,13 @@ QPainterPath Node::shape() const {
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*) {
     painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::darkGreen);
+    //painter->setBrush(Qt::darkGreen);
+    painter->setBrush(color);
     painter->drawEllipse(-radius, -radius, radius * 2, radius * 2);
+}
+
+void Node::setColor(QColor color){
+    this->color = color;
 }
 
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
