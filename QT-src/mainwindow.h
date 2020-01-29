@@ -50,6 +50,8 @@ private slots:
 
     void onColorTabletChanged(const QColor &color);
 
+    void updateLastSelectedNode(int id_sommet);
+
 signals:
     void testSignal(const QColor &color);
 
@@ -66,7 +68,7 @@ private:
     QString currentFile = "";
     QFile file ;
     BackgroundCSVReader * csvReader = nullptr ;
-
+    int lastSelectedSommet;
     QColorDialog *myTablet;
 };
 #endif // MAINWINDOW_H

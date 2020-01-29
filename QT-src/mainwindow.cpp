@@ -7,8 +7,10 @@
 #include "datatable.h"
 #include "csvparser.h"
 #include <QColorDialog>
-
 #include <QDebug>
+#include "emetteursignal.h"
+#include "node.h"
+
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
 #include "datamodel.h"
@@ -39,6 +41,11 @@ void MainWindow::on_actionGenerate_triggered()
     /*On efface pour laisser place à un nouveau fichier*/
     currentFile.clear();
     //TODO: Code pour générer des données
+}
+
+void MainWindow::updateLastSelectedNode(int id_sommet){
+    qDebug() << "yeeeeeeahhhhhh " << id_sommet;
+    lastSelectedSommet = id_sommet;
 }
 
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
@@ -76,6 +83,12 @@ void MainWindow::on_actionOpen_triggered()
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
     ui->graphicsView->setModel(model);
     ui->graphicsView->generateGraphUsingDatas();
+
+    for(Node *node : ui->graphicsView->getEveryNode()){
+        EmetteurSignal *em = node->sigEmet;
+        QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
+        qDebug() << "gg " << node->getName();
+    }
 }
 
 void MainWindow::on_read_operation_error(QString error)
@@ -148,6 +161,7 @@ void MainWindow::on_actionChanger_couleur_triggered()
 void MainWindow::onColorTabletChanged(const QColor &color)
 {
     qDebug() << "couleur gg " << color;
-    //ui->graphicsView->
+    ui->graphicsView->getEveryNode().at(lastSelectedSommet)->setColor(color);
+    qDebug() << "Le sommet d'indice " << lastSelectedSommet << " a la couleur " << ui->graphicsView->getEveryNode().at(lastSelectedSommet)->getColor();
 }
 

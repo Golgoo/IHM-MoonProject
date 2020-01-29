@@ -17,6 +17,7 @@ private:
     QColor color;
     QVector<Edge*> edges;
     QPointF newPos;
+    int posDansEveryNode;
 
 public:
     Node(QString name = "");
@@ -24,11 +25,14 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void setColor(QColor color);
+    QColor getColor();
 
     EmetteurSignal *sigEmet;
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void setPosDansEveryNode(int pos);
+    int getPosDansEveryNode();
 
     QVector<Edge*> getEdges() const;
     QString getName();

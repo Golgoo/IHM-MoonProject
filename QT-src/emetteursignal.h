@@ -8,10 +8,10 @@ class EmetteurSignal : public QObject
     Q_OBJECT
 public:
     EmetteurSignal(QObject *parent = nullptr);
-    void emitLastSelectedNodeSignal();
+    void emitLastSelectedNodeSignal(int is_sommet);
 
 signals:
-    void lastSelectedNode();
+    void lastSelectedNode(int id_sommet);
 };
 
 #endif // SIGNALEMITTER_H

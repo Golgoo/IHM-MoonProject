@@ -14,7 +14,6 @@ Node::Node(QString name)
     setZValue(-1);
     this->name = name;
     sigEmet = new EmetteurSignal;
-    sigEmet->emitLastSelectedNodeSignal();
 }
 
 QVector<Edge*> Node::getEdges() const {
@@ -52,13 +51,25 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::setColor(QColor color){
     this->color = color;
+}
+
+QColor Node::getColor(){
+    return this->color;
     //emit lastSelectedNode();
+}
+
+int Node::getPosDansEveryNode(){
+    return posDansEveryNode;
+}
+
+void Node::setPosDansEveryNode(int pos){
+    posDansEveryNode = pos;
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
         qDebug() << "J'ai des tongues " << this;
         Node *node = this;
-        sigEmet->emitLastSelectedNodeSignal();
+        sigEmet->emitLastSelectedNodeSignal(node->getPosDansEveryNode());
 }
 
 

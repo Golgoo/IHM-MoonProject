@@ -51,8 +51,8 @@ QGraphicsScene *GraphView::getScene(){
     return scene;
 }
 
-void GraphView::updateLastSelectedNode(){
-    qDebug() << "yeeeeeeahhhhhh";
+QList<Node*> GraphView::getEveryNode(){
+    return everyNode;
 }
 
 void GraphView::generateGraphUsingDatas()
@@ -84,6 +84,7 @@ void GraphView::generateGraphUsingDatas()
         int indexInColumn = 0;
         for(auto dv : list.at(col).keys()){
             Node *node = new Node(dv);
+            node->setPosDansEveryNode(nbSommetsInsere);
             everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);
             //TODO: Enlever le -100, Comment fonctionne repère coordonnées ?
@@ -97,11 +98,7 @@ void GraphView::generateGraphUsingDatas()
             scene->addItem(node);
         }
     }
-    for(Node *node : everyNode){
-        EmetteurSignal *em = node->sigEmet;
-        QObject::connect(em, SIGNAL(lastSelectedNode()), this, SLOT(updateLastSelectedNode()));
-        qDebug() << "gg " << node->getName();
-    }
+
 
     /*TODO: Les colonnes peuvent ne pas être de même taille ????*/
     for (int col=0; col<modelOfGraph->columnCount()-1; col++) {

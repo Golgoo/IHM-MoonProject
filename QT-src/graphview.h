@@ -15,7 +15,7 @@ private:
      QList<Node*> everyNode;
 
 private slots:
-     void updateLastSelectedNode();
+
 
 public:
     GraphView(QWidget *parent);
@@ -23,6 +23,7 @@ public:
     void generateGraphUsingDatas();
     void setModel(DataModel *model);
     QGraphicsScene* getScene();
+    QList<Node*> getEveryNode();
 };
 
 #endif // GRAPHVIEW_H

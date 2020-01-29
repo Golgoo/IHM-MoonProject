@@ -6,7 +6,7 @@ EmetteurSignal::EmetteurSignal(QObject *parent) : QObject(parent)
 
 }
 
-void EmetteurSignal::emitLastSelectedNodeSignal(){
+void EmetteurSignal::emitLastSelectedNodeSignal(int id_sommet){
     qDebug() << "Mon émetteur émet";
-    emit lastSelectedNode();
+    emit lastSelectedNode(id_sommet);
 }
