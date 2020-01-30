@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QTemporaryFile>
+#include "generator.h"
 
 namespace Ui {
 class RandomGenerationDialog;
@@ -25,14 +26,17 @@ public:
 
 private:
     QTemporaryFile _tmp_file;
-    QVector<QString> _columns ;
+    QVector<Generator*> _columns_generators ;
     QString default_column_name = "colonne ";
     qint8 default_columns_count = 3 ;
-    int generateRandomInt();
+    void updateGeneratorUI();
+    generator_s build_gen_s_from_ui() const;
 
 public slots:
     void columns_changed(int nb_cols);
     void column_renamed();
+    void update_current_generator();
+    void change_current_generator();
 
 private:
     Ui::RandomGenerationDialog *ui;

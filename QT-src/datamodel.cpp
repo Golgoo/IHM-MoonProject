@@ -30,8 +30,6 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         }
 
         for(int i = 0 ; i < _col_count ; i ++) _cols_shifter.push_back(i);
-
-        qDebug() << " Valeurs distinctes de la 1ère colonne " << getDistinctValuesOfColumn(0);
     }
 }
 

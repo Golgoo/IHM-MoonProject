@@ -111,7 +111,7 @@
       <item>
        <widget class="QSpinBox" name="nb_cols">
         <property name="minimum">
-         <number>0</number>
+         <number>1</number>
         </property>
         <property name="maximum">
          <number>100000000</number>

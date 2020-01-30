@@ -4,6 +4,10 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+
+
+#include "integergenerator.h"
+
 RandomGenerationDialog::RandomGenerationDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RandomGenerationDialog)
@@ -12,6 +16,9 @@ RandomGenerationDialog::RandomGenerationDialog(QWidget *parent) :
 
     connect(ui->nb_cols, SIGNAL(valueChanged(int)), this, SLOT(columns_changed(int)));
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(column_renamed()));
+    connect(ui->borne_inf, SIGNAL(valueChanged(int)), this, SLOT(update_current_generator()));
+    connect(ui->borne_sup, SIGNAL(valueChanged(int)), this, SLOT(update_current_generator()));
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(change_current_generator()));
 
     ui->nb_cols->setValue(default_columns_count);
     ui->lineEdit->setText(default_column_name + QString::number(1));
@@ -34,46 +41,74 @@ QString RandomGenerationDialog::getTemporaryFilename()
 
 int RandomGenerationDialog::process_generation()
 {
-    qDebug() << "cols : " << ui->nb_cols->value();
-    qDebug() << "line : " << ui->nb_rows->value();
     if((ui->borne_sup->value() < ui->borne_inf->value())) return -1 ;
     if(! _tmp_file.open()) return -1 ;
     QTextStream outStream (&_tmp_file);
     for(int section = 0 ; section < ui->nb_cols->value() - 1 ; section++){
-        outStream << "COL"<<section << ',' ;
+        outStream << ui->comboBox->itemText(section) << ',' ;
     }
-    outStream << "COL"<<ui->nb_cols->value() - 1;
+    outStream << ui->comboBox->itemText(ui->nb_cols->value() - 1);
     outStream << "\n";
     for(int line = 1 ; line < ui->nb_rows->value() ; line ++){
         for(int col = 0 ; col < ui->nb_cols->value() - 1 ; col ++ ){
-            outStream << generateRandomInt() << ',';
+            outStream << _columns_generators.at(col)->generate() << ',';
         }
-        outStream << generateRandomInt();
+        outStream << _columns_generators.at(ui->nb_cols->value() - 1)->generate();
         outStream << "\n";
     }
-    qDebug() << "Finito ! " << ui->nb_cols->value();
     _tmp_file.close();
     return 1 ;
 }
 
-int RandomGenerationDialog::generateRandomInt()
-{
-    return ( qrand() % (ui->borne_sup->value() - ui->borne_inf->value() + 1 ) ) + ui->borne_inf->value();
-}
 
 void RandomGenerationDialog::columns_changed(int nb_cols)
 {
-    int col_size = _columns.size();
+    int col_size = _columns_generators.size();
     QString tmp ;
+    Generator *generatorToDelTmp ;
     for(int i = col_size ; i  <  nb_cols ; i++){
         tmp = QString::number(i+1);
-        _columns.push_back(default_column_name + " " + tmp);
-        ui->comboBox->insertItem(i, _columns.at(i));
+        _columns_generators.push_back(new IntegerGenerator(default_column_name + tmp, 0, 0));
+        ui->comboBox->insertItem(i, _columns_generators.at(i)->name());
     }
     for(int i = col_size - 1; i >= nb_cols ; i--){
-        _columns.pop_back();
+        generatorToDelTmp = _columns_generators.last();
+        _columns_generators.pop_back();
+        delete generatorToDelTmp;
         ui->comboBox->removeItem(i);
     }
+
+    updateGeneratorUI();
+}
+
+void RandomGenerationDialog::updateGeneratorUI()
+{
+    Generator *current_generator = _columns_generators.at(ui->comboBox->currentIndex());
+    ui->tabWidget->setCurrentIndex(current_generator->getUiSection());
+    generator_s gen_s = current_generator->updateWidget();
+    ui->borne_inf->setValue(gen_s.borne_inf);
+    ui->borne_sup->setValue(gen_s.borne_sup);
+}
+
+generator_s RandomGenerationDialog::build_gen_s_from_ui() const
+{
+    generator_s gen_s;
+    gen_s.borne_inf = ui->borne_inf->value();
+    gen_s.borne_sup = ui->borne_sup->value();
+    return gen_s;
+}
+
+void RandomGenerationDialog::update_current_generator()
+{
+    generator_s gen_s = build_gen_s_from_ui();
+    qDebug() << "Need to update the current generator ";
+    _columns_generators.at(ui->comboBox->currentIndex())->updateFrom(gen_s);
+}
+
+void RandomGenerationDialog::change_current_generator()
+{
+    qDebug() << "Need to update the ui" ;
+    updateGeneratorUI();
 }
 
 void RandomGenerationDialog::column_renamed()

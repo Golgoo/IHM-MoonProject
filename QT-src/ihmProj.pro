@@ -16,18 +16,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    columngenerator.cpp \
+    customizegenerator.cpp \
     datamodel.cpp \
     edge.cpp \
+    generator.cpp \
     graphview.cpp \
+    integergenerator.cpp \
     main.cpp \
     mainwindow.cpp \
     node.cpp \
     random_generation_dialog.cpp
 
 HEADERS += \
+    columngenerator.h \
+    customizegenerator.h \
     datamodel.h \
     edge.h \
+    generator.h \
     graphview.h \
+    integergenerator.h \
     mainwindow.h \
     node.h \
     datamodel.h \
