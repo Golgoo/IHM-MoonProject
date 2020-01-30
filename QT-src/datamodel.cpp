@@ -3,6 +3,9 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QDebug>
+#include <QColor>
+#include <QIdentityProxyModel>
+#include <QBrush>
 
 DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col_delimiter)
 {
@@ -49,9 +52,14 @@ QVariant DataModel::data (const QModelIndex & index, int role) const
         return int(Qt::AlignLeft | Qt::AlignCenter);
     }else if( role == Qt::DisplayRole){
         return getValue(index.row(), index.column());
-    }
+    }else if (role == Qt::BackgroundRole) {
+        /*TODO:Change couleur tableur mais à associer avec les arêtes plus tard*/
+        QColor color = QColor::fromHsl((360/_row_count)*index.row(),255,175);
+        return QBrush(color);
+     }
     return QVariant();
 }
+
 
 QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
