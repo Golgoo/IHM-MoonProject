@@ -33,7 +33,6 @@ void Edge::adjust()
 
     QLineF line(mapFromItem(source, 0, 0), mapFromItem(dest, 0, 0));
     qreal length = line.length();
-
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
@@ -49,11 +48,36 @@ QPainterPath Edge::shape() const {
     //TODO : à changer si on veut faire des noeuds de différentes formes (classe abstraite ?)
     QPainterPath path;
 
-    QRectF rect(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
-                                          destPoint.y() - sourcePoint.y()));
+    qreal vx = fabs(sourcePoint.x() - destPoint.x());
+    qreal vy = fabs(sourcePoint.y() - destPoint.y());
 
-    //path.addRect(topLeftRectX, topLeftRectY, widthRect, heightRect);
-    path.addRect(rect.normalized());
+    qreal nx = vy;
+    qreal ny = -vx;
+
+    qreal length = sqrt(pow(nx,2) + pow(ny,2));
+
+    qreal normalized_nx = nx / length;
+    qreal normalized_ny = ny / length;
+
+    if ((sourcePoint.x() < destPoint.x() && sourcePoint.y() < destPoint.y()) || (destPoint.x() < sourcePoint.x() && destPoint.y() < sourcePoint.y())) {
+        QPointF point1(sourcePoint.x() + normalized_nx * source->getRadius(), sourcePoint.y() + normalized_ny * source->getRadius());
+        QPointF point2(sourcePoint.x() - normalized_nx * source->getRadius(), sourcePoint.y() - normalized_ny * source->getRadius());
+        QPointF point3(destPoint.x() + normalized_nx * dest->getRadius(), destPoint.y() + normalized_ny * dest->getRadius());
+        QPointF point4(destPoint.x() - normalized_nx * dest->getRadius(), destPoint.y() - normalized_ny * dest->getRadius());
+
+        QPolygonF edge_hitbox(QVector<QPointF> {point3, point4, point2, point1});
+        path.addPolygon(edge_hitbox);
+    }
+    else {
+        QPointF point1(sourcePoint.x() + normalized_nx * source->getRadius(), sourcePoint.y() - normalized_ny * source->getRadius());
+        QPointF point2(sourcePoint.x() - normalized_nx * source->getRadius(), sourcePoint.y() + normalized_ny * source->getRadius());
+        QPointF point3(destPoint.x() + normalized_nx * dest->getRadius(), destPoint.y() - normalized_ny * dest->getRadius());
+        QPointF point4(destPoint.x() - normalized_nx * dest->getRadius(), destPoint.y() + normalized_ny * dest->getRadius());
+
+        QPolygonF edge_hitbox(QVector<QPointF> {point3, point4, point2, point1});
+        path.addPolygon(edge_hitbox);
+    }
+
 
     return path;
 }
@@ -105,30 +129,21 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
     case ItemPositionHasChanged:
-        /*QPointF mousePos = value.toPointF();
+
+        QPointF mousePos = value.toPointF();
         QPointF newPos = mousePos - oldValue;
         oldValue = mousePos;
 
-        qDebug() << "newPos : " << newPos.x() << " y : " << newPos.y();
-
-        qreal srcPosX = sourcePoint.x();
-        qreal srcPosY = sourcePoint.y();
-        qDebug() << "srcPos : " << srcPosX << " y : " << srcPosY;
-
-        source->setPos(srcPosX + newPos.x(), srcPosY + newPos.y());
-
-        qreal destPosX = destPoint.x();
-        qreal destPosY = destPoint.y();
-        qDebug() << "destPos : " << destPosX << " y : " << destPosY;
-        dest->setPos(destPosX + newPos.x(), destPosY + newPos.y());
+        source->moveBy(newPos.x(), newPos.y());
+        dest->moveBy(newPos.x(), newPos.y());
 
         for (Edge* edge : source->getEdges()) {
-           // edge->adjust();
+            edge->adjust();
         }
 
         for (Edge* edge : dest->getEdges()) {
-            //edge->adjust();
-        }*/
+            edge->adjust();
+        }
         break;
     };
 
