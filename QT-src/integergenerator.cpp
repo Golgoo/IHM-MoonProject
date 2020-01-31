@@ -1,11 +1,11 @@
 #include "integergenerator.h"
 
-IntegerGenerator::IntegerGenerator(QString column_name,int borne_inf, int borne_sup): Generator(column_name), _borne_inf(borne_inf), _borne_sup(borne_sup)
+IntegerGenerator::IntegerGenerator(generator_s gen_s): Generator(gen_s)
 {}
 
 QString IntegerGenerator::generate()
 {
-    return QString::number( (qrand() % (_borne_sup - _borne_inf + 1 ) ) + _borne_inf);
+    return QString::number( (qrand() % (_gen_s.borne_sup - _gen_s.borne_inf + 1 ) ) + _gen_s.borne_inf);
 }
 
 int IntegerGenerator::getUiSection() const
@@ -13,15 +13,13 @@ int IntegerGenerator::getUiSection() const
     return _ui_section ;
 }
 
-void IntegerGenerator::updateFrom(generator_s generator_s)
+bool IntegerGenerator::valid() const
 {
-    _borne_sup = generator_s.borne_sup;
-    _borne_inf = generator_s.borne_inf;
+    return (_gen_s.borne_inf <= _gen_s.borne_sup);
 }
-generator_s IntegerGenerator::updateWidget() const
+
+QString IntegerGenerator::errorMessage() const
 {
-    generator_s gen_s ;
-    gen_s.borne_inf = _borne_inf ;
-    gen_s.borne_sup = _borne_sup ;
-    return gen_s ;
+    return "La borne inférieure doit être plus petite que la borne supérieure";
 }
+

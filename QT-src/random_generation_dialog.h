@@ -37,7 +37,8 @@ public slots:
     void column_renamed();
     void update_current_generator();
     void change_current_generator();
-
+    void change_generator_type(int type_clicked_index);
+    void done(int r) override;
 private:
     Ui::RandomGenerationDialog *ui;
 };
