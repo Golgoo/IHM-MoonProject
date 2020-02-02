@@ -26,6 +26,10 @@ Node *Edge::getDest() const
     return dest;
 }
 
+void Edge::setColor(QColor color){
+    this->color = color;
+}
+
 void Edge::adjust()
 {
     if (!source || !dest)
@@ -106,7 +110,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         return;
 
     //C'est là qu'on devra changer la couleur, le style des arêtes en fonction de la palette
-    painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 
     double angle = std::atan2(-line.dy(), line.dx());
@@ -120,7 +124,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     QPointF destArrowP2 = destPoint + QPointF(sin(angle - M_PI + M_PI / 3) * arrowSize,
                                               cos(angle - M_PI + M_PI / 3) * arrowSize);
 
-    painter->setBrush(Qt::black);
+    painter->setBrush(color);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }

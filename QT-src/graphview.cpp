@@ -89,7 +89,7 @@ void GraphView::generateGraphUsingDatas()
             everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);
             //TODO: Enlever le -100, Comment fonctionne repère coordonnées ?
-            node->setPos(col*spaceX-100, indexInColumn*spaceY-100);
+            node->setPos(col*spaceX+50, indexInColumn*spaceY+50);
 
             QColor nodeColor = QColor::fromHsl((360/nb_sommet_in_graph)*nbSommetsInsere,255,175);
             nbSommetsInsere++;
@@ -109,8 +109,13 @@ void GraphView::generateGraphUsingDatas()
             qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
             Node *node2 = hashOfNodesOfDV.value(val2);
-            scene->addItem(new Edge(node1, node2));
-
+            int nbMaxRow = modelOfGraph->rowCount();
+            QColor color = QColor::fromHsl((360/nbMaxRow)*row,255,175);
+            qDebug() << color;
+            Edge *e = new Edge(node1, node2);
+            e->setColor(color);
+            scene->addItem(e);
+            scene->update();
         }
     }
 }

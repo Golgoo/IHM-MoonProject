@@ -28,6 +28,8 @@ public:
     Node *getDest() const;
 
     void adjust();
+    void setColor(QColor color);
+    QColor getColor();
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
