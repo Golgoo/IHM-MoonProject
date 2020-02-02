@@ -148,7 +148,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="current_generator_combo_box">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>2</horstretch>
@@ -158,7 +158,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="column_name_form">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>6</horstretch>
@@ -336,7 +336,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="other_cols"/>
+       <widget class="QComboBox" name="apply_to_other_combo_box"/>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_2">
@@ -385,9 +385,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>comboBox</sender>
+   <sender>current_generator_combo_box</sender>
    <signal>currentTextChanged(QString)</signal>
-   <receiver>lineEdit</receiver>
+   <receiver>column_name_form</receiver>
    <slot>setText(QString)</slot>
    <hints>
     <hint type="sourcelabel">

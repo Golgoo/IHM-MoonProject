@@ -35,6 +35,7 @@ public :
 
 public:
     static generator_s build_default_gen_s();
+    static Generator* build_default_generator();
 };
 
 #endif // GENERATOR_H
