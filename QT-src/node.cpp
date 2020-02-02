@@ -77,12 +77,22 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
     case ItemPositionHasChanged:
-        for (Edge *edge : getEdges())
+        for (Edge *edge : getEdges()) {
             edge->adjust();
+        }
+
         break;
     default:
         break;
     };
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void Node::adjust() {
+
+}
+
+qreal Node::getRadius() {
+    return radius;
 }

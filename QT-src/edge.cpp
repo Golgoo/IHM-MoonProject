@@ -1,11 +1,16 @@
 #include "edge.h"
 #include "node.h"
+#include "math.h"
 #include <QDebug>
 
 
 Edge::Edge(Node *sourceNode, Node *destNode)
     : source(sourceNode), dest(destNode)
 {
+    setFlag(ItemIsMovable);
+    setFlag(ItemSendsGeometryChanges);
+    setCacheMode(DeviceCoordinateCache);
+    setZValue(-1);
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
@@ -28,7 +33,6 @@ void Edge::adjust()
 
     QLineF line(mapFromItem(source, 0, 0), mapFromItem(dest, 0, 0));
     qreal length = line.length();
-
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
@@ -38,6 +42,44 @@ void Edge::adjust()
     } else {
         sourcePoint = destPoint = line.p1();
     }
+}
+
+QPainterPath Edge::shape() const {
+    //TODO : à changer si on veut faire des noeuds de différentes formes (classe abstraite ?)
+    QPainterPath path;
+
+    qreal vx = fabs(sourcePoint.x() - destPoint.x());
+    qreal vy = fabs(sourcePoint.y() - destPoint.y());
+
+    qreal nx = vy;
+    qreal ny = -vx;
+
+    qreal length = sqrt(pow(nx,2) + pow(ny,2));
+
+    qreal normalized_nx = nx / length;
+    qreal normalized_ny = ny / length;
+
+    if ((sourcePoint.x() < destPoint.x() && sourcePoint.y() < destPoint.y()) || (destPoint.x() < sourcePoint.x() && destPoint.y() < sourcePoint.y())) {
+        QPointF point1(sourcePoint.x() + normalized_nx * source->getRadius(), sourcePoint.y() + normalized_ny * source->getRadius());
+        QPointF point2(sourcePoint.x() - normalized_nx * source->getRadius(), sourcePoint.y() - normalized_ny * source->getRadius());
+        QPointF point3(destPoint.x() + normalized_nx * dest->getRadius(), destPoint.y() + normalized_ny * dest->getRadius());
+        QPointF point4(destPoint.x() - normalized_nx * dest->getRadius(), destPoint.y() - normalized_ny * dest->getRadius());
+
+        QPolygonF edge_hitbox(QVector<QPointF> {point3, point4, point2, point1});
+        path.addPolygon(edge_hitbox);
+    }
+    else {
+        QPointF point1(sourcePoint.x() + normalized_nx * source->getRadius(), sourcePoint.y() - normalized_ny * source->getRadius());
+        QPointF point2(sourcePoint.x() - normalized_nx * source->getRadius(), sourcePoint.y() + normalized_ny * source->getRadius());
+        QPointF point3(destPoint.x() + normalized_nx * dest->getRadius(), destPoint.y() - normalized_ny * dest->getRadius());
+        QPointF point4(destPoint.x() - normalized_nx * dest->getRadius(), destPoint.y() + normalized_ny * dest->getRadius());
+
+        QPolygonF edge_hitbox(QVector<QPointF> {point3, point4, point2, point1});
+        path.addPolygon(edge_hitbox);
+    }
+
+
+    return path;
 }
 
 QRectF Edge::boundingRect() const
@@ -57,7 +99,6 @@ QRectF Edge::boundingRect() const
 void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     if (!source || !dest)
         return;
-
 
     //si la distance est quasiment 0 on ne dessine pas la ligne
     QLineF line(sourcePoint, destPoint);
@@ -82,4 +123,29 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
+}
+
+//TODO: faire que quand on tire un noeud en dhors de la graphics view, il reste collé au bord et ne sorte pas du cadre
+QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
+    switch (change) {
+    case ItemPositionHasChanged:
+
+        QPointF mousePos = value.toPointF();
+        QPointF newPos = mousePos - oldValue;
+        oldValue = mousePos;
+
+        source->moveBy(newPos.x(), newPos.y());
+        dest->moveBy(newPos.x(), newPos.y());
+
+        for (Edge* edge : source->getEdges()) {
+            edge->adjust();
+        }
+
+        for (Edge* edge : dest->getEdges()) {
+            edge->adjust();
+        }
+        break;
+    };
+
+    return QGraphicsItem::itemChange(change, value);
 }

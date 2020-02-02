@@ -29,6 +29,7 @@ public:
 
     EmetteurSignal *sigEmet;
 
+    void adjust();
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void setPosDansEveryNode(int pos);
@@ -36,6 +37,7 @@ public:
 
     QVector<Edge*> getEdges() const;
     QString getName();
+    qreal getRadius();
 
     void addEdge(Edge* edge);
 };
