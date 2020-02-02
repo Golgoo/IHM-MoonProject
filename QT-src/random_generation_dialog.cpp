@@ -293,4 +293,7 @@ void RandomGenerationDialog::apply_to_another_generator()
 RandomGenerationDialog::~RandomGenerationDialog()
 {
     delete ui;
+    for(auto gen : _columns_generators){
+        delete gen;
+    }
 }
