@@ -39,6 +39,7 @@ public slots:
     void change_current_generator();
     void change_generator_type(int type_clicked_index);
     void done(int r) override;
+    void apply_to_another_generator();
 private:
     Ui::RandomGenerationDialog *ui;
 };

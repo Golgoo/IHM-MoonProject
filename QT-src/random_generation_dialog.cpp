@@ -24,6 +24,7 @@ RandomGenerationDialog::RandomGenerationDialog(QWidget *parent) :
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(change_current_generator()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(change_generator_type(int)));
     connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT(update_current_generator()));
+    connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(apply_to_another_generator()));
 
     ui->nb_cols->setValue(default_columns_count);
     ui->lineEdit->setText(default_column_name + QString::number(1));
@@ -72,17 +73,19 @@ void RandomGenerationDialog::columns_changed(int nb_cols)
     qDebug() << __FUNCTION__;
     int col_size = _columns_generators.size();
     QString tmp ;
-    Generator *generatorToDelTmp ;
     for(int i = col_size ; i  <  nb_cols ; i++){
         tmp = QString::number(i+1);
         _columns_generators.push_back(new IntegerGenerator(Generator::build_default_gen_s()));
         ui->comboBox->insertItem(i, default_column_name + tmp);
+        ui->other_cols->insertItem(i, default_column_name + tmp);
     }
+    Generator *generatorToDelTmp ;
     for(int i = col_size - 1; i >= nb_cols ; i--){
         generatorToDelTmp = _columns_generators.last();
         _columns_generators.pop_back();
         delete generatorToDelTmp;
         ui->comboBox->removeItem(i);
+        ui->other_cols->removeItem(i);
     }
 
     updateGeneratorUI();
@@ -120,11 +123,10 @@ void RandomGenerationDialog::done(int r)
             QDialog::done(r);
         }
         else{
-            //TODO Display errorList in a popup
+            qDebug() << errorList ;
             GeneErrorDialog errorDial(this);
             errorDial.addErrors(errorList);
             errorDial.exec();
-            qDebug() << errorList ;
         }
     }
     else // cancel, close or exc was pressed
@@ -165,6 +167,7 @@ void RandomGenerationDialog::column_renamed()
 {
     qDebug() << __FUNCTION__;
     ui->comboBox->setItemText(ui->comboBox->currentIndex(), ui->lineEdit->text());
+    ui->other_cols->setItemText(ui->comboBox->currentIndex(), ui->lineEdit->text());
 }
 
 void RandomGenerationDialog::change_generator_type(int type_clicked_index)
@@ -191,6 +194,27 @@ void RandomGenerationDialog::change_generator_type(int type_clicked_index)
     delete current_generator;
     updateGeneratorUI();
     qDebug() << "End of " << __FUNCTION__;
+}
+
+void RandomGenerationDialog::apply_to_another_generator()
+{
+    Generator* other_generator = _columns_generators.at(ui->other_cols->currentIndex());
+    Generator* current_generator = _columns_generators.at(ui->comboBox->currentIndex());
+    if(other_generator->getUiSection() != ui->tabWidget->currentIndex()){
+        _columns_generators.remove(ui->other_cols->currentIndex());
+        switch(ui->tabWidget->currentIndex()){
+        case 1 :
+            _columns_generators.insert(ui->other_cols->currentIndex(), new CustomGenerator(current_generator->getGeneratorInfo()));
+            break;
+        case 2 :
+            _columns_generators.insert(ui->other_cols->currentIndex(), new IntegerGenerator(current_generator->getGeneratorInfo()));
+            break;
+        default:
+            break;
+        }
+    }else{
+        other_generator->updateFrom(current_generator->getGeneratorInfo());
+    }
 }
 
 RandomGenerationDialog::~RandomGenerationDialog()

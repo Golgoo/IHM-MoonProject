@@ -1,6 +1,8 @@
 #ifndef GENEERRORDIALOG_H
 #define GENEERRORDIALOG_H
 
+#include <QDialog>
+
 #include "ui_geneerrordialog.h"
 
 #include <QString>

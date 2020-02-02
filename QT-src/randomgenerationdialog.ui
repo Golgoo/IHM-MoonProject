@@ -131,7 +131,7 @@
      <x>10</x>
      <y>130</y>
      <width>531</width>
-     <height>231</height>
+     <height>261</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="DataLayout">
@@ -325,6 +325,27 @@
        </widget>
       </widget>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Appliquer ce modèle pour une autre colonne </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="other_cols"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>Appliquer</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
