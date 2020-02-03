@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "tabularview.h"
 
 #include <QApplication>
 #include <QColorDialog>

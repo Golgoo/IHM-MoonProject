@@ -1,11 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "backgroundcsvreader.h"
 #include <QTableWidgetItem>
 #include <QThread>
-#include "datatable.h"
-#include "csvparser.h"
 #include <QColorDialog>
 #include <QDebug>
 #include "emetteursignal.h"
@@ -15,8 +12,6 @@
 #include <QList>
 
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
-
-#include "datamodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,20 +26,37 @@ MainWindow::MainWindow(QWidget *parent)
     myTablet = new QColorDialog();
     QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
+//-----------------------------------------------
+    _rdm_gene_dial = new RandomGenerationDialog(this);
+    _view_actions_group = new QActionGroup(this);
+    _view_actions_group->addAction(ui->actionTabulaire);
+    _view_actions_group->addAction(ui->actionGraphique);
+    _view_actions_group->addAction(ui->actionGlobale);
+//---------------------------------------------
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete _rdm_gene_dial;
+    delete _view_actions_group;
 }
 
 
 void MainWindow::on_actionGenerate_triggered()
 {
-    /*On efface pour laisser place à un nouveau fichier*/
     currentFile.clear();
-    //TODO: Code pour générer des données
+
+    int execution_code = _rdm_gene_dial->exec();
+    if(execution_code == QDialog::Accepted){
+        if(_rdm_gene_dial->process_generation()>0){
+            reload_model(_rdm_gene_dial->getTemporaryFilename());
+        }else{
+            set_status("Unable to generate data");
+        }
+    }
 }
+
 
 void MainWindow::updateLastSelectedNode(int id_sommet){
     qDebug() << "yeeeeeeahhhhhh " << id_sommet;
@@ -62,7 +74,6 @@ void MainWindow::updateLastSelectedEdge(Edge &e){
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
-    qDebug() << "Rentre ici " ;
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
     currentFile = filename;
     if(filename==""){
@@ -70,14 +81,11 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
     setWindowTitle(filename);
+    reload_model(filename);
 
     QTextStream in(&file);
     QString text = in.readAll();
 
-    CSVParser parser(text);
-    DataTable table = parser.parse();
-    std::cout << "taille du tableau : " << table.getColumns().size();
-    //afficher ici le tableau
 
     file.close();
 
@@ -105,6 +113,18 @@ void MainWindow::on_actionOpen_triggered()
         QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
         qDebug() << "lol " << edge->getName();
     }
+
+}
+
+//---------------------------------------------------------
+void MainWindow::reload_model(QString filename)
+{
+    if(_model != nullptr){
+        delete _model;
+        _model = nullptr;
+    }
+    _model = new DataModel(filename);
+    ui->tableView->setModel(_model);
 }
 
 void MainWindow::on_read_operation_error(QString error)
@@ -114,9 +134,7 @@ void MainWindow::on_read_operation_error(QString error)
 
 void MainWindow::on_read_operation_finished()
 {
-    //TODO : Stop feedback
-    delete csvReader;
-    csvReader = nullptr;
+    //TODO : Stop feedback &| MAJ Status bar
 }
 
 void MainWindow::on_actionSave_as_triggered()
@@ -134,6 +152,11 @@ void MainWindow::on_actionSave_as_triggered()
     QString text = "AHHAHAHA"; //:TODO Il faudra mettre ce que l'on voudra stocker dans le fichier dans cette var
     out << text;
     file.close();
+}
+
+void MainWindow::set_status(QString status_text)
+{
+    ui->statusbar->showMessage(status_text);
 }
 
 void MainWindow::on_actionExport_triggered()
@@ -163,6 +186,7 @@ void MainWindow::on_actionRedo_triggered()
 {
 
 }
+
 
 void MainWindow::on_actionChanger_couleur_triggered()
 {
@@ -205,4 +229,51 @@ QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
     return list;
 }
 
+//--------------------------------------------------
+void MainWindow::hide_tabular_view() const
+{
+    ui->tableView->hide();
+    ui->pushButton->hide();
+    ui->pushButton_2->hide();
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
+}
+
+void MainWindow::show_tabular_view() const
+{
+    ui->tableView->show();
+    ui->pushButton->show();
+    ui->pushButton_2->show();
+    ui->pushButton_3->show();
+    ui->pushButton_4->show();
+}
+
+void MainWindow::hide_graphic_view() const
+{
+    ui->graphicsView->hide();
+}
+
+void MainWindow::show_graphic_view() const
+{
+    ui->graphicsView->show();
+}
+
+void MainWindow::on_actionTabulaire_triggered()
+{
+    hide_graphic_view();
+    show_tabular_view();
+}
+
+void MainWindow::on_actionGraphique_triggered()
+{
+    show_graphic_view();
+    hide_tabular_view();
+}
+
+void MainWindow::on_actionGlobale_triggered()
+{
+    show_graphic_view();
+    show_tabular_view();
+}
+//------------------------------------------------------------
 

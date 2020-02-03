@@ -24,6 +24,7 @@
  * Optimisation possible : rajouter son propre cache.
  *
  */
+
 class DataModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -63,6 +64,8 @@ public:
 
     QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn) const;
 
+    void shiftColumn(int colNumber, int shift = 1);
+
     /*les 4 méthodes de l'interface QAbstractTableModel*/
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 
@@ -71,6 +74,14 @@ public:
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
 
+
+    //Sauvegarde dans ce chemin
+    //save_into(const QString filename)
+
+    //Sauvegarde à partir d'un QFile ( potentiellement déjà déplacé )
+    //Ecrit dans un QString filename aléatoire les données.
+    //Ecrit ce filename dans le QFile.
+    //save_from(const QFile &file)
 
 signals:
     void error_loading_file(QString error_details) const;
@@ -81,9 +92,12 @@ private:
     int _row_count = 0 ;
     int _col_count = 0 ;
     QChar _col_delimiter ;
-    QVector<qint64> line_idex ;
+    QVector<qint64> line_index ;
     bool isValid(QModelIndex index) const;
     QColor *color;
+
+    QStringList _headers ;
+    QVector<int> _cols_shifter ;
 
 };
 

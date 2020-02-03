@@ -71,7 +71,7 @@ void GraphView::generateGraphUsingDatas()
 
     for(int col=0; col<modelOfGraph->columnCount(); col++){
         QHash<QString,int> hashOfDV = modelOfGraph->getDistinctValuesOfColumn(col);
-        qDebug() << "taille hashOfDV " << hashOfDV.size() << " " << hashOfDV;
+        //qDebug() << "taille hashOfDV " << hashOfDV.size() << " " << hashOfDV;
         list.insert(col, hashOfDV);
 
         nb_sommet_in_graph = nb_sommet_in_graph + hashOfDV.size();
@@ -79,7 +79,7 @@ void GraphView::generateGraphUsingDatas()
             maxNbSommetOfColumn = hashOfDV.size();
     }
 
-    qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
+    //qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
     /*L'espacement entre les sommets peut varier si un sommet est plus gros qu'un autre ?*/
     int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
     int spaceY = GRAPHICS_VIEW_DIMENSION/maxNbSommetOfColumn;
@@ -110,12 +110,12 @@ void GraphView::generateGraphUsingDatas()
         for (int row = 0; row<modelOfGraph->rowCount(); row++) {
             QString val1 = modelOfGraph->getValue(row,col);
             QString val2 = modelOfGraph->getValue(row,col+1);
-            qDebug() << val1 << "--" << val2;
+            //qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
             Node *node2 = hashOfNodesOfDV.value(val2);
             int nbMaxRow = modelOfGraph->rowCount();
             QColor color = QColor::fromHsl((360/nbMaxRow)*row,255,175);
-            qDebug() << color;
+            //qDebug() << color;
             Edge *e = new Edge(node1, node2);
             e->setColor(color);
             everyEdge.push_back(e);
