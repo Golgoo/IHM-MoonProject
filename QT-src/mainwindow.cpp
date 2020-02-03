@@ -15,12 +15,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setCentralWidget(ui->groupBox);
     _rdm_gene_dial = new RandomGenerationDialog(this);
+    _view_actions_group = new QActionGroup(this);
+    _view_actions_group->addAction(ui->actionTabulaire);
+    _view_actions_group->addAction(ui->actionGraphique);
+    _view_actions_group->addAction(ui->actionGlobale);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete _rdm_gene_dial;
+    delete _view_actions_group;
 }
 
 
@@ -33,11 +38,7 @@ void MainWindow::on_actionGenerate_triggered()
         if(_rdm_gene_dial->process_generation()>0){
             reload_model(_rdm_gene_dial->getTemporaryFilename());
         }else{
-            // A voir.
-            //TODO _rmd_gene_dial.getErrors() : QStringList // Ou Enum + Map<Enum, QString> .... => getErrorString(Enum)...
-            //A faire dans une popup
-            //A voir ... vérification de formulaire plutôt..
-            //Si ErrorEnum != Enum::InternalError() => Réexécuter la dial sinon notifier l'erreur.
+            set_status("Unable to generate data");
         }
     }
 }
@@ -113,3 +114,50 @@ void MainWindow::on_actionRedo_triggered()
 {
 
 }
+
+void MainWindow::hide_tabular_view() const
+{
+    ui->tableView->hide();
+    ui->pushButton->hide();
+    ui->pushButton_2->hide();
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
+}
+
+void MainWindow::show_tabular_view() const
+{
+    ui->tableView->show();
+    ui->pushButton->show();
+    ui->pushButton_2->show();
+    ui->pushButton_3->show();
+    ui->pushButton_4->show();
+}
+
+void MainWindow::hide_graphic_view() const
+{
+    ui->graphicsView->hide();
+}
+
+void MainWindow::show_graphic_view() const
+{
+    ui->graphicsView->show();
+}
+
+void MainWindow::on_actionTabulaire_triggered()
+{
+    hide_graphic_view();
+    show_tabular_view();
+}
+
+void MainWindow::on_actionGraphique_triggered()
+{
+    show_graphic_view();
+    hide_tabular_view();
+}
+
+void MainWindow::on_actionGlobale_triggered()
+{
+    show_graphic_view();
+    show_tabular_view();
+}
+
