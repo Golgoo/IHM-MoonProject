@@ -65,6 +65,9 @@ QVariant DataModel::data (const QModelIndex & index, int role) const
     return QVariant();
 }
 
+void DataModel::setColorOfLine(int num_line, QColor newcolor){
+    color[num_line] = newcolor;
+}
 
 QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {

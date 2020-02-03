@@ -121,7 +121,8 @@ void GraphView::generateGraphUsingDatas()
             everyEdge.push_back(e);
             e->setCorrespondingLine(row);
             scene->addItem(e);
-            scene->update();
+
         }
     }
+    scene->update();
 }

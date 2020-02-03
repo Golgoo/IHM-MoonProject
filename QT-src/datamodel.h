@@ -59,6 +59,8 @@ public:
      */
     QString getValue(int row, int col) const;
 
+    void setColorOfLine(int num_line, QColor newcolor);
+
     QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn) const;
 
     /*les 4 méthodes de l'interface QAbstractTableModel*/
@@ -68,6 +70,7 @@ public:
 
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
+
 
 signals:
     void error_loading_file(QString error_details) const;

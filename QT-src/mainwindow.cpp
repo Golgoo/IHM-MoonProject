@@ -192,6 +192,7 @@ void MainWindow::onColorTabletChanged(const QColor &color)
         for(Edge *e :getEveryEdgeOfLine(lastSelectedEdge->getCorrespondingLine())){
             e->setColor(color);
             e->update();
+            ui->graphicsView->modelOfGraph->setColorOfLine(lastSelectedEdge->getCorrespondingLine(), color);
         }
     }
 }
