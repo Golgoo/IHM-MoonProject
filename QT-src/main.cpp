@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "tabularview.h"
 
 #include <QApplication>
 
@@ -9,8 +8,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    TabularView tabView;
-    tabView.show();
 
     return a.exec(); /*Mets l'application dans boucle*/
 }

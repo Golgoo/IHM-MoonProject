@@ -3,8 +3,6 @@
 
 #include <QTableWidgetItem>
 #include <QThread>
-#include "datatable.h"
-#include "csvparser.h"
 
 #include <QDebug>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
@@ -16,46 +14,51 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
     this->setCentralWidget(ui->groupBox);
-
+    _rdm_gene_dial = new RandomGenerationDialog(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete _rdm_gene_dial;
 }
 
 
 void MainWindow::on_actionGenerate_triggered()
 {
-    /*On efface pour laisser place à un nouveau fichier*/
     currentFile.clear();
 
-    _rdm_gene_dial->exec();
-
-    //TODO Ouvrir un formulaire dans une QDialog qui rempli/renvoie une structure :
-    // =>NbLines / NbCols / bounds / etc..
-    // => (if _model != nullptr ) delete _model
-    // => _model = new DataModel(<structure_retournée>);
+    int execution_code = _rdm_gene_dial->exec();
+    if(execution_code == QDialog::Accepted){
+        if(_rdm_gene_dial->process_generation()>0){
+            reload_model(_rdm_gene_dial->getTemporaryFilename());
+        }else{
+            // A voir.
+            //TODO _rmd_gene_dial.getErrors() : QStringList // Ou Enum + Map<Enum, QString> .... => getErrorString(Enum)...
+            //A faire dans une popup
+            //A voir ... vérification de formulaire plutôt..
+            //Si ErrorEnum != Enum::InternalError() => Réexécuter la dial sinon notifier l'erreur.
+        }
+    }
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
     currentFile = filename;
-
     setWindowTitle(filename);
 
+    reload_model(filename);
+}
+
+void MainWindow::reload_model(QString filename)
+{
     if(_model != nullptr){
         delete _model;
         _model = nullptr;
     }
     _model = new DataModel(filename);
     ui->tableView->setModel(_model);
-
-    _model->shiftColumn(1,2);
-    //Et après ça, la colonne 2 ( l'ancienne colonne 3 ) de 1 cran vers la gauche
-    _model->shiftColumn(2,-1);
-
 }
 
 void MainWindow::on_read_operation_error(QString error)
