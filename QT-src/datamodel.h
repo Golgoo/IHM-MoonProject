@@ -60,7 +60,9 @@ public:
      */
     QString getValue(int row, int col) const;
 
-    QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn);
+    void setColorOfLine(int num_line, QColor newcolor);
+
+    QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn) const;
 
     void shiftColumn(int colNumber, int shift = 1);
 
@@ -71,6 +73,7 @@ public:
 
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
+
 
     //Sauvegarde dans ce chemin
     //save_into(const QString filename)
@@ -91,6 +94,7 @@ private:
     QChar _col_delimiter ;
     QVector<qint64> line_index ;
     bool isValid(QModelIndex index) const;
+    QColor *color;
 
     QStringList _headers ;
     QVector<int> _cols_shifter ;

@@ -19,6 +19,7 @@ SOURCES += \
     customgenerator.cpp \
     datamodel.cpp \
     edge.cpp \
+    emetteursignal.cpp \
     geneerrordialog.cpp \
     generator.cpp \
     graphview.cpp \
@@ -29,6 +30,8 @@ SOURCES += \
     random_generation_dialog.cpp
 
 HEADERS += \
+    emetteursignal.h \
+    backgroundcsvreader.h \
     customgenerator.h \
     datamodel.h \
     edge.h \
