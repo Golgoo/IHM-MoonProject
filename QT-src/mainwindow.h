@@ -11,6 +11,7 @@
 #include <QPrinter>
 #include <QStringList>
 #include <QPrintDialog>
+#include <QActionGroup>
 
 #include <vector>
 
@@ -47,6 +48,12 @@ private slots:
 
     void on_actionRedo_triggered();
 
+    void on_actionTabulaire_triggered();
+
+    void on_actionGraphique_triggered();
+
+    void on_actionGlobale_triggered();
+
 protected:
     void on_read_operation_finished();
 
@@ -60,6 +67,12 @@ private:
 
     DataModel * _model = nullptr;
     RandomGenerationDialog * _rdm_gene_dial = nullptr ;
+    QActionGroup * _view_actions_group = nullptr;
+
+    void hide_tabular_view() const ;
+    void show_tabular_view() const ;
+    void hide_graphic_view() const ;
+    void show_graphic_view() const ;
 
     void reload_model(QString filename);
 };
