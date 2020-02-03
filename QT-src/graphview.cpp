@@ -56,6 +56,10 @@ QList<Node*> GraphView::getEveryNode(){
     return everyNode;
 }
 
+QList<Edge*> GraphView::getEveryEdge(){
+    return everyEdge;
+}
+
 void GraphView::generateGraphUsingDatas()
 {
     int nb_sommet_in_graph = 0;
@@ -114,6 +118,8 @@ void GraphView::generateGraphUsingDatas()
             qDebug() << color;
             Edge *e = new Edge(node1, node2);
             e->setColor(color);
+            everyEdge.push_back(e);
+            e->setCorrespondingLine(row);
             scene->addItem(e);
             scene->update();
         }

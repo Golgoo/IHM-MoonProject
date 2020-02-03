@@ -10,6 +10,9 @@
 #include <QDebug>
 #include "emetteursignal.h"
 #include "node.h"
+#include "edge.h"
+
+#include <QList>
 
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
@@ -46,6 +49,14 @@ void MainWindow::on_actionGenerate_triggered()
 void MainWindow::updateLastSelectedNode(int id_sommet){
     qDebug() << "yeeeeeeahhhhhh " << id_sommet;
     lastSelectedSommet = id_sommet;
+    lastSelect = VERTEX;
+}
+
+void MainWindow::updateLastSelectedEdge(Edge &e){
+    qDebug() << "mon slot capte l'edge " << &e;
+
+    lastSelectedEdge = &e;
+    lastSelect = EDGE;
 }
 
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
@@ -72,7 +83,6 @@ void MainWindow::on_actionOpen_triggered()
 
     DataModel *model = new DataModel(filename);
     ui->tableView->setModel(model);
-
     //ui->graphicsView->generateGraphUsingDatas(&model);
     //ui->graphicsView->setModell();
     ui->graphicsView->modelOfGraph = model;
@@ -88,6 +98,12 @@ void MainWindow::on_actionOpen_triggered()
         EmetteurSignal *em = node->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
         qDebug() << "gg " << node->getName();
+    }
+
+    for(Edge *edge : ui->graphicsView->getEveryEdge()){
+        EmetteurSignal *em = edge->sigEmet;
+        QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
+        qDebug() << "lol " << edge->getName();
     }
 }
 
@@ -161,13 +177,31 @@ void MainWindow::on_actionChanger_couleur_triggered()
 void MainWindow::onColorTabletChanged(const QColor &color)
 {
     /*Si aucun sommet sélectionner mieux vaut ne pas autoriser ouverture palette*/
-    if(lastSelectedSommet==-1)
+    if(lastSelect == NOTHING)
         return;
 
+    if(lastSelect == VERTEX){
     qDebug() << "couleur gg " << color;
     Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
     node->setColor(color);
     qDebug() << "Le sommet d'indice " << lastSelectedSommet << " a la couleur " << ui->graphicsView->getEveryNode().at(lastSelectedSommet)->getColor();
     node->update();
+    }
+
+    if(lastSelect == EDGE){
+        for(Edge *e :getEveryEdgeOfLine(lastSelectedEdge->getCorrespondingLine())){
+            e->setColor(color);
+            e->update();
+        }
+    }
 }
+
+QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
+    QList<Edge*> list;
+    for(Edge* e : ui->graphicsView->getEveryEdge())
+        if(e->getCorrespondingLine() == num_line)
+            list.push_back(e);
+    return list;
+}
+
 

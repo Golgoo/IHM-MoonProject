@@ -31,6 +31,12 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
             _row_count++;
         }
         qDebug() << " Valeurs distinctes de la 1ère colonne " << getDistinctValuesOfColumn(0);
+
+        // Détermine les couleurs de départ des lignes des données et donc aussi des arêtes
+        color = (QColor*) malloc(sizeof (QColor)*_row_count);
+        for(int row=0; row<_row_count; row++){
+            color[row] = QColor::fromHsl((360/_row_count)*row,255,175);
+        }
     }
 }
 
@@ -54,8 +60,7 @@ QVariant DataModel::data (const QModelIndex & index, int role) const
         return getValue(index.row(), index.column());
     }else if (role == Qt::BackgroundRole) {
         /*TODO:Change couleur tableur mais à associer avec les arêtes plus tard*/
-        QColor color = QColor::fromHsl((360/_row_count)*index.row(),255,175);
-        return QBrush(color);
+        return QBrush(color[index.row()]);
      }
     return QVariant();
 }

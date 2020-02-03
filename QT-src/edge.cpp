@@ -2,6 +2,7 @@
 #include "node.h"
 #include "math.h"
 #include <QDebug>
+#include "emetteursignal.h"
 
 
 Edge::Edge(Node *sourceNode, Node *destNode)
@@ -14,6 +15,26 @@ Edge::Edge(Node *sourceNode, Node *destNode)
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
+
+    name = sourceNode->getName() + " -- " + destNode->getName();
+
+    sigEmet = new EmetteurSignal;
+}
+
+QString Edge::getName() const {
+    return name;
+}
+
+QColor Edge::getColor() {
+    return color;
+}
+
+void Edge::setCorrespondingLine(int num_line){
+    correspondingLine = num_line;
+}
+
+int Edge::getCorrespondingLine() const{
+    return correspondingLine;
 }
 
 Node *Edge::getSource() const
@@ -152,4 +173,9 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     };
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void Edge::mousePressEvent(QGraphicsSceneMouseEvent *event){
+        qDebug() << "Je suis l'arête " <<  this;
+        sigEmet->emitLastSelectedEdgeSignal(this);
 }

@@ -80,6 +80,7 @@ private:
     QChar _col_delimiter ;
     QVector<qint64> line_idex ;
     bool isValid(QModelIndex index) const;
+    QColor *color;
 
 };
 
