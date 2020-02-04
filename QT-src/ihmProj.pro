@@ -22,6 +22,7 @@ SOURCES += \
     graphview.cpp \
     main.cpp \
     mainwindow.cpp \
+    tabularview.cpp \
     datacolumn.cpp \
     datatable.cpp \
     node.cpp \
@@ -29,6 +30,9 @@ SOURCES += \
     csvparser.cpp
 
 HEADERS += \
+    tabularview.h \
+    backgroundcsvreader.h \
+    datamodel.h \
     edge.h \
     graphview.h \
     mainwindow.h \
@@ -41,7 +45,8 @@ HEADERS += \
     datamodel.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    tabularview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

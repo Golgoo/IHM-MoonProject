@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include "qgraphicsitem.h"
+#include <cmath>
 
 class Node;
 

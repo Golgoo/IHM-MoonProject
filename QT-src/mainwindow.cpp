@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "datatable.h"
-#include "csvparser.h"
-
-#include <QDebug>
 
 #include "backgroundcsvreader.h"
 #include <QTableWidgetItem>
 #include <QThread>
+#include "datatable.h"
+#include "csvparser.h"
+
+#include <QDebug>
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
 #include "datamodel.h"
@@ -47,66 +47,27 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }*/
     setWindowTitle(filename);
-    QTextStream in(&file);
+
+    /*QTextStream in(&file);
     QString text = in.readAll();
 
     CSVParser parser(text);
     DataTable table = parser.parse();
-    std::cout << "taille du tableau : " << table.getColumns().size();
+    std::cout << "taille du tableau : " << table.getColumns().size();*/
     //afficher ici le tableau
 
-    file.close();
+//    file.close();
 
-    ui->tableView->setModel(new DataModel(filename));
-    //QTextStream in(&file);
+    //Cette ligne bind le fichier et le tableau
+    DataModel * model = new DataModel(filename);
+    //Déplace la colonne 1 de 2 crans vers la droite
+    model->shiftColumn(1,2);
+    ui->tableView->setModel(model);
 
-    /*
-    QThread* thread = new QThread;
-    if(csvReader != nullptr){
-        //Si nouvelle lecture avant que la précédente soit terminée
-        delete csvReader;
-        csvReader = nullptr;
-        ui->tableWidget->clear();
-    }
-    csvReader = new BackgroundCSVReader(filename, ',', 4);
-    csvReader->moveToThread(thread);
+    //Et après ça, la colonne 2 ( l'ancienne colonne 3 ) de 1 cran vers la gauche
+    model->shiftColumn(2,-1);
 
-    connect(thread, SIGNAL (started()), csvReader, SLOT (process()));
-    connect(csvReader, SIGNAL (finished()), thread, SLOT (quit()));
-    connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
-
-    connect(csvReader,  &BackgroundCSVReader::finished, this, &MainWindow::on_read_operation_finished);
-    connect(csvReader, &BackgroundCSVReader::error, this, &MainWindow::on_read_operation_error);
-    qRegisterMetaType<vector<QStringList> >("vector<QStringList>");// <= TODO : Tester si l'appeler seulement une fois suffit
-    connect(csvReader, &BackgroundCSVReader::new_lines, this, &MainWindow::on_read_operation_new_lines);
-
-    thread->start();
-    qDebug() <<"Lecture en cours" ;
-    //TODO : Feedback
-    */
-
-
-    //QString text = in.readAll();
-    //TODO: code pour traiter ce qu'on a lu dans fichier
-    //file.close();
 }
-
-/*
-void MainWindow::on_read_operation_new_lines(int line_start, vector<QStringList> lines)
-{
-    int k = 0 ;
-    int i = 0 ;
-    QTableWidgetItem * item ;
-    qDebug() << lines ;
-    for(vector<QStringList>::iterator it = lines.begin() ; it < lines.end() ; it++, i ++){
-        for(QString item_str : *it ){
-            item = new QTableWidgetItem(item_str);
-            ui->tableWidget->setItem(line_start + i, k++, item);
-        }
-        k = 0 ;
-    }
-}
-*/
 
 void MainWindow::on_read_operation_error(QString error)
 {
@@ -115,9 +76,7 @@ void MainWindow::on_read_operation_error(QString error)
 
 void MainWindow::on_read_operation_finished()
 {
-    //TODO : Stop feedback
-    delete csvReader;
-    csvReader = nullptr;
+    //TODO : Stop feedback &| MAJ Status bar
 }
 
 void MainWindow::on_actionSave_as_triggered()
