@@ -27,7 +27,13 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     node.cpp \
-    random_generation_dialog.cpp
+    random_generation_dialog.cpp \
+    randomization/distributive_law.cpp \
+    randomization/exponentialdistribution.cpp \
+    randomization/noconstraint.cpp \
+    randomization/plottable.cpp \
+    randomization/uniformdistribution.cpp \
+    randomization/valueconstraint.cpp
 
 HEADERS += \
     emetteursignal.h \
@@ -42,7 +48,13 @@ HEADERS += \
     mainwindow.h \
     node.h \
     datamodel.h \
-    random_generation_dialog.h
+    random_generation_dialog.h \
+    randomization/distributive_law.h \
+    randomization/exponentialdistribution.h \
+    randomization/noconstraint.h \
+    randomization/plottable.h \
+    randomization/uniformdistribution.h \
+    randomization/valueconstraint.h
 
 FORMS += \
     geneerrordialog.ui \
