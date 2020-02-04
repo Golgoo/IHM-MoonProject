@@ -56,3 +56,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
 void Node::adjust() {
 
 }
+
+qreal Node::getRadius() {
+    return radius;
+}

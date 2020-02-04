@@ -28,6 +28,7 @@ public:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     QVector<Edge*> getEdges() const;
+    qreal getRadius();
 
     void addEdge(Edge* edge);
 };

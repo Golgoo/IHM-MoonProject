@@ -22,7 +22,7 @@ GraphView::GraphView(QWidget *parent)
     Node *node3 = new Node();
     Node *node4 = new Node();
     node1->setPos(50, 50);
-    node2->setPos(50, 100);
+    node2->setPos(50, 170);
     node3->setPos(0, 50);
     node4->setPos(120, 30);
     scene->addItem(node1);
