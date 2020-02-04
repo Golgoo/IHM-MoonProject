@@ -2,6 +2,7 @@
 #include "node.h"
 #include "math.h"
 #include <QDebug>
+#include "emetteursignal.h"
 
 
 Edge::Edge(Node *sourceNode, Node *destNode)
@@ -14,6 +15,26 @@ Edge::Edge(Node *sourceNode, Node *destNode)
     source->addEdge(this);
     dest->addEdge(this);
     adjust();
+
+    name = sourceNode->getName() + " -- " + destNode->getName();
+
+    sigEmet = new EmetteurSignal;
+}
+
+QString Edge::getName() const {
+    return name;
+}
+
+QColor Edge::getColor() {
+    return color;
+}
+
+void Edge::setCorrespondingLine(int num_line){
+    correspondingLine = num_line;
+}
+
+int Edge::getCorrespondingLine() const{
+    return correspondingLine;
 }
 
 Node *Edge::getSource() const
@@ -24,6 +45,10 @@ Node *Edge::getSource() const
 Node *Edge::getDest() const
 {
     return dest;
+}
+
+void Edge::setColor(QColor color){
+    this->color = color;
 }
 
 void Edge::adjust()
@@ -106,7 +131,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         return;
 
     //C'est là qu'on devra changer la couleur, le style des arêtes en fonction de la palette
-    painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 
     double angle = std::atan2(-line.dy(), line.dx());
@@ -120,7 +145,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     QPointF destArrowP2 = destPoint + QPointF(sin(angle - M_PI + M_PI / 3) * arrowSize,
                                               cos(angle - M_PI + M_PI / 3) * arrowSize);
 
-    painter->setBrush(Qt::black);
+    painter->setBrush(color);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 
@@ -166,4 +191,9 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     };
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void Edge::mousePressEvent(QGraphicsSceneMouseEvent *event){
+        //qDebug() << "Je suis l'arête " <<  this;
+        sigEmet->emitLastSelectedEdgeSignal(this);
 }

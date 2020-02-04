@@ -16,37 +16,38 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    backgroundcsvreader.cpp \
+    customgenerator.cpp \
     datamodel.cpp \
     edge.cpp \
+    emetteursignal.cpp \
+    geneerrordialog.cpp \
+    generator.cpp \
     graphview.cpp \
+    integergenerator.cpp \
     main.cpp \
     mainwindow.cpp \
-    tabularview.cpp \
-    datacolumn.cpp \
-    datatable.cpp \
     node.cpp \
-    parser.cpp \
-    csvparser.cpp
+    random_generation_dialog.cpp
 
 HEADERS += \
-    tabularview.h \
+    emetteursignal.h \
     backgroundcsvreader.h \
+    customgenerator.h \
     datamodel.h \
     edge.h \
+    geneerrordialog.h \
+    generator.h \
     graphview.h \
+    integergenerator.h \
     mainwindow.h \
-    datacolumn.h \
-    datatable.h \
     node.h \
-    parser.h \
-    csvparser.h \
-    backgroundcsvreader.h \
-    datamodel.h
+    datamodel.h \
+    random_generation_dialog.h
 
 FORMS += \
+    geneerrordialog.ui \
     mainwindow.ui \
-    tabularview.ui
+    randomgenerationdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

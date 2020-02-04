@@ -1,13 +1,19 @@
 #include "node.h"
+#include "emetteursignal.h"
 #include "edge.h"
 #include <QDebug>
+#include "ui_mainwindow.h"
 
-Node::Node()
+
+Node::Node(QString name)
 {
+    /*Cette ligne permet la sélection des sommets*/
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
+    this->name = name;
+    sigEmet = new EmetteurSignal;
 }
 
 QVector<Edge*> Node::getEdges() const {
@@ -18,6 +24,10 @@ void Node::addEdge(Edge* edge) {
     edges << edge;
     //ADJUST DISPENSABLE ?
     edge->adjust();
+}
+
+QString Node::getName() {
+    return name;
 }
 
 QRectF Node::boundingRect() const {
@@ -34,9 +44,36 @@ QPainterPath Node::shape() const {
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*) {
     painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::darkGreen);
+    //painter->setBrush(Qt::darkGreen);
+    painter->setBrush(color);
     painter->drawEllipse(-radius, -radius, radius * 2, radius * 2);
 }
+
+void Node::setColor(QColor color){
+    this->color = color;
+}
+
+QColor Node::getColor(){
+    return this->color;
+    //emit lastSelectedNode();
+}
+
+int Node::getPosDansEveryNode(){
+    return posDansEveryNode;
+}
+
+void Node::setPosDansEveryNode(int pos){
+    posDansEveryNode = pos;
+}
+
+void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
+        qDebug() << "J'ai des tongues " << this;
+        qDebug() << "Je suis le sommet " <<  this->getName();
+        Node *node = this;
+        sigEmet->emitLastSelectedNodeSignal(node->getPosDansEveryNode());
+        qDebug() << "Yo voici ma couleur " << node->getColor();
+}
+
 
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
