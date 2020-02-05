@@ -8,7 +8,7 @@ class ExponentialDistribution : public DistributiveLaw
 public:
     ExponentialDistribution();
 
-    int generate(int max_bound) override;
+    double generate() override;
 
 private:
     std::exponential_distribution<double> _distribution;

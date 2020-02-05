@@ -28,16 +28,18 @@ SOURCES += \
     mainwindow.cpp \
     node.cpp \
     random_generation_dialog.cpp \
+    randomization/columngenerator.cpp \
     randomization/distributive_law.cpp \
     randomization/exponentialdistribution.cpp \
+    randomization/generation_dialog.cpp \
+    randomization/linearconstraint.cpp \
     randomization/noconstraint.cpp \
-    randomization/plottable.cpp \
+    randomization/uniform_curve.cpp \
     randomization/uniformdistribution.cpp \
     randomization/valueconstraint.cpp
 
 HEADERS += \
     emetteursignal.h \
-    backgroundcsvreader.h \
     customgenerator.h \
     datamodel.h \
     edge.h \
@@ -49,17 +51,21 @@ HEADERS += \
     node.h \
     datamodel.h \
     random_generation_dialog.h \
+    randomization/columngenerator.h \
     randomization/distributive_law.h \
     randomization/exponentialdistribution.h \
+    randomization/generation_dialog.h \
+    randomization/linearconstraint.h \
     randomization/noconstraint.h \
-    randomization/plottable.h \
+    randomization/uniform_curve.h \
     randomization/uniformdistribution.h \
     randomization/valueconstraint.h
 
 FORMS += \
     geneerrordialog.ui \
     mainwindow.ui \
-    randomgenerationdialog.ui
+    randomgenerationdialog.ui \
+    randomization/generation_dialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

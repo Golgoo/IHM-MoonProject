@@ -5,19 +5,20 @@
 #include <chrono>
 #include <memory>
 
-#include "plottable.h"
 
-using namespace std;
+typedef std::linear_congruential_engine<uint_fast32_t, 27653, 0, 2147483647> mint_generator;
 
-typedef linear_congruential_engine<uint_fast32_t, 27653, 0, 2147483647> mint_generator;
-
-class DistributiveLaw : public Plottable
+class DistributiveLaw
 {
 public:
     DistributiveLaw();
     virtual ~DistributiveLaw();
 
-    virtual int generate(int upper_bound) = 0;
+    /**
+     * @brief generate
+     * @return a double between 0.0 and 1.0
+     */
+    virtual double generate() = 0;
 protected:
     mint_generator* _generator = nullptr;
 };

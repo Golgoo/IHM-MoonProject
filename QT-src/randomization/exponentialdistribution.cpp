@@ -6,12 +6,12 @@ ExponentialDistribution::ExponentialDistribution(): DistributiveLaw (),
 
 }
 
-int ExponentialDistribution::generate(int max_bound)
+double ExponentialDistribution::generate()
 {
     double number ;
     do {
-        number = _distribution(_generator);
+        number = _distribution(*_generator);
     }while(number > 1.0);
 
-    return int(number*max_bound);
+    return 1.0 - number ;
 }

@@ -1,18 +1,17 @@
 #ifndef VALUECONSTRAINT_H
 #define VALUECONSTRAINT_H
 
-#include "plottable.h"
-
-class ValueConstraint : public Plottable
+class ValueConstraint
 {
 public:
-    ValueConstraint(int max_values);
+    ValueConstraint(int max_values, int max_lines);
     virtual ~ValueConstraint();
 
     virtual int getLimitAt(int line) = 0;
 
 protected:
     int _max_value ;
+    int _max_lines ;
 };
 
 #endif // VALUECONSTRAINT_H

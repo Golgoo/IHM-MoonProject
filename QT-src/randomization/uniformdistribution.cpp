@@ -1,22 +1,17 @@
 #include "uniformdistribution.h"
 
 
-UniformDistribution::UniformDistribution(int upper_bound):DistributiveLaw ()
+UniformDistribution::UniformDistribution():DistributiveLaw (), _distribution(0.0, 1.0)
 {
-    _distribution = new std::uniform_int_distribution<int>(0,upper_bound);
+
 }
 
-int UniformDistribution::generate(int upper_bound)
+double UniformDistribution::generate()
 {
-    if(upper_bound != _distribution->param().b()){
-        delete _distribution;
-        _distribution = new std::uniform_int_distribution<int>(0,upper_bound);
-    }
-    return (*_distribution)(_generator);
+    return _distribution(*_generator);
 }
 
 UniformDistribution::~UniformDistribution()
 {
-    if(_distribution != nullptr)
-        delete _distribution;
+
 }

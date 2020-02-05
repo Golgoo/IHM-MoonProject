@@ -6,11 +6,11 @@
 class UniformDistribution: public DistributiveLaw
 {
 public:
-    UniformDistribution(int upper_bound = 0);
-    ~UniformDistribution() override;
-    int generate(int upper_bound) override;
+    UniformDistribution();
+    ~UniformDistribution();
+    double generate() override;
 private:
-    std::uniform_int_distribution<int>* _distribution;
+    std::uniform_real_distribution<> _distribution;
 };
 
 #endif // UNIFORMDISTRIBUTION_H
