@@ -15,9 +15,13 @@ private:
      int GRAPHICS_VIEW_DIMENSION = 400;
      QList<Node*> everyNode;
      QList<Edge*> everyEdge;
+     void wheelEvent ( QWheelEvent * event ) override;
+
+     int _numScheduledScalings = 0;
 
 private slots:
-
+    void scalingTime(qreal x);
+    void animFinished();
 
 public:
     GraphView(QWidget *parent);
