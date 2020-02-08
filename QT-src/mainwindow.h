@@ -99,5 +99,6 @@ private:
     void show_graphic_view() const ;
 
     void reload_model(QString filename);
+    void connectForlastSelectedObjects();
 };
 #endif // MAINWINDOW_H

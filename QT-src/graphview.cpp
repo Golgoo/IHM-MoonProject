@@ -62,6 +62,11 @@ QList<Edge*> GraphView::getEveryEdge(){
 
 void GraphView::generateGraphUsingDatas()
 {
+    everyEdge.clear();
+    everyNode.clear();
+    scene->clear();
+    scene->update();
+
     int nb_sommet_in_graph = 0;
     int maxNbSommetOfColumn = 0;
 
@@ -79,7 +84,7 @@ void GraphView::generateGraphUsingDatas()
             maxNbSommetOfColumn = hashOfDV.size();
     }
 
-    //qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
+    qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
     /*L'espacement entre les sommets peut varier si un sommet est plus gros qu'un autre ?*/
     int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
     int spaceY = GRAPHICS_VIEW_DIMENSION/maxNbSommetOfColumn;
@@ -89,6 +94,7 @@ void GraphView::generateGraphUsingDatas()
         int indexInColumn = 0;
         for(auto dv : list.at(col).keys()){
             Node *node = new Node(dv);
+            qDebug() << "ooooooooooo" << node->getName();
             node->setPosDansEveryNode(nbSommetsInsere);
             everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);
@@ -110,7 +116,11 @@ void GraphView::generateGraphUsingDatas()
         for (int row = 0; row<modelOfGraph->rowCount(); row++) {
             QString val1 = modelOfGraph->getValue(row,col);
             QString val2 = modelOfGraph->getValue(row,col+1);
-            //qDebug() << val1 << "--" << val2;
+
+            val1 = val1+"-"+col;
+            val2 = val2+"-"+(col+1);
+
+            qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
             Node *node2 = hashOfNodesOfDV.value(val2);
             int nbMaxRow = modelOfGraph->rowCount();
