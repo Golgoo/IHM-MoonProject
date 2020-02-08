@@ -86,12 +86,14 @@ void GraphView::generateGraphUsingDatas()
 
     qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
     /*L'espacement entre les sommets peut varier si un sommet est plus gros qu'un autre ?*/
-    int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
-    int spaceY = GRAPHICS_VIEW_DIMENSION/maxNbSommetOfColumn;
+
     int nbSommetsInsere = 0;
 
     for(int col=0; col < list.size(); col++){
         int indexInColumn = 0;
+        int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
+        int spaceY = GRAPHICS_VIEW_DIMENSION/list.at(col).size();
+        qDebug() << "spaceY pour col"<<col << " " << spaceY;
         for(auto dv : list.at(col).keys()){
             Node *node = new Node(dv);
             qDebug() << "ooooooooooo" << node->getName();
