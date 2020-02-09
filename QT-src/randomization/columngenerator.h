@@ -15,8 +15,8 @@ private:
     ValueConstraint* _value_constraints ;
 public:
     int generate(int line);
-    ValueConstraint& getValueRestriction() const;
-    DistributiveLaw& getDistributiveLaw() const;
+    ValueConstraint* getValueRestriction() const;
+    DistributiveLaw* getDistributiveLaw() const;
     void setNewDistributiveLaw(DistributiveLaw* distributive_law);
     void setNewValueRestriction(ValueConstraint* value_constraint);
 };

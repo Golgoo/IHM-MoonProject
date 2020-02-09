@@ -28,12 +28,14 @@ SOURCES += \
     randomization/curve/distributioncurve.cpp \
     randomization/curve/exponentialcurve.cpp \
     randomization/curve/linearcurve.cpp \
+    randomization/curve/linearinvertedcurve.cpp \
     randomization/curve/noconstraintcurve.cpp \
     randomization/curve/restrictioncurve.cpp \
     randomization/curve/uniformcurve.cpp \
     randomization/distributive_law.cpp \
     randomization/exponentialdistribution.cpp \
     randomization/generation_dialog.cpp \
+    randomization/invertedlinearconstraint.cpp \
     randomization/linearconstraint.cpp \
     randomization/noconstraint.cpp \
     randomization/uniformdistribution.cpp \
@@ -52,12 +54,14 @@ HEADERS += \
     randomization/curve/distributioncurve.h \
     randomization/curve/exponentialcurve.h \
     randomization/curve/linearcurve.h \
+    randomization/curve/linearinvertedcurve.h \
     randomization/curve/noconstraintcurve.h \
     randomization/curve/restrictioncurve.h \
     randomization/curve/uniformcurve.h \
     randomization/distributive_law.h \
     randomization/exponentialdistribution.h \
     randomization/generation_dialog.h \
+    randomization/invertedlinearconstraint.h \
     randomization/linearconstraint.h \
     randomization/noconstraint.h \
     randomization/uniformdistribution.h \

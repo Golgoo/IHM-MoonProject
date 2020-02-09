@@ -23,13 +23,13 @@ int ColumnGenerator::generate(int line)
     return int(round(random * nb_values));
 }
 
-ValueConstraint& ColumnGenerator::getValueRestriction() const
+ValueConstraint* ColumnGenerator::getValueRestriction() const
 {
-    return *_value_constraints;
+    return _value_constraints;
 }
-DistributiveLaw& ColumnGenerator::getDistributiveLaw() const
+DistributiveLaw* ColumnGenerator::getDistributiveLaw() const
 {
-    return *_distributive_law;
+    return _distributive_law;
 }
 
 void ColumnGenerator::setNewDistributiveLaw(DistributiveLaw* distributive_law)

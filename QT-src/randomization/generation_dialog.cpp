@@ -21,6 +21,7 @@ using namespace std;
 #include "curve/exponentialcurve.h"
 #include "curve/linearcurve.h"
 #include "curve/noconstraintcurve.h"
+#include "curve/linearinvertedcurve.h"
 
 generation_dialog::generation_dialog(QWidget *parent) :
     QDialog(parent),
@@ -36,27 +37,29 @@ generation_dialog::generation_dialog(QWidget *parent) :
     ui->cols_list_view->setModel(_columns_model);
 
     _selected_generator_index = 0 ;
+
     _restriction_curves.push_back(shared_ptr<RestrictionCurve>(new NoConstraintCurve()));
     _restriction_curves.push_back(shared_ptr<RestrictionCurve>(new LinearCurve()));
+    _restriction_curves.push_back(shared_ptr<RestrictionCurve>(new LinearInvertedCurve()));
     initRestrictionBox(_restriction_curves, ui->restriction_combo_box);
     _distribution_curves.push_back(shared_ptr<DistributionCurve>(new UniformCurve()));
     _distribution_curves.push_back(shared_ptr<DistributionCurve>(new ExponentialCurve()));
     initDistributionBox(_distribution_curves, ui->distributive_combo_box);
 
-    connect(ui->restriction_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(restriction_item_change(int)));
-    connect(ui->distributive_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(distribution_item_change(int)));
+    connect(ui->nbr_cols, SIGNAL(valueChanged(int)), this, SLOT(nbr_columns_changed(int)));
+    ui->nbr_cols->setValue(1);
 
     connect(ui->cols_list_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, &generation_dialog::current_column_change);
-    connect(ui->nbr_cols, SIGNAL(valueChanged(int)), this, SLOT(nbr_columns_changed(int)));
-
-    ui->nbr_cols->setValue(1);
     ui->cols_list_view->selectionModel()->setCurrentIndex(ui->cols_list_view->indexAt(QPoint(0,0)), QItemSelectionModel::Select);
 
+    connect(ui->restriction_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(restriction_item_change(int)));
+    connect(ui->distributive_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(distribution_item_change(int)));
 
     connect(ui->nbr_rows, SIGNAL(valueChanged(int)), this, SLOT(nbr_rows_changed(int)));
     connect(ui->apply_button, SIGNAL(clicked()), this, SLOT(apply_to_other_columns_clicked()));
     connect(ui->nbr_distinct_values, SIGNAL(valueChanged(int)), this, SLOT(nbr_distinct_values_changed(int)));
 
+    connect(ui->rename_button, SIGNAL(clicked()), this, SLOT(rename_current_column()));
 }
 
 void generation_dialog::initDistributionBox(const QVector<std::shared_ptr<DistributionCurve>> curves, QComboBox * const comboBox)
@@ -96,6 +99,7 @@ void generation_dialog::current_column_change()
     qDebug()<<"Column CHanged" ;
     qDebug()<< ui->cols_list_view->currentIndex();
     _selected_generator_index = ui->cols_list_view->currentIndex().row();
+    ui->col_name_line->setText(_columns_model->stringList()[_selected_generator_index]);
     refresh_generator_UI();
 }
 
@@ -111,13 +115,14 @@ void generation_dialog::refresh_generator_UI()
 {
      qDebug() << "Refreshgin generator ui ";
     ColumnGenerator* current_generator = getSelectedGenerator();
-    int restriction_index = current_generator->getValueRestriction().getUISection();
-    int distribution_index = current_generator->getDistributiveLaw().getUISection();
+    int restriction_index = current_generator->getValueRestriction()->getUISection();
+    int distribution_index = current_generator->getDistributiveLaw()->getUISection();
     ui->restriction_graph_label->setPixmap(_restriction_curves.at(restriction_index)->getPixMap());
     ui->distributive_graph_label->setPixmap(_distribution_curves.at(distribution_index)->getPixMap());
     ui->restriction_combo_box->setCurrentIndex(restriction_index);
     ui->distributive_combo_box->setCurrentIndex(distribution_index);
-    ui->nbr_distinct_values->setValue(current_generator->getValueRestriction().getMaxValues());
+    ui->nbr_distinct_values->setValue(current_generator->getValueRestriction()->getMaxValues());
+    ui->col_name_line->setText(_columns_model->stringList()[_selected_generator_index]);
     qDebug() << "End of generator ui refresh";
 }
 
@@ -126,7 +131,7 @@ void generation_dialog::nbr_columns_changed(int nb_cols)
     qDebug() << "Generating default column";
     int col_size = _columns_generator.size();
     QStringList list = _columns_model->stringList();
-    QModelIndex modelIndex = ui->cols_list_view->currentIndex();
+    QModelIndex modelIndex = ui->cols_list_view->selectionModel()->currentIndex();
     for(int i = col_size ; i < nb_cols ; i ++){
         _columns_generator.insert(i, new ColumnGenerator(
                                         new UniformDistribution(),
@@ -162,7 +167,7 @@ void generation_dialog::nbr_columns_changed(int nb_cols)
 void generation_dialog::nbr_rows_changed(int nb_rows)
 {
     for(auto generator : _columns_generator){
-        generator->getValueRestriction().setNbLines(nb_rows);
+        generator->getValueRestriction()->setNbLines(nb_rows);
     }
 }
 
@@ -170,7 +175,7 @@ void generation_dialog::nbr_distinct_values_changed(int nb_values)
 {
     qDebug() << "Distinct Value changed";
     ColumnGenerator *current_generator = getSelectedGenerator();
-    current_generator->getValueRestriction().setMaxValues(nb_values);
+    current_generator->getValueRestriction()->setMaxValues(nb_values);
 }
 
 void generation_dialog::apply_to_other_columns_clicked()
@@ -186,13 +191,22 @@ void generation_dialog::apply_to_other_columns_clicked()
     }
 }
 
+void generation_dialog::rename_current_column()
+{
+    QStringList list = _columns_model->stringList();
+    list[_selected_generator_index] = ui->col_name_line->text();
+    _columns_model->setStringList(list);
+}
+
 int generation_dialog::process_generation()
 {
-    if(! _tmp_file.open()) return -1 ;
-    QTextStream outStream (&_tmp_file);
+    if(_tmp_file != nullptr) delete _tmp_file;
+    _tmp_file = new QTemporaryFile();
+    if(! _tmp_file->open()) return -1 ;
+    QTextStream outStream (_tmp_file);
     generate_headers(outStream);
     generate_lines(outStream);
-    _tmp_file.close();
+    _tmp_file->close();
     return 1 ;
 }
 
@@ -209,7 +223,7 @@ void generation_dialog::generate_headers(QTextStream &outStream) const
 void generation_dialog::generate_lines(QTextStream &outStream) const
 {
 
-    for(int line = 1 ; line < ui->nbr_rows->value() ; line ++){
+    for(int line = 0 ; line < ui->nbr_rows->value() ; line ++){
         for(auto it = _columns_generator.begin() ; it < _columns_generator.end() - 1 ; it ++){
             outStream << (*it)->generate(line) << ',';
         }
@@ -220,7 +234,7 @@ void generation_dialog::generate_lines(QTextStream &outStream) const
 
 QString generation_dialog::getTemporaryFilename() const
 {
-    return _tmp_file.fileName();
+    return _tmp_file->fileName();
 }
 
 generation_dialog::~generation_dialog()
@@ -229,6 +243,7 @@ generation_dialog::~generation_dialog()
         delete col_gen;
     }
     delete _columns_model;
+    if(_tmp_file!=nullptr) delete _tmp_file;
 }
 
 

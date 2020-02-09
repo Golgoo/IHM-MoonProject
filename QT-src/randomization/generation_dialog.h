@@ -32,7 +32,7 @@ public:
 
 private:
     Ui::generation_dialog *ui ;
-    QTemporaryFile _tmp_file;
+    QTemporaryFile* _tmp_file = nullptr;
 
     QVector<ColumnGenerator*> _columns_generator ;
     int _selected_generator_index ;
@@ -53,6 +53,7 @@ public slots:
     void nbr_rows_changed(int nb_rows);
     void nbr_distinct_values_changed(int nb_values);
     void apply_to_other_columns_clicked();
+    void rename_current_column();
 
 private:
     void refresh_generator_UI();
