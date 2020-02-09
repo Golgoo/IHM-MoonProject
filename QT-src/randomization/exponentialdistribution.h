@@ -9,6 +9,10 @@ public:
     ExponentialDistribution();
 
     double generate() override;
+    int getUISection() const override;
+
+private :
+    const static int ui_section = 1;
 
 private:
     std::exponential_distribution<double> _distribution;

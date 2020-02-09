@@ -170,6 +170,7 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
             edge->adjust();
         }
         break;
+
     };
 
     return QGraphicsItem::itemChange(change, value);

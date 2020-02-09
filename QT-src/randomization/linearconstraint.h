@@ -9,9 +9,11 @@ public:
     LinearConstraint(int max_values, int max_lines);
 
     int getLimitAt(int line) override;
+    int getUISection() const override;
 private:
     double _max_l_d ;
     double _max_v_d ;
+    const static int _ui_section = 1;
 };
 
 #endif // LINEARCONSTRAINT_H

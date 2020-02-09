@@ -7,41 +7,41 @@
 #include <QIdentityProxyModel>
 #include <QBrush>
 
+#include <fstream>
+#include <sstream>
 
-DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col_delimiter)
+DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_delimiter)
 {
+    qDebug() << "Starting to read model";
     f = new QFile(filename);
     if(! f->open(QIODevice::ReadOnly | QFile::Text)){
         emit error_loading_file("Cannot read file \" " + filename + " \"");
     }else{
-        QTextStream ts (f);
-        QString tmp = ts.readLine();
+        std::ifstream stream(filename.toStdString());
+        std::string tmp ;
+        std::getline(stream, tmp);
+        std::stringstream ss(tmp);
         /* On se permet de garder les headers dans la RAM */
-        _headers = tmp.split(col_delimiter);
-
-        line_index.push_back(ts.pos());
-
-        /*On récup nb de colonnes de la ligne*/
-        _col_count = tmp.split(this->_col_delimiter).size();
-        while(! ts.atEnd()){
-            QString readedLine = ts.readLine();
-            if(readedLine.isEmpty()) continue;
-
-            /*On récupère index de la ligne par rapport au Stream du fichier ouvert*/
-            line_index.push_back(ts.pos());
-            _row_count++;
-            qDebug() << "ggggggggggggggggggggggggggggggggggg";
+        for (std::string item; std::getline(ss, item, _col_delimiter); ) {
+            _headers.push_back(QString(item.c_str()));
         }
-        //qDebug() << " Valeurs distinctes de la 1ère colonne " << getDistinctValuesOfColumn(0);
+        _col_count = _headers.size();
+        line_index.push_back(stream.tellg());
 
-        // Détermine les couleurs de départ des lignes des données et donc aussi des arêtes
-        color = (QColor*) malloc(sizeof (QColor)*_row_count);
-        for(int row=0; row<_row_count; row++){
-            color[row] = QColor::fromHsl((360/_row_count)*row,255,175);
+        for (std::string line; std::getline(stream, line); ) {
+            line_index.push_back(stream.tellg());
+            _row_count ++ ;
         }
-        //-----------------------------------------------------------
+
         for(int i = 0 ; i < _col_count ; i ++) _cols_shifter.push_back(i);
+        double origin = (255.0/_row_count);
+        double step = 0.0 ;
+        for(int l = 0 ; l < _row_count ; l ++) {
+            color.push_back(QColor::fromHsl(step,255,175,180));
+            step += origin ;
+        }
     }
+    qDebug() << "Finish to read model : " << _row_count << " ligne(s) - " << _col_count << " colonne(s)" ;
 }
 
 DataModel::~DataModel()
@@ -52,10 +52,10 @@ DataModel::~DataModel()
 }
 
 /*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
+//QVariant(void) <=> Invalide
 QVariant DataModel::data (const QModelIndex & index, int role) const
 {
     //qDebug() << "Need Data " << index.row() << " - " << index.column() ;
-    //qDebug() << "Model dimension : " << _row_count << " - " << _col_count;
     /*Test si index ne pointe pas hors de la matrice, une valeur inexistante*/
     if(! this->isValid(index)){
         return QVariant();
@@ -66,13 +66,13 @@ QVariant DataModel::data (const QModelIndex & index, int role) const
         return getValue(index.row(), index.column());
     }else if (role == Qt::BackgroundRole) {
         /*TODO:Change couleur tableur mais à associer avec les arêtes plus tard*/
-        return QBrush(color[index.row()]);
+        return color.at(index.row());
      }
     return QVariant();
 }
 
 void DataModel::setColorOfLine(int num_line, QColor newcolor){
-    color[num_line] = newcolor;
+    color.insert(num_line,newcolor);
 }
 
 QVariant DataModel::headerData(int section, Qt::Orientation orientation, int role) const

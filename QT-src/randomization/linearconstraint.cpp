@@ -8,8 +8,12 @@ LinearConstraint::LinearConstraint(int max_values, int max_lines): ValueConstrai
 
 }
 
-
 int LinearConstraint::getLimitAt(int line)
 {
     return round((double(line) * _max_v_d)/_max_l_d);
+}
+
+int LinearConstraint::getUISection() const
+{
+    return _ui_section;
 }

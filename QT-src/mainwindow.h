@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "datamodel.h"
-#include "random_generation_dialog.h"
+#include "randomization/generation_dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -90,7 +90,7 @@ private:
     LAST_SELECTED_OBJECT lastSelect = NOTHING;
 
     DataModel * _model = nullptr;
-    RandomGenerationDialog * _rdm_gene_dial = nullptr ;
+    generation_dialog * _rdm_gene_dial = nullptr ;
     QActionGroup * _view_actions_group = nullptr;
 
     void hide_tabular_view() const ;

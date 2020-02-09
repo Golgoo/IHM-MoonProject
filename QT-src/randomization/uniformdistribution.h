@@ -9,8 +9,10 @@ public:
     UniformDistribution();
     ~UniformDistribution();
     double generate() override;
+    int getUISection() const override;
 private:
     std::uniform_real_distribution<> _distribution;
+    const static int ui_section = 0 ;
 };
 
 #endif // UNIFORMDISTRIBUTION_H

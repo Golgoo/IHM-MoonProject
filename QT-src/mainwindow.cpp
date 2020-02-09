@@ -10,6 +10,7 @@
 #include "edge.h"
 
 #include <QList>
+#include "randomization/generation_dialog.h"
 
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
@@ -27,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
 //-----------------------------------------------
-    _rdm_gene_dial = new RandomGenerationDialog(this);
+    _rdm_gene_dial = new generation_dialog(this);
     _view_actions_group = new QActionGroup(this);
     _view_actions_group->addAction(ui->actionTabulaire);
     _view_actions_group->addAction(ui->actionGraphique);
@@ -46,10 +47,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionGenerate_triggered()
 {
     currentFile.clear();
-
     int execution_code = _rdm_gene_dial->exec();
     if(execution_code == QDialog::Accepted){
         if(_rdm_gene_dial->process_generation()>0){
+            qDebug() << "GENERATION TERMINEE _____________";
             reload_model(_rdm_gene_dial->getTemporaryFilename());
         }else{
             set_status("Unable to generate data");

@@ -38,7 +38,7 @@ public:
      * Indèxe le numéro du caractère des débuts de ligne QVector<long>
      *
      */
-    DataModel(QString filename, QChar col_delimiter = ',');
+    DataModel(QString filename, char col_delimiter = ',');
     ~DataModel();
 
 public:
@@ -91,10 +91,10 @@ private:
     QFile *f ;
     int _row_count = 0 ;
     int _col_count = 0 ;
-    QChar _col_delimiter ;
+    char _col_delimiter;
     QVector<qint64> line_index ;
     bool isValid(QModelIndex index) const;
-    QColor *color;
+    QVector<QColor> color;
 
     QStringList _headers ;
     QVector<int> _cols_shifter ;

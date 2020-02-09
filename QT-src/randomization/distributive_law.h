@@ -19,6 +19,7 @@ public:
      * @return a double between 0.0 and 1.0
      */
     virtual double generate() = 0;
+    virtual int getUISection() const = 0 ;
 protected:
     mint_generator* _generator = nullptr;
 };

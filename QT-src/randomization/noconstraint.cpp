@@ -12,3 +12,8 @@ int NoConstraint::getLimitAt(int line)
 }
 
 NoConstraint::~NoConstraint() {}
+
+int NoConstraint::getUISection() const
+{
+    return _ui_section;
+}
