@@ -250,19 +250,19 @@ QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
 void MainWindow::hide_tabular_view() const
 {
     ui->tableView->hide();
-    ui->pushButton->hide();
+    /*ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->pushButton_3->hide();
-    ui->pushButton_4->hide();
+    ui->pushButton_4->hide();*/
 }
 
 void MainWindow::show_tabular_view() const
 {
     ui->tableView->show();
-    ui->pushButton->show();
+    /*ui->pushButton->show();
     ui->pushButton_2->show();
     ui->pushButton_3->show();
-    ui->pushButton_4->show();
+    ui->pushButton_4->show();*/
 }
 
 void MainWindow::hide_graphic_view() const

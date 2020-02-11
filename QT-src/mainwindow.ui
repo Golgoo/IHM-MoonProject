@@ -42,42 +42,7 @@
      <item>
       <layout class="QVBoxLayout" name="TabulareViewLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="pushButton_4">
-           <property name="mouseTracking">
-            <bool>false</bool>
-           </property>
-           <property name="tabletTracking">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_3">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_2">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout_2"/>
        </item>
        <item>
         <widget class="QTableView" name="tableView">
@@ -122,8 +87,6 @@ selection-background-color: rgb(252, 233, 79);</string>
     <addaction name="actionGenerate"/>
     <addaction name="actionOpen"/>
     <addaction name="actionExport"/>
-    <addaction name="actionSave_as"/>
-    <addaction name="actionSauvegarder_sous"/>
     <addaction name="actionFermer"/>
     <addaction name="actionExit"/>
    </widget>
@@ -131,11 +94,6 @@ selection-background-color: rgb(252, 233, 79);</string>
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
-    <addaction name="actionCopier"/>
-    <addaction name="actionColler"/>
-    <addaction name="actionCouper"/>
     <addaction name="actionChanger_couleur"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -147,16 +105,9 @@ selection-background-color: rgb(252, 233, 79);</string>
     <addaction name="actionGraphique"/>
     <addaction name="actionPlein_cran"/>
    </widget>
-   <widget class="QMenu" name="menuAide">
-    <property name="title">
-     <string>Aide</string>
-    </property>
-    <addaction name="actionSommaire"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">

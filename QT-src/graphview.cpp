@@ -8,6 +8,7 @@
 #include "node.h"
 #include "edge.h"
 #include "emetteursignal.h"
+#include <QTransform>
 
 GraphView::GraphView(QWidget *parent)
     : QGraphicsView(parent)
@@ -28,21 +29,7 @@ GraphView::GraphView(QWidget *parent)
 
     /*TODO:A modifier plus tard ?*/
     setMinimumSize(GRAPHICS_VIEW_DIMENSION, GRAPHICS_VIEW_DIMENSION);
-    /*Node *node1 = new Node();
-    Node *node2 = new Node();
-    Node *node3 = new Node();
-    Node *node4 = new Node();
-    node1->setPos(50, 50);
-    node2->setPos(50, 170);
-    node3->setPos(0, 50);
-    node4->setPos(120, 30);
-    scene->addItem(node1);
-    scene->addItem(node2);
-    scene->addItem(node3);
-    scene->addItem(node4);
-    scene->addItem(new Edge(node1, node2));
-    scene->addItem(new Edge(node2, node3));
-    scene->addItem(new Edge(node4, node1));*/
+   initial_ratio = ratio = QGraphicsView::transform().m11();
 
 }
 
@@ -144,7 +131,6 @@ void GraphView::generateGraphUsingDatas()
 void GraphView::wheelEvent ( QWheelEvent * event )
 {
     //qDebug() << "WHEEEEEEEEEEEEEEEEEL";
-    ratio = 1;
     int numDegrees = event->delta() / 8;
     int numSteps = numDegrees / 15;
     _numScheduledScalings += numSteps;
@@ -167,13 +153,28 @@ void GraphView::animFinished()
     _numScheduledScalings++;
     sender()->~QObject();
     EmetteurSignal *em = new EmetteurSignal;
-    Node::ratio = ratio;
-
+    /*Node::ratio = ratio;
+    QTransform dimOfNewResizedWindow = QGraphicsView::transform();
+    qDebug() << "dim fenêtre ??" << dimOfNewResizedWindow.m11() << "-" <<dimOfNewResizedWindow.m22();*/
 }
 
 void GraphView::scalingTime(qreal x)
 {
     qreal factor = 1.0+ qreal(_numScheduledScalings) / 300.0;
+    /*if(ratio > 1)
+        ratio *= 1-(factor-1);
+    else {
+        ratio *= 1 + (1-factor);
+    }
+
+    ratio = QGraphicsView::transform().m11();
+    if(ratio<1)
+        factor = 1;*/
+    ratio = QGraphicsView::transform().m11();
+    qDebug() << "dim fenêtre ??" << ratio;
+    /*if(ratio<initial_ratio){
+        ratio = initial_ratio;
+        return;
+    }*/
     scale(factor, factor);
-    ratio *= (1 - factor);
 }

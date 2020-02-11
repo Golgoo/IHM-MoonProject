@@ -106,6 +106,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
         break;
     };
     qDebug() << "Pos du sommet manipulé " << pos().x() << " " << pos().y();
+
     return QGraphicsItem::itemChange(change, value);
 }
 
