@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "ui_mainwindow.h"
 
+qreal Node::ratio = 1;
 
 Node::Node(QString name)
 {
@@ -87,15 +88,12 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
             }
             qreal width = scene()->views().first()->width();
             qreal height = scene()->views().first()->height();
-            qDebug() << "SCENE WIDHT 3 : " << scene()->width();
-            qDebug() << "SCENE HEIGHT 3 : " << scene()->height();
-            qDebug() << pos().x();
-            qDebug() << pos().y();
-            if (pos().x() >= width * 1.2465 - radius) {
-                this->setX(width * 1.2465 - radius);
+            //qDebug() << "RATIO : " << Node::ratio;
+            if (pos().x() >= width * 1.2465 * Node::ratio - radius) {
+                this->setX(width * 1.2465 * Node::ratio - radius);
             }
-            if (pos().y() >= height * 1.2465 - radius) {
-                this->setY(height  * 1.2465 - radius);
+            if (pos().y() >= height *1.2465 *  Node::ratio - radius) {
+                this->setY(height  * 1.2465 * Node::ratio - radius);
             }
 
             for (Edge *edge : getEdges()) {
@@ -107,7 +105,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     default:
         break;
     };
-
+    qDebug() << "Pos du sommet manipulé " << pos().x() << " " << pos().y();
     return QGraphicsItem::itemChange(change, value);
 }
 

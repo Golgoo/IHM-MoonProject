@@ -20,6 +20,8 @@ private:
 
      int _numScheduledScalings = 0;
 
+     qreal ratio = 1;
+
 private slots:
     void scalingTime(qreal x);
     void animFinished();

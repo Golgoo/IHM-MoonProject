@@ -1,6 +1,7 @@
 #include "emetteursignal.h"
 #include <QDebug>
 #include "edge.h"
+#include "node.h"
 
 EmetteurSignal::EmetteurSignal(QObject *parent) : QObject(parent)
 {
@@ -17,6 +18,11 @@ void EmetteurSignal::emitLastSelectedEdgeSignal(Edge *e){
     Edge &xd = *e;
 
     emit lastSelectedEdge(xd);
+}
+
+void EmetteurSignal::emitNewRatioForWindow(qreal x){
+    emit newRatioForWindow(x);
+    Node::ratio = x;
 }
 
 
