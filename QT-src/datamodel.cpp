@@ -135,6 +135,8 @@ QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const
     QString tmp ;
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
+        tmp = tmp+"-"+indexOfColumn;
+        qDebug() << tmp;
         if(! dsHash.contains(tmp)){
             dsHash.insert(tmp, 1);
         }else{

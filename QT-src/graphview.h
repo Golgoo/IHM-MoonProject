@@ -11,13 +11,20 @@ class GraphView : public QGraphicsView
 Q_OBJECT
 
 private:
+
      QGraphicsScene *scene = new QGraphicsScene(this);
      int GRAPHICS_VIEW_DIMENSION = 400;
      QList<Node*> everyNode;
      QList<Edge*> everyEdge;
+     void wheelEvent ( QWheelEvent * event ) override;
+
+     int _numScheduledScalings = 0;
+
+     qreal ratio = 1;
 
 private slots:
-
+    void scalingTime(qreal x);
+    void animFinished();
 
 public:
     GraphView(QWidget *parent);

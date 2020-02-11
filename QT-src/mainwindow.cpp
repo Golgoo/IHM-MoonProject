@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     _view_actions_group->addAction(ui->actionGraphique);
     _view_actions_group->addAction(ui->actionGlobale);
 //---------------------------------------------
+
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +44,13 @@ MainWindow::~MainWindow()
     delete _view_actions_group;
 }
 
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    qDebug() << "WIDTH VIEW : " << ui->graphicsView->width();
+    qDebug() << "HEIGHT VIEW : " << ui->graphicsView->height();
+    qDebug() << "WIDTH SCENE : " << ui->graphicsView->getScene()->width();
+    qDebug() << "HEIGHT SCENE : " << ui->graphicsView->getScene()->height();
+    ui->graphicsView->getScene()->setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
+}
 
 void MainWindow::on_actionGenerate_triggered()
 {
@@ -52,6 +60,9 @@ void MainWindow::on_actionGenerate_triggered()
         if(_rdm_gene_dial->process_generation()>0){
             qDebug() << "GENERATION TERMINEE _____________";
             reload_model(_rdm_gene_dial->getTemporaryFilename());
+            ui->graphicsView->setModel(_model);
+            ui->graphicsView->generateGraphUsingDatas();
+            connectForlastSelectedObjects();
         }else{
             set_status("Unable to generate data");
         }
@@ -102,19 +113,24 @@ void MainWindow::on_actionOpen_triggered()
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
     ui->graphicsView->setModel(model);
     ui->graphicsView->generateGraphUsingDatas();
+    connectForlastSelectedObjects();
+
+
+}
+
+void MainWindow::connectForlastSelectedObjects(){
 
     for(Node *node : ui->graphicsView->getEveryNode()){
         EmetteurSignal *em = node->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
-        qDebug() << "gg " << node->getName();
+        //qDebug() << "node dans EveryNode : " << node->getName();
     }
 
     for(Edge *edge : ui->graphicsView->getEveryEdge()){
         EmetteurSignal *em = edge->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
-        qDebug() << "lol " << edge->getName();
+        //qDebug() << "edge dans EveryEdge : " << edge->getName();
     }
-
 }
 
 //---------------------------------------------------------
