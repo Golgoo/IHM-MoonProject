@@ -77,7 +77,9 @@ void MainWindow::updateLastSelectedNode(int id_sommet){
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
-    qDebug() << "mon slot capte l'edge " << &e;
+    qDebug() << "mon slot capte l'edge " << &e << e.getName();
+    qDebug() << "ahaahahahahaha" << (ui->selectedObjLabel == nullptr);
+    ui->selectedObjLabel->setText("A sélectionné "+e.getName());
 
     lastSelectedEdge = &e;
     lastSelect = EDGE;
