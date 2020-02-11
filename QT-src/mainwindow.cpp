@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     _view_actions_group->addAction(ui->actionGraphique);
     _view_actions_group->addAction(ui->actionGlobale);
 //---------------------------------------------
+
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +43,13 @@ MainWindow::~MainWindow()
     delete _view_actions_group;
 }
 
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    qDebug() << "WIDTH VIEW : " << ui->graphicsView->width();
+    qDebug() << "HEIGHT VIEW : " << ui->graphicsView->height();
+    qDebug() << "WIDTH SCENE : " << ui->graphicsView->getScene()->width();
+    qDebug() << "HEIGHT SCENE : " << ui->graphicsView->getScene()->height();
+    ui->graphicsView->getScene()->setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
+}
 
 void MainWindow::on_actionGenerate_triggered()
 {
