@@ -85,6 +85,7 @@ public:
 
 signals:
     void error_loading_file(QString error_details) const;
+    void error_csv_not_valid(QString error_details) const;
 
 
 private:

@@ -8,6 +8,7 @@
 #include "emetteursignal.h"
 #include "node.h"
 #include "edge.h"
+#include <QDate>
 
 #include <QList>
 
@@ -94,7 +95,6 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
 
-
     file.close();
 
     DataModel *model = new DataModel(filename);
@@ -107,19 +107,22 @@ void MainWindow::on_actionOpen_triggered()
 
     /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
-    ui->graphicsView->setModel(model);
-    ui->graphicsView->generateGraphUsingDatas();
+    if (ui->graphicsView->modelOfGraph->rowCount()!=0 && ui->graphicsView->modelOfGraph->columnCount()!=0)
+    {
+        ui->graphicsView->setModel(model);
+        ui->graphicsView->generateGraphUsingDatas();
 
-    for(Node *node : ui->graphicsView->getEveryNode()){
-        EmetteurSignal *em = node->sigEmet;
-        QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
-        qDebug() << "gg " << node->getName();
-    }
+        for(Node *node : ui->graphicsView->getEveryNode()){
+            EmetteurSignal *em = node->sigEmet;
+            QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
+            qDebug() << "gg " << node->getName();
+        }
 
-    for(Edge *edge : ui->graphicsView->getEveryEdge()){
-        EmetteurSignal *em = edge->sigEmet;
-        QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
-        qDebug() << "lol " << edge->getName();
+        for(Edge *edge : ui->graphicsView->getEveryEdge()){
+            EmetteurSignal *em = edge->sigEmet;
+            QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
+            qDebug() << "lol " << edge->getName();
+        }
     }
 
 }
@@ -175,6 +178,14 @@ void MainWindow::on_actionExport_triggered()
         {
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
+            qDebug() << fileName;
+            QString descriptionfileName=fileName.split(".").first()+".txt";
+            QFile file(descriptionfileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+               return;
+
+            QTextStream out(&file);
+            out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
         }
 }
 

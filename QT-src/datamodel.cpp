@@ -6,6 +6,8 @@
 #include <QColor>
 #include <QIdentityProxyModel>
 #include <QBrush>
+#include "geneerrordialog.h"
+#include <QMessageBox>
 
 
 DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col_delimiter)
@@ -17,14 +19,26 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         QTextStream ts (f);
         QString tmp = ts.readLine();
         /* On se permet de garder les headers dans la RAM */
+        QStringList tmp_header=_headers;
+        int tmp_row_count = _row_count ;
+        int tmp_col_count = _col_count ;
+        QChar tmp_col_delimiter =_col_delimiter;
+        QVector<qint64> tmp_line_index =line_index;
+        int pb=0;
         _headers = tmp.split(col_delimiter);
-
         line_index.push_back(ts.pos());
 
         /*On récup nb de colonnes de la ligne*/
         _col_count = tmp.split(this->_col_delimiter).size();
         while(! ts.atEnd()){
             QString readedLine = ts.readLine();
+            if (readedLine.split(this->_col_delimiter).size()!=_col_count)
+            {
+                //TODO message erreur
+
+                pb=1;
+                break;
+            }
             if(readedLine.isEmpty()) continue;
 
             /*On récupère index de la ligne par rapport au Stream du fichier ouvert*/
@@ -35,12 +49,22 @@ DataModel::DataModel(QString filename, QChar col_delimiter) : _col_delimiter(col
         //qDebug() << " Valeurs distinctes de la 1ère colonne " << getDistinctValuesOfColumn(0);
 
         // Détermine les couleurs de départ des lignes des données et donc aussi des arêtes
-        color = (QColor*) malloc(sizeof (QColor)*_row_count);
-        for(int row=0; row<_row_count; row++){
-            color[row] = QColor::fromHsl((360/_row_count)*row,255,175);
+        if(pb!=1)
+        {
+            color = (QColor*) malloc(sizeof (QColor)*_row_count);
+            for(int row=0; row<_row_count; row++){
+                color[row] = QColor::fromHsl((360/_row_count)*row,255,175);
+            }
+            //-----------------------------------------------------------
+            for(int i = 0 ; i < _col_count ; i ++) _cols_shifter.push_back(i);
         }
-        //-----------------------------------------------------------
-        for(int i = 0 ; i < _col_count ; i ++) _cols_shifter.push_back(i);
+        else {
+            _headers=tmp_header;
+            _row_count=tmp_row_count ;
+            _col_count = tmp_col_count;
+            _col_delimiter= tmp_col_delimiter;
+            line_index=tmp_line_index;
+        }
     }
 }
 
