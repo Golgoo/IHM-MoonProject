@@ -14,7 +14,7 @@ GraphView::GraphView(QWidget *parent)
 
     scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(0, 0, 400, 400);
+    //scene->setSceneRect(0, 0, 400, 400);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(scene);
     setCacheMode(CacheBackground);
@@ -25,7 +25,6 @@ GraphView::GraphView(QWidget *parent)
 
     /*TODO:A modifier plus tard ?*/
     setMinimumSize(GRAPHICS_VIEW_DIMENSION, GRAPHICS_VIEW_DIMENSION);
-
     /*Node *node1 = new Node();
     Node *node2 = new Node();
     Node *node3 = new Node();
@@ -71,7 +70,7 @@ void GraphView::generateGraphUsingDatas()
 
     for(int col=0; col<modelOfGraph->columnCount(); col++){
         QHash<QString,int> hashOfDV = modelOfGraph->getDistinctValuesOfColumn(col);
-        //qDebug() << "taille hashOfDV " << hashOfDV.size() << " " << hashOfDV;
+        //qDebug() << "taille hashOfDV " << hashOfDV.siz300e() << " " << hashOfDV;
         list.insert(col, hashOfDV);
 
         nb_sommet_in_graph = nb_sommet_in_graph + hashOfDV.size();

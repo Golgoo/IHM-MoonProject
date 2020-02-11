@@ -131,7 +131,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         return;
 
     //C'est là qu'on devra changer la couleur, le style des arêtes en fonction de la palette
-    painter->setPen(QPen(color, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(color, 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 
     double angle = std::atan2(-line.dy(), line.dx());
@@ -148,24 +148,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(color);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
-
-    //DEBUG CODE
-    QRectF rect(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
-                               destPoint.y() - sourcePoint.y()));
-    //painter->drawRect(QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
-                                                 //destPoint.y() - sourcePoint.y())));
-
-    double angleRotate = acos(fabs(destPoint.y() - sourcePoint.y()) / line.length());
-
-    QPointF center = rect.center();
-    /*painter->translate(center);
-    painter->rotate(angleRotate * (180 / M_PI));
-    painter->translate(center);*/
-
-    qDebug() << "angle : " << angleRotate;
-    QTransform t = QTransform().translate(center.x(), center.y()).rotate(angleRotate * (180 / M_PI)).translate(-center.x(), -center.y());
-    QPolygonF rotatedRect =  t.mapToPolygon(rect.toRect());  // mapRect() returns the bounding rect of the rotated rect
-    painter->drawPolygon(rotatedRect);
 }
 
 //TODO: faire que quand on tire un noeud en dhors de la graphics view, il reste collé au bord et ne sorte pas du cadre
