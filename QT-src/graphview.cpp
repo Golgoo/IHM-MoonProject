@@ -3,6 +3,8 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QHash>
+#include <QWheelEvent>
+#include <QTimeLine>
 #include "node.h"
 #include "edge.h"
 #include "emetteursignal.h"
@@ -10,11 +12,12 @@
 GraphView::GraphView(QWidget *parent)
     : QGraphicsView(parent)
 {
+    //constante magique 498.6/400
     GRAPHICS_VIEW_DIMENSION = 400;
 
     scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(0, 0, 400, 400);
+    //scene->setSceneRect(0, 0, 400, 400);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(scene);
     setCacheMode(CacheBackground);
@@ -25,7 +28,6 @@ GraphView::GraphView(QWidget *parent)
 
     /*TODO:A modifier plus tard ?*/
     setMinimumSize(GRAPHICS_VIEW_DIMENSION, GRAPHICS_VIEW_DIMENSION);
-
     /*Node *node1 = new Node();
     Node *node2 = new Node();
     Node *node3 = new Node();
@@ -62,6 +64,11 @@ QList<Edge*> GraphView::getEveryEdge(){
 
 void GraphView::generateGraphUsingDatas()
 {
+    everyEdge.clear();
+    everyNode.clear();
+    scene->clear();
+    scene->update();
+
     int nb_sommet_in_graph = 0;
     int maxNbSommetOfColumn = 0;
 
@@ -71,7 +78,7 @@ void GraphView::generateGraphUsingDatas()
 
     for(int col=0; col<modelOfGraph->columnCount(); col++){
         QHash<QString,int> hashOfDV = modelOfGraph->getDistinctValuesOfColumn(col);
-        //qDebug() << "taille hashOfDV " << hashOfDV.size() << " " << hashOfDV;
+        //qDebug() << "taille hashOfDV " << hashOfDV.siz300e() << " " << hashOfDV;
         list.insert(col, hashOfDV);
 
         nb_sommet_in_graph = nb_sommet_in_graph + hashOfDV.size();
@@ -79,16 +86,19 @@ void GraphView::generateGraphUsingDatas()
             maxNbSommetOfColumn = hashOfDV.size();
     }
 
-    //qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
+    qDebug() << "Il y a " << nb_sommet_in_graph << " sommets dans le graphe";
     /*L'espacement entre les sommets peut varier si un sommet est plus gros qu'un autre ?*/
-    int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
-    int spaceY = GRAPHICS_VIEW_DIMENSION/maxNbSommetOfColumn;
+
     int nbSommetsInsere = 0;
 
     for(int col=0; col < list.size(); col++){
         int indexInColumn = 0;
+        int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
+        int spaceY = GRAPHICS_VIEW_DIMENSION/list.at(col).size();
+        qDebug() << "spaceY pour col"<<col << " " << spaceY;
         for(auto dv : list.at(col).keys()){
             Node *node = new Node(dv);
+            qDebug() << "ooooooooooo" << node->getName();
             node->setPosDansEveryNode(nbSommetsInsere);
             everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);
@@ -110,7 +120,11 @@ void GraphView::generateGraphUsingDatas()
         for (int row = 0; row<modelOfGraph->rowCount(); row++) {
             QString val1 = modelOfGraph->getValue(row,col);
             QString val2 = modelOfGraph->getValue(row,col+1);
-            //qDebug() << val1 << "--" << val2;
+
+            val1 = val1+"-"+col;
+            val2 = val2+"-"+(col+1);
+
+            qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
             Node *node2 = hashOfNodesOfDV.value(val2);
             int nbMaxRow = modelOfGraph->rowCount();
@@ -125,4 +139,41 @@ void GraphView::generateGraphUsingDatas()
         }
     }
     scene->update();
+}
+
+void GraphView::wheelEvent ( QWheelEvent * event )
+{
+    //qDebug() << "WHEEEEEEEEEEEEEEEEEL";
+    ratio = 1;
+    int numDegrees = event->delta() / 8;
+    int numSteps = numDegrees / 15;
+    _numScheduledScalings += numSteps;
+    if (_numScheduledScalings * numSteps < 0)
+    _numScheduledScalings = numSteps;
+
+    QTimeLine *anim = new QTimeLine(350, this);
+    anim->setUpdateInterval(20);
+
+    connect(anim, SIGNAL (valueChanged(qreal)), SLOT (scalingTime(qreal)));
+    connect(anim, SIGNAL (finished()), SLOT (animFinished()));
+    anim->start();
+}
+
+void GraphView::animFinished()
+{
+    if (_numScheduledScalings > 0)
+    _numScheduledScalings--;
+    else
+    _numScheduledScalings++;
+    sender()->~QObject();
+    EmetteurSignal *em = new EmetteurSignal;
+    Node::ratio = ratio;
+
+}
+
+void GraphView::scalingTime(qreal x)
+{
+    qreal factor = 1.0+ qreal(_numScheduledScalings) / 300.0;
+    scale(factor, factor);
+    ratio *= (1 - factor);
 }

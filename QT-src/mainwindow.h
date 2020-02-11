@@ -75,6 +75,8 @@ protected:
 
     void on_read_operation_error(QString error);
 
+    void resizeEvent(QResizeEvent* event);
+
 private:
     Ui::MainWindow *ui;
     /*On crée String contenant nom du fichier avec lequel on va travailler*/
@@ -99,5 +101,6 @@ private:
     void show_graphic_view() const ;
 
     void reload_model(QString filename);
+    void connectForlastSelectedObjects();
 };
 #endif // MAINWINDOW_H

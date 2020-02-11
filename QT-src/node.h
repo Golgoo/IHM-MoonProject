@@ -19,7 +19,10 @@ private:
     QPointF newPos;
     int posDansEveryNode;
 
+
 public:
+
+    static qreal ratio;
     Node(QString name = "");
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
