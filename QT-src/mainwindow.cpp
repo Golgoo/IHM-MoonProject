@@ -8,6 +8,8 @@
 #include "emetteursignal.h"
 #include "node.h"
 #include "edge.h"
+#include <QDate>
+#include "model/modelexception.h"
 
 #include <QList>
 #include "randomization/generation_dialog.h"
@@ -74,10 +76,14 @@ void MainWindow::updateLastSelectedNode(int id_sommet){
     qDebug() << "yeeeeeeahhhhhh " << id_sommet;
     lastSelectedSommet = id_sommet;
     lastSelect = VERTEX;
+    Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
+    ui->selectedObjLabel->setText("A sélectionné "+node->getName());
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
-    qDebug() << "mon slot capte l'edge " << &e;
+    qDebug() << "mon slot capte l'edge " << &e << e.getName();
+    qDebug() << "ahaahahahahaha" << (ui->selectedObjLabel == nullptr);
+    ui->selectedObjLabel->setText("A sélectionné "+e.getName());
 
     lastSelectedEdge = &e;
     lastSelect = EDGE;
@@ -98,10 +104,26 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
 
-
     file.close();
 
-    DataModel *model = new DataModel(filename);
+    DataModel *model;
+    /*try  {
+        model = new DataModel(filename);
+    } catch (ModelExeption &e) {
+        qDebug() << "ERREUR FICHIER NON CONFORME";
+        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
+        model = nullptr;
+        return;
+    }*/
+    model = new DataModel(filename);
+    if(!model->isConform()){
+        delete model;
+        qDebug() << "HELOOOOOOOOOOOOOO";
+        ui->tableView->setModel(nullptr);
+        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
+        return;
+    }
+
     ui->tableView->setModel(model);
     //ui->graphicsView->generateGraphUsingDatas(&model);
     //ui->graphicsView->setModell();
@@ -111,10 +133,12 @@ void MainWindow::on_actionOpen_triggered()
 
     /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
-    ui->graphicsView->setModel(model);
-    ui->graphicsView->generateGraphUsingDatas();
-    connectForlastSelectedObjects();
-
+    if (ui->graphicsView->modelOfGraph->rowCount()!=0 && ui->graphicsView->modelOfGraph->columnCount()!=0)
+    {
+        ui->graphicsView->setModel(model);
+        ui->graphicsView->generateGraphUsingDatas();
+        connectForlastSelectedObjects();
+    }
 
 }
 
@@ -184,6 +208,14 @@ void MainWindow::on_actionExport_triggered()
         {
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
+            qDebug() << fileName;
+            QString descriptionfileName=fileName.split(".").first()+".txt";
+            QFile file(descriptionfileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+               return;
+
+            QTextStream out(&file);
+            out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
         }
 }
 

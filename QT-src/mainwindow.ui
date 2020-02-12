@@ -42,10 +42,23 @@
      <item>
       <layout class="QVBoxLayout" name="TabulareViewLayout">
        <item>
+        <widget class="QLabel" name="selectedObjLabel">
+         <property name="text">
+          <string>Objets sélectionnés</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2"/>
        </item>
        <item>
         <widget class="QTableView" name="tableView">
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>400</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">border-color: rgb(114, 159, 207);
 color: rgb(85, 87, 83);</string>
@@ -56,6 +69,12 @@ color: rgb(85, 87, 83);</string>
      </item>
      <item>
       <widget class="GraphView" name="graphicsView">
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>400</height>
+        </size>
+       </property>
        <property name="styleSheet">
         <string notr="true">border-color: rgb(138, 226, 52);
 color: rgb(239, 41, 41);
@@ -87,7 +106,6 @@ selection-background-color: rgb(252, 233, 79);</string>
     <addaction name="actionGenerate"/>
     <addaction name="actionOpen"/>
     <addaction name="actionExport"/>
-    <addaction name="actionFermer"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">

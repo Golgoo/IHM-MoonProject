@@ -6,12 +6,17 @@
 #include <QColor>
 #include <QIdentityProxyModel>
 #include <QBrush>
+#include <QMessageBox>
+#include <QString>
 
+#include "model/modelexception.h"
 #include <fstream>
 #include <sstream>
 
+
 DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_delimiter)
 {
+    Valid = true;
     qDebug() << "Starting to read model";
     f = new QFile(filename);
     if(! f->open(QIODevice::ReadOnly | QFile::Text)){
@@ -21,15 +26,32 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         std::string tmp ;
         std::getline(stream, tmp);
         std::stringstream ss(tmp);
+
+        int nb_row = 0;
         /* On se permet de garder les headers dans la RAM */
         for (std::string item; std::getline(ss, item, _col_delimiter); ) {
+            qDebug() << "bbbbbbbbb " << QString::fromStdString(item);
             _headers.push_back(QString(item.c_str()));
         }
         _col_count = _headers.size();
         line_index.push_back(stream.tellg());
 
         for (std::string line; std::getline(stream, line); ) {
-            line_index.push_back(stream.tellg());
+            qint64 indexOfLine = stream.tellg();
+            qDebug() << " uuuuuuuuuu" << QString::fromStdString(line);
+            std::stringstream iss(line);
+            int nb_elem_on_line =0;
+            for (std::string item; std::getline(iss, item, _col_delimiter); ) {
+                nb_elem_on_line++;
+            }
+            qDebug() << "woooooooooooooooooooooooooo";
+            if(nb_elem_on_line!=_col_count){
+                qDebug() << nb_elem_on_line << "yo " << _col_count;
+                Valid = false;
+
+            }
+
+            line_index.push_back(indexOfLine);
             _row_count ++ ;
         }
 
@@ -42,6 +64,7 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         }
     }
     qDebug() << "Finish to read model : " << _row_count << " ligne(s) - " << _col_count << " colonne(s)" ;
+    qDebug() << "isConform ?" << isConform();
 }
 
 DataModel::~DataModel()
@@ -49,6 +72,10 @@ DataModel::~DataModel()
     f->close();
     delete f;
     f = nullptr;
+}
+
+bool DataModel::isConform() const{
+    return Valid;
 }
 
 /*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
@@ -114,6 +141,8 @@ QString DataModel::getValue(int row, int col) const
 
 bool DataModel::isValid(QModelIndex index) const
 {
+    if(!isConform())
+        return false;
     int r = index.row() ;
     int c = index.column();
     return ( 0 <= r && r < _row_count ) && ( 0 <= c && c < _col_count) ;
@@ -135,8 +164,11 @@ QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const
     QString tmp ;
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
-        tmp = tmp+"-"+indexOfColumn;
-        qDebug() << tmp;
+        //tmp = tmp+"-"+indexOfColumn;
+        QString numCol = QString("-%1").arg(indexOfColumn);
+        tmp += numCol;
+
+        qDebug() << "SOMMET : " << tmp;
         if(! dsHash.contains(tmp)){
             dsHash.insert(tmp, 1);
         }else{
