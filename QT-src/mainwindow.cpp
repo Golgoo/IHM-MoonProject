@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
     this->setCentralWidget(ui->groupBox);
-
+    this->resize(900,400);
     QColor myColor;
     //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
     myTablet = new QColorDialog();
