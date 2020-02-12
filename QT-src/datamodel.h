@@ -38,7 +38,7 @@ public:
      * Indèxe le numéro du caractère des débuts de ligne QVector<long>
      *
      */
-    DataModel(QString filename, QChar col_delimiter = ',');
+    DataModel(QString filename, char col_delimiter = ',');
     ~DataModel();
 
 public:
@@ -73,7 +73,7 @@ public:
 
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
-
+    bool isConform() const;
 
     //Sauvegarde dans ce chemin
     //save_into(const QString filename)
@@ -85,20 +85,21 @@ public:
 
 signals:
     void error_loading_file(QString error_details) const;
+    void error_csv_not_valid(QString error_details) const;
 
 
 private:
     QFile *f ;
     int _row_count = 0 ;
     int _col_count = 0 ;
-    QChar _col_delimiter ;
+    char _col_delimiter;
     QVector<qint64> line_index ;
     bool isValid(QModelIndex index) const;
-    QColor *color;
+    QVector<QColor> color;
 
     QStringList _headers ;
     QVector<int> _cols_shifter ;
-
+    bool Valid;
 };
 
 #endif // DATAMODEL_H

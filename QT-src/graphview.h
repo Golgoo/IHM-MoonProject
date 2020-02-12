@@ -11,6 +11,7 @@ class GraphView : public QGraphicsView
 Q_OBJECT
 
 private:
+
      QGraphicsScene *scene = new QGraphicsScene(this);
      int GRAPHICS_VIEW_DIMENSION = 400;
      QList<Node*> everyNode;
@@ -18,6 +19,9 @@ private:
      void wheelEvent ( QWheelEvent * event ) override;
 
      int _numScheduledScalings = 0;
+
+     qreal ratio = 1;
+     qreal initial_ratio = 1;
 
 private slots:
     void scalingTime(qreal x);

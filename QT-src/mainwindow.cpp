@@ -8,8 +8,11 @@
 #include "emetteursignal.h"
 #include "node.h"
 #include "edge.h"
+#include <QDate>
+#include "model/modelexception.h"
 
 #include <QList>
+#include "randomization/generation_dialog.h"
 
 /*C'est ici qu'on va définir toutes nos fonctionnalités*/
 
@@ -20,19 +23,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
 
     this->setCentralWidget(ui->groupBox);
-
+    this->resize(900,400);
     QColor myColor;
     //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
     myTablet = new QColorDialog();
     QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
 //-----------------------------------------------
-    _rdm_gene_dial = new RandomGenerationDialog(this);
+    _rdm_gene_dial = new generation_dialog(this);
     _view_actions_group = new QActionGroup(this);
     _view_actions_group->addAction(ui->actionTabulaire);
     _view_actions_group->addAction(ui->actionGraphique);
     _view_actions_group->addAction(ui->actionGlobale);
 //---------------------------------------------
+
 }
 
 MainWindow::~MainWindow()
@@ -42,14 +46,21 @@ MainWindow::~MainWindow()
     delete _view_actions_group;
 }
 
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    qDebug() << "WIDTH VIEW : " << ui->graphicsView->width();
+    qDebug() << "HEIGHT VIEW : " << ui->graphicsView->height();
+    qDebug() << "WIDTH SCENE : " << ui->graphicsView->getScene()->width();
+    qDebug() << "HEIGHT SCENE : " << ui->graphicsView->getScene()->height();
+    ui->graphicsView->getScene()->setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
+}
 
 void MainWindow::on_actionGenerate_triggered()
 {
     currentFile.clear();
-
     int execution_code = _rdm_gene_dial->exec();
     if(execution_code == QDialog::Accepted){
         if(_rdm_gene_dial->process_generation()>0){
+            qDebug() << "GENERATION TERMINEE _____________";
             reload_model(_rdm_gene_dial->getTemporaryFilename());
             ui->graphicsView->setModel(_model);
             ui->graphicsView->generateGraphUsingDatas();
@@ -65,10 +76,14 @@ void MainWindow::updateLastSelectedNode(int id_sommet){
     qDebug() << "yeeeeeeahhhhhh " << id_sommet;
     lastSelectedSommet = id_sommet;
     lastSelect = VERTEX;
+    Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
+    ui->selectedObjLabel->setText("A sélectionné "+node->getName());
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
-    qDebug() << "mon slot capte l'edge " << &e;
+    qDebug() << "mon slot capte l'edge " << &e << e.getName();
+    qDebug() << "ahaahahahahaha" << (ui->selectedObjLabel == nullptr);
+    ui->selectedObjLabel->setText("A sélectionné "+e.getName());
 
     lastSelectedEdge = &e;
     lastSelect = EDGE;
@@ -89,10 +104,26 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
 
-
     file.close();
 
-    DataModel *model = new DataModel(filename);
+    DataModel *model;
+    /*try  {
+        model = new DataModel(filename);
+    } catch (ModelExeption &e) {
+        qDebug() << "ERREUR FICHIER NON CONFORME";
+        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
+        model = nullptr;
+        return;
+    }*/
+    model = new DataModel(filename);
+    if(!model->isConform()){
+        delete model;
+        qDebug() << "HELOOOOOOOOOOOOOO";
+        ui->tableView->setModel(nullptr);
+        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
+        return;
+    }
+
     ui->tableView->setModel(model);
     //ui->graphicsView->generateGraphUsingDatas(&model);
     //ui->graphicsView->setModell();
@@ -102,10 +133,12 @@ void MainWindow::on_actionOpen_triggered()
 
     /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
-    ui->graphicsView->setModel(model);
-    ui->graphicsView->generateGraphUsingDatas();
-    connectForlastSelectedObjects();
-
+    if (ui->graphicsView->modelOfGraph->rowCount()!=0 && ui->graphicsView->modelOfGraph->columnCount()!=0)
+    {
+        ui->graphicsView->setModel(model);
+        ui->graphicsView->generateGraphUsingDatas();
+        connectForlastSelectedObjects();
+    }
 
 }
 
@@ -175,6 +208,14 @@ void MainWindow::on_actionExport_triggered()
         {
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
+            qDebug() << fileName;
+            QString descriptionfileName=fileName.split(".").first()+".txt";
+            QFile file(descriptionfileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+               return;
+
+            QTextStream out(&file);
+            out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
         }
 }
 
@@ -241,19 +282,19 @@ QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
 void MainWindow::hide_tabular_view() const
 {
     ui->tableView->hide();
-    ui->pushButton->hide();
+    /*ui->pushButton->hide();
     ui->pushButton_2->hide();
     ui->pushButton_3->hide();
-    ui->pushButton_4->hide();
+    ui->pushButton_4->hide();*/
 }
 
 void MainWindow::show_tabular_view() const
 {
     ui->tableView->show();
-    ui->pushButton->show();
+    /*ui->pushButton->show();
     ui->pushButton_2->show();
     ui->pushButton_3->show();
-    ui->pushButton_4->show();
+    ui->pushButton_4->show();*/
 }
 
 void MainWindow::hide_graphic_view() const

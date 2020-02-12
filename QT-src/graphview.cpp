@@ -8,15 +8,17 @@
 #include "node.h"
 #include "edge.h"
 #include "emetteursignal.h"
+#include <QTransform>
 
 GraphView::GraphView(QWidget *parent)
     : QGraphicsView(parent)
 {
+    //constante magique 498.6/400
     GRAPHICS_VIEW_DIMENSION = 400;
 
     scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(0, 0, 400, 400);
+    //scene->setSceneRect(0, 0, 400, 400);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(scene);
     setCacheMode(CacheBackground);
@@ -27,22 +29,7 @@ GraphView::GraphView(QWidget *parent)
 
     /*TODO:A modifier plus tard ?*/
     setMinimumSize(GRAPHICS_VIEW_DIMENSION, GRAPHICS_VIEW_DIMENSION);
-
-    /*Node *node1 = new Node();
-    Node *node2 = new Node();
-    Node *node3 = new Node();
-    Node *node4 = new Node();
-    node1->setPos(50, 50);
-    node2->setPos(50, 170);
-    node3->setPos(0, 50);
-    node4->setPos(120, 30);
-    scene->addItem(node1);
-    scene->addItem(node2);
-    scene->addItem(node3);
-    scene->addItem(node4);
-    scene->addItem(new Edge(node1, node2));
-    scene->addItem(new Edge(node2, node3));
-    scene->addItem(new Edge(node4, node1));*/
+   initial_ratio = ratio = QGraphicsView::transform().m11();
 
 }
 
@@ -78,7 +65,7 @@ void GraphView::generateGraphUsingDatas()
 
     for(int col=0; col<modelOfGraph->columnCount(); col++){
         QHash<QString,int> hashOfDV = modelOfGraph->getDistinctValuesOfColumn(col);
-        //qDebug() << "taille hashOfDV " << hashOfDV.size() << " " << hashOfDV;
+        //qDebug() << "taille hashOfDV " << hashOfDV.siz300e() << " " << hashOfDV;
         list.insert(col, hashOfDV);
 
         nb_sommet_in_graph = nb_sommet_in_graph + hashOfDV.size();
@@ -121,8 +108,8 @@ void GraphView::generateGraphUsingDatas()
             QString val1 = modelOfGraph->getValue(row,col);
             QString val2 = modelOfGraph->getValue(row,col+1);
 
-            val1 = val1+"-"+col;
-            val2 = val2+"-"+(col+1);
+            val1 = val1+"-"+QString("%1").arg(col);
+            val2 = val2+"-"+QString("%1").arg(col+1);
 
             qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
@@ -143,31 +130,51 @@ void GraphView::generateGraphUsingDatas()
 
 void GraphView::wheelEvent ( QWheelEvent * event )
 {
- int numDegrees = event->delta() / 8;
- int numSteps = numDegrees / 15; // see QWheelEvent documentation
- _numScheduledScalings += numSteps;
- if (_numScheduledScalings * numSteps < 0) // if user moved the wheel in another direction, we reset previously scheduled scalings
- _numScheduledScalings = numSteps;
+    //qDebug() << "WHEEEEEEEEEEEEEEEEEL";
+    int numDegrees = event->delta() / 8;
+    int numSteps = numDegrees / 15;
+    _numScheduledScalings += numSteps;
+    if (_numScheduledScalings * numSteps < 0)
+    _numScheduledScalings = numSteps;
 
- QTimeLine *anim = new QTimeLine(350, this);
- anim->setUpdateInterval(20);
+    QTimeLine *anim = new QTimeLine(350, this);
+    anim->setUpdateInterval(20);
 
- connect(anim, SIGNAL (valueChanged(qreal)), SLOT (scalingTime(qreal)));
- connect(anim, SIGNAL (finished()), SLOT (animFinished()));
- anim->start();
+    connect(anim, SIGNAL (valueChanged(qreal)), SLOT (scalingTime(qreal)));
+    connect(anim, SIGNAL (finished()), SLOT (animFinished()));
+    anim->start();
 }
 
 void GraphView::animFinished()
 {
- if (_numScheduledScalings > 0)
- _numScheduledScalings--;
- else
- _numScheduledScalings++;
- sender()->~QObject();
+    if (_numScheduledScalings > 0)
+    _numScheduledScalings--;
+    else
+    _numScheduledScalings++;
+    sender()->~QObject();
+    EmetteurSignal *em = new EmetteurSignal;
+    /*Node::ratio = ratio;
+    QTransform dimOfNewResizedWindow = QGraphicsView::transform();
+    qDebug() << "dim fenêtre ??" << dimOfNewResizedWindow.m11() << "-" <<dimOfNewResizedWindow.m22();*/
 }
 
 void GraphView::scalingTime(qreal x)
 {
- qreal factor = 1.0+ qreal(_numScheduledScalings) / 300.0;
- scale(factor, factor);
+    qreal factor = 1.0+ qreal(_numScheduledScalings) / 300.0;
+    /*if(ratio > 1)
+        ratio *= 1-(factor-1);
+    else {
+        ratio *= 1 + (1-factor);
+    }
+
+    ratio = QGraphicsView::transform().m11();
+    if(ratio<1)
+        factor = 1;*/
+    ratio = QGraphicsView::transform().m11();
+    qDebug() << "dim fenêtre ??" << ratio;
+    /*if(ratio<initial_ratio){
+        ratio = initial_ratio;
+        return;
+    }*/
+    scale(factor, factor);
 }
