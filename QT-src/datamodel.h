@@ -73,7 +73,7 @@ public:
 
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
-
+    bool isConform() const;
 
     //Sauvegarde dans ce chemin
     //save_into(const QString filename)
@@ -85,6 +85,7 @@ public:
 
 signals:
     void error_loading_file(QString error_details) const;
+    void error_csv_not_valid(QString error_details) const;
 
 
 private:
@@ -98,7 +99,7 @@ private:
 
     QStringList _headers ;
     QVector<int> _cols_shifter ;
-
+    bool Valid;
 };
 
 #endif // DATAMODEL_H
