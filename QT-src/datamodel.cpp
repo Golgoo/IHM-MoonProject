@@ -51,8 +51,6 @@ DataModel::~DataModel()
     f = nullptr;
 }
 
-/*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
-//QVariant(void) <=> Invalide
 QVariant DataModel::data (const QModelIndex & index, int role) const
 {
     //qDebug() << "Need Data " << index.row() << " - " << index.column() ;
@@ -110,6 +108,19 @@ QString DataModel::getValue(int row, int col) const
         value.remove('\n');
         return value;
     }
+}
+
+void DataModel::export_csv(const QString filename)
+{
+    std::ofstream out_stream(filename.toStdString());
+    std::ifstream in_stream(f->fileName().toStdString());
+    std::string buff;
+    if(out_stream && in_stream){
+        while(getline(in_stream, buff)){
+            out_stream << buff << '\n';
+        }
+    }
+
 }
 
 bool DataModel::isValid(QModelIndex index) const

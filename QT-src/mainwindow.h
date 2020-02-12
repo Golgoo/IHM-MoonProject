@@ -66,6 +66,8 @@ private slots:
 
     void on_actionGlobale_triggered();
 
+    void on_actionSaveTableur_triggered();
+
 signals:
     void testSignal(const QColor &color);
 

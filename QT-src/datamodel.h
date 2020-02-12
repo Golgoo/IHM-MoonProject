@@ -75,13 +75,7 @@ public:
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
 
 
-    //Sauvegarde dans ce chemin
-    //save_into(const QString filename)
-
-    //Sauvegarde à partir d'un QFile ( potentiellement déjà déplacé )
-    //Ecrit dans un QString filename aléatoire les données.
-    //Ecrit ce filename dans le QFile.
-    //save_from(const QFile &file)
+    void export_csv(const QString filename);
 
 signals:
     void error_loading_file(QString error_details) const;
