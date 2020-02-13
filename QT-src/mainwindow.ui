@@ -38,7 +38,7 @@
     <property name="flat">
      <bool>false</bool>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -91,6 +91,13 @@ color: rgb(85, 87, 83);</string>
         <string notr="true">border-color: rgb(138, 226, 52);
 color: rgb(239, 41, 41);
 background-color: rgb(211, 215, 207);</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Valeur distincte &gt;  400 ????</string>
        </property>
       </widget>
      </item>
