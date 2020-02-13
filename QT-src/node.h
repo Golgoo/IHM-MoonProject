@@ -28,7 +28,10 @@ private:
      */
     qreal radius = 10;
 
-    qreal thickness;
+    /**
+     * @brief ponderation : le nb d'occurence de sa val dans sa colonne
+     */
+    int ponderation = 1;
 
     /**
      * @brief color La couleur du noeud RGB à l'affichage
@@ -88,10 +91,20 @@ public:
     qreal getRadius();
 
     /**
+     * @brief setRadius
+     * @param r le nouveau rayon du noeud
+     */
+    void setRadius(qreal r);
+
+    /**
      * @brief addEdge ajoute une arête à un noeud
      * @param edge l'arête à lier au noeud
      */
     void addEdge(Edge* edge);
+
+    void setPonderation(int n);
+
+    int getPonderation() const;
 };
 
 #endif // NODE_H

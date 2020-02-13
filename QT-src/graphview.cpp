@@ -81,6 +81,14 @@ void GraphView::generateGraphUsingDatas()
 
         for(auto dv : listOfDVOfAllColumns.at(col).keys()){
             Node *node = new Node(dv);
+
+            /*Plus un sommet est relié à des arêtes plus il grossit*/
+            int ponderation = listOfDVOfAllColumns.at(col).value(dv);
+            qreal radius = ponderation*2 + 10;
+            qDebug() << " radius " << radius << " " << ponderation;
+            node->setRadius(radius);
+            node->setPonderation(ponderation);
+
             node->setPosDansEveryNode(nbSommetsInsere);
             everyNode.push_back(node);
             hashOfNodesOfDV.insert(dv,node);

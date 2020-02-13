@@ -46,6 +46,8 @@ QPainterPath Node::shape() const {
     return path;
 }
 
+
+
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*) {
     painter->setPen(Qt::NoPen);
     painter->setBrush(color);
@@ -117,4 +119,16 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
 
 qreal Node::getRadius() {
     return radius;
+}
+
+void Node::setRadius(qreal r){
+    radius = r;
+}
+
+void Node::setPonderation(int n){
+    ponderation = n;
+}
+
+int Node::getPonderation() const{
+    return ponderation;
 }

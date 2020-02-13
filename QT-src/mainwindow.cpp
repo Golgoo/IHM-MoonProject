@@ -82,7 +82,7 @@ void MainWindow::updateLastSelectedNode(int id_sommet){
     lastSelectedSommet = id_sommet;
     lastSelect = VERTEX;
     Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
-    ui->selectedObjLabel->setText("A sélectionné le noeud : "+node->getName());
+    ui->selectedObjLabel->setText("A sélectionné le noeud : "+node->getName()+ " pondération : "+ QString("%1").arg(node->getPonderation()));
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
