@@ -99,7 +99,7 @@ private:
 
     QStringList _headers ;
     QVector<int> _cols_shifter ;
-    bool Valid;
+    bool _valid = true;
 };
 
 #endif // DATAMODEL_H

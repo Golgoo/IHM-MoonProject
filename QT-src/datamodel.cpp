@@ -16,8 +16,8 @@
 
 DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_delimiter)
 {
-    Valid = true;
     qDebug() << "Starting to read model";
+    _valid = true ;
     f = new QFile(filename);
     if(! f->open(QIODevice::ReadOnly | QFile::Text)){
         emit error_loading_file("Cannot read file \" " + filename + " \"");
@@ -27,30 +27,18 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         std::getline(stream, tmp);
         std::stringstream ss(tmp);
 
-        int nb_row = 0;
         /* On se permet de garder les headers dans la RAM */
         for (std::string item; std::getline(ss, item, _col_delimiter); ) {
-            qDebug() << "bbbbbbbbb " << QString::fromStdString(item);
             _headers.push_back(QString(item.c_str()));
         }
         _col_count = _headers.size();
         line_index.push_back(stream.tellg());
-
-        for (std::string line; std::getline(stream, line); ) {
+        while (std::getline(stream,tmp) ) {
+            if(std::count(tmp.begin(), tmp.end(), _col_delimiter) < _col_count - 1){
+                _valid = false ;
+                break;
+            }
             qint64 indexOfLine = stream.tellg();
-            qDebug() << " uuuuuuuuuu" << QString::fromStdString(line);
-            std::stringstream iss(line);
-            int nb_elem_on_line =0;
-            for (std::string item; std::getline(iss, item, _col_delimiter); ) {
-                nb_elem_on_line++;
-            }
-            qDebug() << "woooooooooooooooooooooooooo";
-            if(nb_elem_on_line!=_col_count){
-                qDebug() << nb_elem_on_line << "yo " << _col_count;
-                Valid = false;
-
-            }
-
             line_index.push_back(indexOfLine);
             _row_count ++ ;
         }
@@ -64,7 +52,11 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         }
     }
     qDebug() << "Finish to read model : " << _row_count << " ligne(s) - " << _col_count << " colonne(s)" ;
-    qDebug() << "isConform ?" << isConform();
+}
+
+bool DataModel::isConform() const
+{
+    return _valid ;
 }
 
 DataModel::~DataModel()
@@ -72,10 +64,6 @@ DataModel::~DataModel()
     f->close();
     delete f;
     f = nullptr;
-}
-
-bool DataModel::isConform() const{
-    return Valid;
 }
 
 /*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
