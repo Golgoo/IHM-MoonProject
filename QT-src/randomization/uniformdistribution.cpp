@@ -16,7 +16,7 @@ UniformDistribution::~UniformDistribution()
 
 }
 
-int UniformDistribution::getUISection() const
+int UniformDistribution::getDistribUISection() const
 {
     return ui_section;
 }

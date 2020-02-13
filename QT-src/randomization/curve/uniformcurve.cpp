@@ -2,7 +2,7 @@
 
 #include "../uniformdistribution.h"
 
-UniformCurve::UniformCurve(): DistributionCurve("Uniforme")
+UniformCurve::UniformCurve():Curve("Uniforme"), DistributionCurve("Uniforme")
 {
 
 }

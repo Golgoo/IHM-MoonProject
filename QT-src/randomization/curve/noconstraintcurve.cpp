@@ -2,7 +2,8 @@
 
 #include "../noconstraint.h"
 
-NoConstraintCurve::NoConstraintCurve(): RestrictionCurve("Aucune")
+
+NoConstraintCurve::NoConstraintCurve(): Curve("Aucune"), RestrictionCurve("Aucune")
 {
 
 }

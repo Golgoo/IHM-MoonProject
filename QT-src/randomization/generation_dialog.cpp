@@ -44,6 +44,8 @@ generation_dialog::generation_dialog(QWidget *parent) :
     initRestrictionBox(_restriction_curves, ui->restriction_combo_box);
     _distribution_curves.push_back(shared_ptr<DistributionCurve>(new UniformCurve()));
     _distribution_curves.push_back(shared_ptr<DistributionCurve>(new ExponentialCurve()));
+    _distribution_curves.push_back(shared_ptr<DistributionCurve>(new LinearCurve()));
+    _distribution_curves.push_back(shared_ptr<DistributionCurve>(new LinearInvertedCurve()));
     initDistributionBox(_distribution_curves, ui->distributive_combo_box);
 
     connect(ui->nbr_cols, SIGNAL(valueChanged(int)), this, SLOT(nbr_columns_changed(int)));
@@ -115,8 +117,8 @@ void generation_dialog::refresh_generator_UI()
 {
      qDebug() << "Refreshgin generator ui ";
     ColumnGenerator* current_generator = getSelectedGenerator();
-    int restriction_index = current_generator->getValueRestriction()->getUISection();
-    int distribution_index = current_generator->getDistributiveLaw()->getUISection();
+    int restriction_index = current_generator->getValueRestriction()->getValueUISection();
+    int distribution_index = current_generator->getDistributiveLaw()->getDistribUISection();
     ui->restriction_graph_label->setPixmap(_restriction_curves.at(restriction_index)->getPixMap());
     ui->distributive_graph_label->setPixmap(_distribution_curves.at(distribution_index)->getPixMap());
     ui->restriction_combo_box->setCurrentIndex(restriction_index);

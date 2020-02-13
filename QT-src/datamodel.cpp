@@ -66,8 +66,6 @@ DataModel::~DataModel()
     f = nullptr;
 }
 
-/*A quoi sert cette fonction, return QVariant (union) quand conditions pas satisfaites ?*/
-//QVariant(void) <=> Invalide
 QVariant DataModel::data (const QModelIndex & index, int role) const
 {
     //qDebug() << "Need Data " << index.row() << " - " << index.column() ;
@@ -150,13 +148,10 @@ void DataModel::shiftColumn(int colNumber, int shift){
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const{
     QHash<QString,int> dsHash;
     QString tmp ;
+    QString numCol = QString("-%1").arg(indexOfColumn);
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
-        //tmp = tmp+"-"+indexOfColumn;
-        QString numCol = QString("-%1").arg(indexOfColumn);
         tmp += numCol;
-
-        qDebug() << "SOMMET : " << tmp;
         if(! dsHash.contains(tmp)){
             dsHash.insert(tmp, 1);
         }else{

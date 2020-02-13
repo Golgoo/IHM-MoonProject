@@ -10,7 +10,7 @@ public:
 
     virtual int getLimitAt(int line) = 0;
 
-    virtual int getUISection() const = 0;
+    virtual int getValueUISection() const = 0;
 
 protected:
     int _max_value ;
