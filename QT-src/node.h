@@ -40,8 +40,9 @@ private:
      */
     QVector<Edge*> edges;
 
-    //inutilisé ?
-    QPointF newPos;
+    /**
+     * @brief posDansEveryNode l'indice du noeud dans la liste "EveryNode"
+     */
     int posDansEveryNode;
 
 
@@ -52,17 +53,19 @@ public:
      */
     static qreal ratio;
     Node(QString name = "");
+
+    void setColor(QColor color); /* couleur noeud*/
+    QColor getColor();
+
+    EmetteurSignal *sigEmet;  /*Emetteur permettant à un sommet d'indiquer qu'il est le dernier sommet sélectionné */
+
+    /*OVERRIDE*/
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void setColor(QColor color);
-    QColor getColor();
-
-    EmetteurSignal *sigEmet;
-
-    void adjust();
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
     void setPosDansEveryNode(int pos);
     int getPosDansEveryNode();
 

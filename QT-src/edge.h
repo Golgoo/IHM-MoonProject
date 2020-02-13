@@ -51,10 +51,14 @@ private:
      * @brief name Le nom de l'arête
      */
     QString name;
+
+    /**
+     * @brief correspondingLine la ligne des données à laquelle appartient l'arête
+     */
     int correspondingLine;
 
 public:
-    EmetteurSignal *sigEmet;
+    EmetteurSignal *sigEmet; /*Emetteur permettant à une arête d'indiquer qu'elle est la dernière arête sélectionnée */
 
     /**
      * @brief Edge
@@ -100,12 +104,21 @@ public:
      */
     QColor getColor();
 
+    /**
+     * @brief getCorrespondingLine
+     * @return renvoie le numéro de la ligne des données à laquelle appartient l'arête
+     */
     int getCorrespondingLine() const;
+
+    /**
+     * @brief setCorrespondingLine
+     * @param num_line définit le numéro de la ligne des données à laquelle appartient l'arête
+     */
     void setCorrespondingLine(int num_line);
 
+    /*OVERRIDE*/
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -5,7 +5,7 @@
 
 class Edge;
 /**
- * @brief La classe EmetteurSignal permet de lancer des signaux à partir d'objets ne pouvant hériter de Q_OBJECT (nécessaire pour utiliser signaux/slots
+ * @brief La classe EmetteurSignal permet de lancer des signaux à partir d'objets ne pouvant hériter de Q_OBJECT (nécessaire pour utiliser signaux/slots)
  */
 class EmetteurSignal : public QObject
 {

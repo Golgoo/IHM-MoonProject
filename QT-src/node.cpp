@@ -58,7 +58,6 @@ void Node::setColor(QColor color){
 
 QColor Node::getColor(){
     return this->color;
-    //emit lastSelectedNode();
 }
 
 int Node::getPosDansEveryNode(){
@@ -70,11 +69,8 @@ void Node::setPosDansEveryNode(int pos){
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
-        qDebug() << "J'ai des tongues " << this;
-        qDebug() << "Je suis le sommet " <<  this->getName();
         Node *node = this;
         sigEmet->emitLastSelectedNodeSignal(node->getPosDansEveryNode());
-        qDebug() << "Yo voici ma couleur " << node->getColor();
 }
 
 /**
@@ -117,9 +113,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     return QGraphicsItem::itemChange(change, value);
 }
 
-void Node::adjust() {
 
-}
 
 qreal Node::getRadius() {
     return radius;

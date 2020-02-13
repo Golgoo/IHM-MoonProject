@@ -24,7 +24,6 @@ Edge::Edge(Node *sourceNode, Node *destNode)
     adjust();
 
     name = sourceNode->getName() + " -- " + destNode->getName();
-
     sigEmet = new EmetteurSignal;
 }
 
@@ -187,6 +186,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
  */
 QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
+    /*On update la nouvelle position de l'arête déplacé par l'utilisateur*/
     case ItemPositionHasChanged:
 
         QPointF mousePos = value.toPointF();
@@ -211,6 +211,6 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
 }
 
 void Edge::mousePressEvent(QGraphicsSceneMouseEvent *event){
-        //qDebug() << "Je suis l'arête " <<  this;
+        /*On signale que l'on est la dernière arête sélectionné*/
         sigEmet->emitLastSelectedEdgeSignal(this);
 }
