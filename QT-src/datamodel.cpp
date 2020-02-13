@@ -136,7 +136,7 @@ bool DataModel::isValid(QModelIndex index) const
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const{
     QHash<QString,int> dsHash;
     QString tmp ;
-    QString numCol = QString("-%1").arg(indexOfColumn);
+    QString numCol = QString("-%1").arg(indexOfColumn+1);
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
         tmp += numCol;

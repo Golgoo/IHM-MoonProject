@@ -103,8 +103,8 @@ void GraphView::generateGraphUsingDatas()
             QString val1 = modelOfGraph->getValue(row,col);
             QString val2 = modelOfGraph->getValue(row,col+1);
 
-            val1 = val1+"-"+QString("%1").arg(col);
-            val2 = val2+"-"+QString("%1").arg(col+1);
+            val1 = val1+"-"+QString("%1").arg(col+1);
+            val2 = val2+"-"+QString("%1").arg(col+2);
 
             qDebug() << val1 << "--" << val2;
             Node *node1 = hashOfNodesOfDV.value(val1);
