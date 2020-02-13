@@ -9,7 +9,6 @@
 #include "node.h"
 #include "edge.h"
 #include <QDate>
-#include "model/modelexception.h"
 
 #include <QList>
 #include "randomization/generation_dialog.h"
@@ -24,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setCentralWidget(ui->groupBox);
     this->resize(900,400);
+    QMainWindow::statusBar()->resize(30,15);
     QColor myColor;
     //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
     myTablet = new QColorDialog();
@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     _view_actions_group->addAction(ui->actionGraphique);
     _view_actions_group->addAction(ui->actionGlobale);
 //---------------------------------------------
-
+    set_status(QString("Prêt à l'emploi"));
+    QMainWindow::setStatusBar(ui->statusbar);
 }
 
 MainWindow::~MainWindow()
@@ -96,6 +97,7 @@ void MainWindow::on_actionOpen_triggered()
     currentFile = filename;
     if(filename==""){
         QMessageBox::warning(this, "Warning", "Cannot open file");
+        set_status("Echec Ouverture du fichier csv");
         return;
     }
     setWindowTitle(filename);
@@ -139,7 +141,7 @@ void MainWindow::on_actionOpen_triggered()
         ui->graphicsView->generateGraphUsingDatas();
         connectForlastSelectedObjects();
     }
-
+    set_status("chargement fichier + génération OK");
 }
 
 void MainWindow::connectForlastSelectedObjects(){
@@ -171,38 +173,25 @@ void MainWindow::reload_model(QString filename)
 void MainWindow::on_read_operation_error(QString error)
 {
      QMessageBox::warning(this, "Attention", error);
+     set_status("Echec ouverture fichier .csv");
 }
 
 void MainWindow::on_read_operation_finished()
 {
     //TODO : Stop feedback &| MAJ Status bar
+    set_status("A fini de lire le fichier ouvert");
 }
 
-void MainWindow::on_actionSave_as_triggered()
-{
-    QString filename = QFileDialog::getSaveFileName(this, "Save as");
-    QFile file(filename);
-    currentFile = filename;
-    if(!file.open(QFile::WriteOnly | QFile::Text)){
-        QMessageBox::warning(this, "Attention", "Impossible de sauvegarder fichier : "+ file.errorString());
-        return;
-    }
-    currentFile = filename;
-    setWindowTitle(filename);
-    QTextStream out(&file);
-    QString text = "AHHAHAHA"; //:TODO Il faudra mettre ce que l'on voudra stocker dans le fichier dans cette var
-    out << text;
-    file.close();
-}
 
 void MainWindow::set_status(QString status_text)
 {
+    //QMainWindow::statusBar()->showMessage(status_text);
     ui->statusbar->showMessage(status_text);
 }
 
 void MainWindow::on_actionExport_triggered()
 {
-
+    set_status(QString("Dans fenêtre exportaion"));
     QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
         if (!fileName.isNull())
         {
@@ -216,6 +205,7 @@ void MainWindow::on_actionExport_triggered()
 
             QTextStream out(&file);
             out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
+            set_status(QString("Exportation du graphe réussi"));
         }
 }
 
@@ -223,17 +213,6 @@ void MainWindow::on_actionExport_triggered()
 void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
-}
-
-
-void MainWindow::on_actionUndo_triggered()
-{
-
-}
-
-void MainWindow::on_actionRedo_triggered()
-{
-
 }
 
 

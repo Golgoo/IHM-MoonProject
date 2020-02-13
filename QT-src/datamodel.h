@@ -59,20 +59,29 @@ public:
      *
      */
     QString getValue(int row, int col) const;
-
+    /**
+     * @brief setColorOfLine définit la couleur d'une ligne du modèle utilisé par la TableView
+     * @param num_line : num de la ligne dont on veut modif la couleur
+     * @param newcolor : la nouvelle couleur
+     */
     void setColorOfLine(int num_line, QColor newcolor);
-
+    /**
+     * @brief getDistinctValuesOfColumn calcule les valeurs distinctes d'une colonne
+     * @param indexOfColumn : la colonne dont on veut calculer les valeurs distinctes
+     * @return un hash composé (des vals distinctes + leur nombre d'occurrences dans la colonne)
+     */
     QHash<QString,int> getDistinctValuesOfColumn(int indexOfColumn) const;
-
-    void shiftColumn(int colNumber, int shift = 1);
 
     /*les 4 méthodes de l'interface QAbstractTableModel*/
     QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
-
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
     inline int rowCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ;  return _row_count ;}
     inline int columnCount(const QModelIndex &parent = QModelIndex()) const { Q_UNUSED(parent) ; return _col_count;}
+
+    /**
+     * @brief isConform atteste de la conformité du modèle (dépend de la conformité du fichier
+     * @return true si conforme false sinon
+     */
     bool isConform() const;
 
     //Sauvegarde dans ce chemin
@@ -84,22 +93,35 @@ public:
     //save_from(const QFile &file)
 
 signals:
+    /**
+     * @brief error_loading_file est un signal permettant d'envoyer un message d'erreur concernant l'ouverture d'un fichier csv
+     * @param error_details
+     */
     void error_loading_file(QString error_details) const;
+    /**
+     * @brief error_csv_not_valid est un signal permettant d'envoyer un message d'erreur concernant la conformité du fichier ouvert
+     * @param error_details
+     */
     void error_csv_not_valid(QString error_details) const;
 
 
 private:
-    QFile *f ;
+    QFile *f ; /*pointeur vers le fichier csv ouvert qui sert de modèle*/
     int _row_count = 0 ;
     int _col_count = 0 ;
-    char _col_delimiter;
-    QVector<qint64> line_index ;
-    bool isValid(QModelIndex index) const;
-    QVector<QColor> color;
-
-    QStringList _headers ;
+    char _col_delimiter; /*le délimiteur de colonne des fichiers CSV "," */
+    QVector<qint64> line_index ; /*index des lignes dans "f"(QFile)*/
+    QVector<QColor> color; /*Vecteur contenant les couleurs des lignes du modèle*/
+    QStringList _headers ; /*Liste avec les valeurs du header du modèle (de la TableView)*/
     QVector<int> _cols_shifter ;
-    bool _valid = true;
+    bool _valid = true; /*booléen indiquant si modèle correctement construit*/
+
+    /**
+     * @brief isValid vérifie la validité de "index" (si celui-ci pointe bien un index qui ne soit pas hors du modèle)
+     * @param index
+     * @return true si valide false sinon
+     */
+    bool isValid(QModelIndex index) const;
 };
 
 #endif // DATAMODEL_H
