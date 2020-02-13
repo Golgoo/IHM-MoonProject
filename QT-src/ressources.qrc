@@ -15,4 +15,7 @@
         <file>Icons/redo.ico</file>
         <file>Icons/Sticky.bmp</file>
     </qresource>
+    <qresource prefix="/">
+        <file>Icons/slide_the.jpg</file>
+    </qresource>
 </RCC>

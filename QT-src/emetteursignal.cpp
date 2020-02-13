@@ -20,9 +20,5 @@ void EmetteurSignal::emitLastSelectedEdgeSignal(Edge *e){
     emit lastSelectedEdge(xd);
 }
 
-void EmetteurSignal::emitNewRatioForWindow(qreal x){
-    emit newRatioForWindow(x);
-    Node::ratio = x;
-}
 
 

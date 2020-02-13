@@ -49,7 +49,6 @@ HEADERS += \
     edge.h \
     graphview.h \
     mainwindow.h \
-    model/modelexception.h \
     node.h \
     datamodel.h \
     randomization/columngenerator.h \

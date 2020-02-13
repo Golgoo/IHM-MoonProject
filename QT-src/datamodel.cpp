@@ -9,7 +9,6 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "model/modelexception.h"
 #include <fstream>
 #include <sstream>
 
@@ -132,17 +131,6 @@ bool DataModel::isValid(QModelIndex index) const
     int r = index.row() ;
     int c = index.column();
     return ( 0 <= r && r < _row_count ) && ( 0 <= c && c < _col_count) ;
-}
-
-//---------------------------------------------------------
-void DataModel::shiftColumn(int colNumber, int shift){
-    int dst = colNumber + shift ;
-    if((colNumber >= 0 && colNumber < _col_count) && (dst >= 0 && dst < _col_count)){
-        _cols_shifter.move(colNumber, dst);
-        //qDebug() << _cols_shifter ;
-    }else{
-        // Signal or Exception
-    }
 }
 
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const{
