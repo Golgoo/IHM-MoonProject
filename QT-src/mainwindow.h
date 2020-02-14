@@ -80,6 +80,10 @@ private slots:
     void on_actionGraphique_triggered();
     void on_actionGlobale_triggered();
 
+signals:
+    void testSignal(const QColor &color);
+
+
 protected:
 
     /* traitement à la fin de la lecture du fichier csv : update statusBar*/

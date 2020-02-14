@@ -124,6 +124,19 @@ QString DataModel::getValue(int row, int col) const
     }
 }
 
+void DataModel::export_csv(const QString filename)
+{
+    std::ofstream out_stream(filename.toStdString());
+    std::ifstream in_stream(f->fileName().toStdString());
+    std::string buff;
+    if(out_stream && in_stream){
+        while(getline(in_stream, buff)){
+            out_stream << buff << '\n';
+        }
+    }
+
+}
+
 bool DataModel::isValid(QModelIndex index) const
 {
     if(!isConform())

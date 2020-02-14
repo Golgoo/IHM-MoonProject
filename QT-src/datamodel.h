@@ -84,13 +84,7 @@ public:
      */
     bool isConform() const;
 
-    //Sauvegarde dans ce chemin
-    //save_into(const QString filename)
-
-    //Sauvegarde à partir d'un QFile ( potentiellement déjà déplacé )
-    //Ecrit dans un QString filename aléatoire les données.
-    //Ecrit ce filename dans le QFile.
-    //save_from(const QFile &file)
+    void export_csv(const QString filename);
 
 signals:
     /**
