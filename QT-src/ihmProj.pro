@@ -36,7 +36,9 @@ SOURCES += \
     randomization/exponentialdistribution.cpp \
     randomization/generation_dialog.cpp \
     randomization/invertedlinearconstraint.cpp \
+    randomization/invertedlineardistribution.cpp \
     randomization/linearconstraint.cpp \
+    randomization/lineardistribution.cpp \
     randomization/noconstraint.cpp \
     randomization/uniformdistribution.cpp \
     randomization/valueconstraint.cpp
@@ -62,7 +64,9 @@ HEADERS += \
     randomization/exponentialdistribution.h \
     randomization/generation_dialog.h \
     randomization/invertedlinearconstraint.h \
+    randomization/invertedlineardistribution.h \
     randomization/linearconstraint.h \
+    randomization/lineardistribution.h \
     randomization/noconstraint.h \
     randomization/uniformdistribution.h \
     randomization/valueconstraint.h

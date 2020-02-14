@@ -18,7 +18,7 @@ double ExponentialDistribution::generate()
     return 1.0 - number ;
 }
 
-int ExponentialDistribution::getUISection() const
+int ExponentialDistribution::getDistribUISection() const
 {
     return ui_section;
 }

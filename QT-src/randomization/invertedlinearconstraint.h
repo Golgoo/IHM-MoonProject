@@ -9,7 +9,7 @@ public:
     InvertedLinearConstraint(int max_values, int max_lines);
 
     int getLimitAt(int line) override;
-    int getUISection() const override;
+    int getValueUISection() const override;
 private:
     double _max_l_d ;
     double _max_v_d ;

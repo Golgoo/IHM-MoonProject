@@ -13,7 +13,7 @@ int InvertedLinearConstraint::getLimitAt(int line)
     return _max_v_d - round((double(line) * _max_v_d)/_max_l_d);
 }
 
-int InvertedLinearConstraint::getUISection() const
+int InvertedLinearConstraint::getValueUISection() const
 {
     return _ui_section;
 }

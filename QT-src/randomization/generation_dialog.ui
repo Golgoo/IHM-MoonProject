@@ -22,6 +22,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
@@ -98,7 +101,7 @@
     <rect>
      <x>150</x>
      <y>30</y>
-     <width>325</width>
+     <width>329</width>
      <height>31</height>
     </rect>
    </property>

@@ -8,6 +8,7 @@
 #include "emetteursignal.h"
 #include "node.h"
 #include "edge.h"
+#include <QDate>
 
 #include <QList>
 #include "randomization/generation_dialog.h"
@@ -20,19 +21,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setCentralWidget(ui->groupBox);
     this->resize(900,400);
-    QColor myColor;
-    //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
+    QMainWindow::statusBar()->resize(30,15);
     myTablet = new QColorDialog();
+    /*à chaque nouvelle sélection d'une couleur dans la tablette, on envoie la couleur sélectionné*/
     QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
-//-----------------------------------------------
+
     _rdm_gene_dial = new generation_dialog(this);
+
+    /*Les différentes vue possible pour les données*/
     _view_actions_group = new QActionGroup(this);
     _view_actions_group->addAction(ui->actionTabulaire);
     _view_actions_group->addAction(ui->actionGraphique);
     _view_actions_group->addAction(ui->actionGlobale);
 //---------------------------------------------
-
+    set_status(QString("Prêt à l'emploi"));
+    QMainWindow::setStatusBar(ui->statusbar);
 }
 
 MainWindow::~MainWindow()
@@ -53,13 +57,15 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 void MainWindow::on_actionGenerate_triggered()
 {
     currentFile.clear();
+    /*On éxécute l'utilitaire pour générer données aléatoirement*/
     int execution_code = _rdm_gene_dial->exec();
     if(execution_code == QDialog::Accepted){
         if(_rdm_gene_dial->process_generation()>0){
             qDebug() << "GENERATION TERMINEE _____________";
+
             reload_model(_rdm_gene_dial->getTemporaryFilename());
 
-            /*Reload graphique*/
+            /*Partie génération des représentations de données*/
             ui->graphicsView->setModel(_model);
             ui->graphicsView->generateGraphUsingDatas();
             connectForlastSelectedObjects();
@@ -88,14 +94,14 @@ void MainWindow::on_actionSaveTableur_triggered()
 
 
 void MainWindow::updateLastSelectedNode(int id_sommet){
-    qDebug() << "yeeeeeeahhhhhh " << id_sommet;
     lastSelectedSommet = id_sommet;
     lastSelect = VERTEX;
+    Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
+    ui->selectedObjLabel->setText("A sélectionné le noeud : "+node->getName()+ " pondération : "+ QString("%1").arg(node->getPonderation()));
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
-    qDebug() << "mon slot capte l'edge " << &e;
-
+    ui->selectedObjLabel->setText("A sélectionné l'arête : "+e.getName());
     lastSelectedEdge = &e;
     lastSelect = EDGE;
 }
@@ -107,6 +113,7 @@ void MainWindow::on_actionOpen_triggered()
     currentFile = filename;
     if(filename==""){
         QMessageBox::warning(this, "Warning", "Cannot open file");
+        set_status("Echec Ouverture du fichier csv");
         return;
     }
     setWindowTitle(filename);
@@ -115,24 +122,31 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&file);
     QString text = in.readAll();
 
-
     file.close();
 
-    DataModel *model = new DataModel(filename);
+    DataModel *model;
+    model = new DataModel(filename);
+    /*On vérifie conformité du modèle (matrice bien formé)*/
+    if(!model->isConform()){
+        delete model;
+        ui->tableView->setModel(nullptr);
+        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
+        return;
+    }
+
+    /*Dans le cas où le fichier et conforme*/
     ui->tableView->setModel(model);
-    //ui->graphicsView->generateGraphUsingDatas(&model);
-    //ui->graphicsView->setModell();
     ui->graphicsView->modelOfGraph = model;
-    pthread_yield();
-    qDebug() << "modèle finit de construire ??";
 
-    /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
-    ui->graphicsView->setModel(model);
-    ui->graphicsView->generateGraphUsingDatas();
-    connectForlastSelectedObjects();
-
-
+    if (ui->graphicsView->modelOfGraph->rowCount()!=0 && ui->graphicsView->modelOfGraph->columnCount()!=0)
+    {
+        /*On construit le graphe*/
+        ui->graphicsView->setModel(model);
+        ui->graphicsView->generateGraphUsingDatas();
+        connectForlastSelectedObjects();
+    }
+    set_status("chargement fichier + génération graphe OK");
 }
 
 void MainWindow::connectForlastSelectedObjects(){
@@ -140,13 +154,11 @@ void MainWindow::connectForlastSelectedObjects(){
     for(Node *node : ui->graphicsView->getEveryNode()){
         EmetteurSignal *em = node->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
-        //qDebug() << "node dans EveryNode : " << node->getName();
     }
 
     for(Edge *edge : ui->graphicsView->getEveryEdge()){
         EmetteurSignal *em = edge->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
-        //qDebug() << "edge dans EveryEdge : " << edge->getName();
     }
 }
 
@@ -164,43 +176,41 @@ void MainWindow::reload_model(QString filename)
 void MainWindow::on_read_operation_error(QString error)
 {
      QMessageBox::warning(this, "Attention", error);
+     set_status("Echec ouverture fichier .csv");
 }
 
 void MainWindow::on_read_operation_finished()
 {
     //TODO : Stop feedback &| MAJ Status bar
+    set_status("A fini de lire le fichier ouvert");
 }
 
-void MainWindow::on_actionSave_as_triggered()
-{
-    QString filename = QFileDialog::getSaveFileName(this, "Save as");
-    QFile file(filename);
-    currentFile = filename;
-    if(!file.open(QFile::WriteOnly | QFile::Text)){
-        QMessageBox::warning(this, "Attention", "Impossible de sauvegarder fichier : "+ file.errorString());
-        return;
-    }
-    currentFile = filename;
-    setWindowTitle(filename);
-    QTextStream out(&file);
-    QString text = "AHHAHAHA"; //:TODO Il faudra mettre ce que l'on voudra stocker dans le fichier dans cette var
-    out << text;
-    file.close();
-}
 
 void MainWindow::set_status(QString status_text)
 {
+    //QMainWindow::statusBar()->showMessage(status_text);
     ui->statusbar->showMessage(status_text);
 }
 
 void MainWindow::on_actionExport_triggered()
 {
-
+    /*On récupère destination de l'export*/
     QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
         if (!fileName.isNull())
         {
+            /*Extraction image du graphe*/
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
+
+            /*partie description des données*/
+            QString descriptionfileName=fileName.split(".").first()+".txt";
+            QFile file(descriptionfileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+               return;
+
+            QTextStream out(&file);
+            out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
+            set_status(QString("Exportation du graphe réussi"));
         }
 }
 
@@ -211,45 +221,33 @@ void MainWindow::on_actionExit_triggered()
 }
 
 
-void MainWindow::on_actionUndo_triggered()
-{
-
-}
-
-void MainWindow::on_actionRedo_triggered()
-{
-
-}
-
-
 void MainWindow::on_actionChanger_couleur_triggered()
 {
-    qDebug() << "Ahhhh une palette de couleur ?";
-
-    //QColor myColor = QColorDialog::getColor();
-    QColor myColor;
-
+    if(lastSelect == NOTHING){
+        QMessageBox::warning(this, "Warning", "Aucun objet sélectionné");
+        return;
+    }
     myTablet->exec();
 }
 
 void MainWindow::onColorTabletChanged(const QColor &color)
 {
-    /*Si aucun sommet sélectionner mieux vaut ne pas autoriser ouverture palette*/
     if(lastSelect == NOTHING)
         return;
 
     if(lastSelect == VERTEX){
-    qDebug() << "couleur gg " << color;
+        /*On change la couleur du sommet en même temps que la palette est ouverte*/
     Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
     node->setColor(color);
-    qDebug() << "Le sommet d'indice " << lastSelectedSommet << " a la couleur " << ui->graphicsView->getEveryNode().at(lastSelectedSommet)->getColor();
     node->update();
     }
 
     if(lastSelect == EDGE){
+        /*Change couleur arête*/
         for(Edge *e :getEveryEdgeOfLine(lastSelectedEdge->getCorrespondingLine())){
             e->setColor(color);
             e->update();
+            /*change couleur ligne de la table à laquelle appartient l'arête*/
             ui->graphicsView->modelOfGraph->setColorOfLine(lastSelectedEdge->getCorrespondingLine(), color);
         }
     }
@@ -267,19 +265,11 @@ QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
 void MainWindow::hide_tabular_view() const
 {
     ui->tableView->hide();
-    /*ui->pushButton->hide();
-    ui->pushButton_2->hide();
-    ui->pushButton_3->hide();
-    ui->pushButton_4->hide();*/
 }
 
 void MainWindow::show_tabular_view() const
 {
     ui->tableView->show();
-    /*ui->pushButton->show();
-    ui->pushButton_2->show();
-    ui->pushButton_3->show();
-    ui->pushButton_4->show();*/
 }
 
 void MainWindow::hide_graphic_view() const

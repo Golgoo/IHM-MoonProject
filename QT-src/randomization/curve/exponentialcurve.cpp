@@ -2,7 +2,9 @@
 
 #include "../exponentialdistribution.h"
 
-ExponentialCurve::ExponentialCurve(): DistributionCurve("Exponentielle")
+#include "curve.h"
+
+ExponentialCurve::ExponentialCurve():  Curve("Exponentielle"), DistributionCurve("Exponentielle")
 {
 
 }

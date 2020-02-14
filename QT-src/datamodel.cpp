@@ -6,13 +6,17 @@
 #include <QColor>
 #include <QIdentityProxyModel>
 #include <QBrush>
+#include <QMessageBox>
+#include <QString>
 
 #include <fstream>
 #include <sstream>
 
+
 DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_delimiter)
 {
     qDebug() << "Starting to read model";
+    _valid = true ;
     f = new QFile(filename);
     if(! f->open(QIODevice::ReadOnly | QFile::Text)){
         emit error_loading_file("Cannot read file \" " + filename + " \"");
@@ -21,15 +25,20 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         std::string tmp ;
         std::getline(stream, tmp);
         std::stringstream ss(tmp);
+
         /* On se permet de garder les headers dans la RAM */
         for (std::string item; std::getline(ss, item, _col_delimiter); ) {
             _headers.push_back(QString(item.c_str()));
         }
         _col_count = _headers.size();
         line_index.push_back(stream.tellg());
-
-        for (std::string line; std::getline(stream, line); ) {
-            line_index.push_back(stream.tellg());
+        while (std::getline(stream,tmp) ) {
+            if(std::count(tmp.begin(), tmp.end(), _col_delimiter) < _col_count - 1){
+                _valid = false ;
+                break;
+            }
+            qint64 indexOfLine = stream.tellg();
+            line_index.push_back(indexOfLine);
             _row_count ++ ;
         }
 
@@ -42,6 +51,11 @@ DataModel::DataModel(QString filename, char col_delimiter) : _col_delimiter(col_
         }
     }
     qDebug() << "Finish to read model : " << _row_count << " ligne(s) - " << _col_count << " colonne(s)" ;
+}
+
+bool DataModel::isConform() const
+{
+    return _valid ;
 }
 
 DataModel::~DataModel()
@@ -125,29 +139,20 @@ void DataModel::export_csv(const QString filename)
 
 bool DataModel::isValid(QModelIndex index) const
 {
+    if(!isConform())
+        return false;
     int r = index.row() ;
     int c = index.column();
     return ( 0 <= r && r < _row_count ) && ( 0 <= c && c < _col_count) ;
 }
 
-//---------------------------------------------------------
-void DataModel::shiftColumn(int colNumber, int shift){
-    int dst = colNumber + shift ;
-    if((colNumber >= 0 && colNumber < _col_count) && (dst >= 0 && dst < _col_count)){
-        _cols_shifter.move(colNumber, dst);
-        //qDebug() << _cols_shifter ;
-    }else{
-        // Signal or Exception
-    }
-}
-
 QHash<QString,int> DataModel::getDistinctValuesOfColumn(int indexOfColumn) const{
     QHash<QString,int> dsHash;
     QString tmp ;
+    QString numCol = QString("-%1").arg(indexOfColumn+1);
     for(int i=0; i<rowCount(); i++){
         tmp = getValue(i, indexOfColumn);
-        tmp = tmp+"-"+indexOfColumn;
-        qDebug() << tmp;
+        tmp += numCol;
         if(! dsHash.contains(tmp)){
             dsHash.insert(tmp, 1);
         }else{

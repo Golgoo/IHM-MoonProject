@@ -5,6 +5,13 @@
 #include "emetteursignal.h"
 
 
+/**
+ * @brief Edge::Edge
+ * @param sourceNode
+ * @param destNode
+ * On met le flag ItemIsMovable et ItemSendsGeometryChanges car une arête est déplaçable
+ * en la sélectionnant et en laissant le clic appuyé et car elle peut changer de longueur et d'angle.
+ */
 Edge::Edge(Node *sourceNode, Node *destNode)
     : source(sourceNode), dest(destNode)
 {
@@ -17,7 +24,6 @@ Edge::Edge(Node *sourceNode, Node *destNode)
     adjust();
 
     name = sourceNode->getName() + " -- " + destNode->getName();
-
     sigEmet = new EmetteurSignal;
 }
 
@@ -51,6 +57,12 @@ void Edge::setColor(QColor color){
     this->color = color;
 }
 
+/**
+ * @brief Edge::adjust
+ * Cette fonction est appelée dès que l'affichage de l'arête a besoin d'être changée. Elle modifie
+ * sourcePoint et destPoint, qui sont les 2 points qui sont utilisés pour dessigner la ligne
+ * correspondant à l'arête.
+ */
 void Edge::adjust()
 {
     if (!source || !dest)
@@ -69,8 +81,17 @@ void Edge::adjust()
     }
 }
 
+/**
+ * @brief Edge::shape
+ * Cette fonction détermine la zone de sélection d'une arête, c'est-à-dire la zone qui
+ * lorsque l'on clique à l'intérieur déclenchera la fonction itemChange avec le flag ItemPositionHasChanged.
+ * Cette zone correspond à l'intérieur d'un polygone à 4 côtés qui est un rectangle si les 2 noeuds de l'arête
+ * ont le même rayon. La longueur de ce rectangle est alors la longueur de l'arête et sa largeur le diamètre des
+ * noeuds tel que le vecteur directeur du côté longueur du rectangle est parallèle à l'arête et celui du côté largeur
+ * lui est perpendiculaire.
+ * @return
+ */
 QPainterPath Edge::shape() const {
-    //TODO : à changer si on veut faire des noeuds de différentes formes (classe abstraite ?)
     QPainterPath path;
 
     qreal vx = fabs(sourcePoint.x() - destPoint.x());
@@ -121,6 +142,13 @@ QRectF Edge::boundingRect() const
         .adjusted(-extra, -extra, extra, extra);
 }
 
+/**
+ * @brief Edge::paint
+ * @param painter
+ * @param option inutilisé
+ * @param widget inutilisé
+ * La fonction qui dessine une arête, c'est-à-dire la ligne reliant les 2 noeuds et les flèches.
+ */
 void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     if (!source || !dest)
         return;
@@ -130,7 +158,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     if (qFuzzyCompare(line.length(), qreal(0.)))
         return;
 
-    //C'est là qu'on devra changer la couleur, le style des arêtes en fonction de la palette
     painter->setPen(QPen(color, 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 
@@ -150,9 +177,16 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }
 
-//TODO: faire que quand on tire un noeud en dhors de la graphics view, il reste collé au bord et ne sorte pas du cadre
+/**
+ * @brief Edge::itemChange
+ * @param change
+ * @param value
+ * Cette fonction permet d'actualiser l'affichage de l'arête.
+ * @return
+ */
 QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
     switch (change) {
+    /*On update la nouvelle position de l'arête déplacé par l'utilisateur*/
     case ItemPositionHasChanged:
 
         QPointF mousePos = value.toPointF();
@@ -177,6 +211,6 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
 }
 
 void Edge::mousePressEvent(QGraphicsSceneMouseEvent *event){
-        //qDebug() << "Je suis l'arête " <<  this;
+        /*On signale que l'on est la dernière arête sélectionné*/
         sigEmet->emitLastSelectedEdgeSignal(this);
 }

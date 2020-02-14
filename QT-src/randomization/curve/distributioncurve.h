@@ -4,7 +4,7 @@
 #include "curve.h"
 #include "../distributive_law.h"
 
-class DistributionCurve: public Curve
+class DistributionCurve: virtual public Curve
 {
 public:
     DistributionCurve(QString name);

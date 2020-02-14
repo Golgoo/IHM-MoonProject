@@ -4,7 +4,7 @@
 #include "curve.h"
 #include "../valueconstraint.h"
 
-class RestrictionCurve : public Curve
+class RestrictionCurve : virtual public Curve
 {
 public:
     RestrictionCurve(QString name);

@@ -9,7 +9,7 @@ public:
     ExponentialDistribution();
 
     double generate() override;
-    int getUISection() const override;
+    int getDistribUISection() const override;
 
 private :
     const static int ui_section = 1;
