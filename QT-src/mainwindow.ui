@@ -101,7 +101,7 @@ background-color: rgb(211, 215, 207);</string>
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Valeur distincte &gt;  400 ????</string>
+        <string/>
        </property>
       </widget>
      </item>

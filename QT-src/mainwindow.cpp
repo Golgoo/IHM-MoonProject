@@ -94,7 +94,7 @@ void MainWindow::updateLastSelectedEdge(Edge &e){
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
+    QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier", nullptr, "CSV Files (*.csv)");
     currentFile = filename;
     if(filename==""){
         QMessageBox::warning(this, "Warning", "Cannot open file");
