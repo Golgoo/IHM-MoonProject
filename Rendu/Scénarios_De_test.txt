@@ -1,0 +1,25 @@
+1er cas: -lancer l'application
+-cliquer sur ouvrir dans le menu déroulant File
+-fermer la fenêtre et confirmez qu'un message vous indique que le fichier n'as pas pu être ouvert
+-ouvrez le document test2.csv dans IHM-MoonProject-master/QT-src/data
+ce fichier n'étant pas valide ( car  toutes les lignes ne contiennent pas le même nombre de valeur) confirmez qu'un message apparaît pour vous indiquer que le fichier csv n'est pas valide
+-cliquez sur la croix rouge en haut à droite de la fenêtre principale pour fermer l'application
+
+2e cas: -lancer l'application
+-cliquer sur ouvrir dans le menu déroulant File.
+-ouvrez le document test1.csv dans IHM-MoonProject-master/QT-src/data
+-cliquez sur l'une des cases de la partie tableau et voir que la case est surlignée et que le numéro sur sa ligne et le nom de sa colonne est en gras
+-cliquez et maintenez le clique sur des noeuds et des arrêtes sur la partie graphe afin de faire bouger les neuds et les arrêtes à votre convenance
+-cliquez sur un noeud et faite changer de couleur dans le menu déroulant Edit puis choisir une nouvelle couleur pour le noeud sélectionner
+-utilisez la molette de votre souris sur la partie graphe afin de zoomer ou dézoomer sur le graphe
+-utilisez le menu déroulant View afin de changer le mode de vue (vous pouvez aussi utiliser les raccourcis indiqués sur la droite des options dans le menu déroulant)
+-cliquez sur l'option exporter dans le menu déroulant File puis entrez un nom pour le document et choisissez le format dans la fenêtre qui sera apparu et validez. Cela créra une image au format voulu ainsi que un fichier de description portant le même nom mais qui st un .txt
+-cliquez sur la croix rouge en haut à droite de la fenêtre principale pour fermer l'application
+
+3e cas: -lancer l'application
+-cliquez sur l'icone représentant une feuille avec une étoile jaune pour ouvrir la fenêtre de génération de tableau
+-mettez 4 lignes et 3 colones, 10 nombres de valeur distinctes, la restriction du nombre de valeur à linéaire et la loi de distributivité sur expodentielle
+-appliquez modèle de la colonne 1 à la colonne 3
+-renommer la colone 1 en "colone 4"
+-cliquez sur "Ok" pour générer le tableau
+-cliquez sur la croix rouge en haut à droite de la fenêtre principale pour fermer l'application
