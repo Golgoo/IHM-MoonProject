@@ -146,9 +146,17 @@ selection-background-color: rgb(252, 233, 79);</string>
     <addaction name="actionGraphique"/>
     <addaction name="actionPlein_cran"/>
    </widget>
+   <widget class="QMenu" name="menuExporter">
+    <property name="title">
+     <string>Exporter</string>
+    </property>
+    <addaction name="actionSaveTableur"/>
+    <addaction name="actionGraphe"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuExporter"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="minimumSize">
@@ -375,6 +383,16 @@ selection-background-color: rgb(252, 233, 79);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionSaveTableur">
+   <property name="text">
+    <string>Tableur</string>
+   </property>
+  </action>
+  <action name="actionGraphe">
+   <property name="text">
+    <string>Graphe</string>
    </property>
   </action>
  </widget>

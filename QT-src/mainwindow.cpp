@@ -13,13 +13,11 @@
 #include <QList>
 #include "randomization/generation_dialog.h"
 
-/*C'est ici qu'on va définir toutes nos fonctionnalités*/
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this); /*Fais l'association entre programme et ui ?*/
+    ui->setupUi(this);
 
     this->setCentralWidget(ui->groupBox);
     this->resize(900,400);
@@ -71,9 +69,26 @@ void MainWindow::on_actionGenerate_triggered()
             ui->graphicsView->setModel(_model);
             ui->graphicsView->generateGraphUsingDatas();
             connectForlastSelectedObjects();
+            /*---------------*/
         }else{
             set_status("Génération aléatoire échoué");
         }
+    }
+}
+
+void MainWindow::on_actionSaveTableur_triggered()
+{
+    if(_model!=nullptr){
+        QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Exporter tableur"), "",
+            tr("Address Book (*.csv);;All Files (*)"));
+        if (fileName.isEmpty())
+            return;
+        else {
+            _model->export_csv(fileName);
+        }
+    }else{
+        set_status("Aucun tableur n'est ouvert");
     }
 }
 
