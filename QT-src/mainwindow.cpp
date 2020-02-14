@@ -72,7 +72,7 @@ void MainWindow::on_actionGenerate_triggered()
             ui->graphicsView->generateGraphUsingDatas();
             connectForlastSelectedObjects();
         }else{
-            set_status("Unable to generate data");
+            set_status("Génération aléatoire échoué");
         }
     }
 }
@@ -147,7 +147,6 @@ void MainWindow::connectForlastSelectedObjects(){
     }
 }
 
-//---------------------------------------------------------
 void MainWindow::reload_model(QString filename)
 {
     if(_model != nullptr){
@@ -166,14 +165,12 @@ void MainWindow::on_read_operation_error(QString error)
 
 void MainWindow::on_read_operation_finished()
 {
-    //TODO : Stop feedback &| MAJ Status bar
     set_status("A fini de lire le fichier ouvert");
 }
 
 
 void MainWindow::set_status(QString status_text)
 {
-    //QMainWindow::statusBar()->showMessage(status_text);
     ui->statusbar->showMessage(status_text);
 }
 

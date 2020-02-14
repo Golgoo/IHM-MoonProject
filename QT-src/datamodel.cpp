@@ -67,7 +67,6 @@ DataModel::~DataModel()
 
 QVariant DataModel::data (const QModelIndex & index, int role) const
 {
-    //qDebug() << "Need Data " << index.row() << " - " << index.column() ;
     /*Test si index ne pointe pas hors de la matrice, une valeur inexistante*/
     if(! this->isValid(index)){
         return QVariant();

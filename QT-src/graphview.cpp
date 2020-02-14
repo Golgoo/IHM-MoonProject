@@ -86,12 +86,10 @@ void GraphView::generateGraphUsingDatas()
     if(lengthOfLargestCol < modelOfGraph->rowCount()){
         dim_scene = lengthOfLargestCol*60;
         spaceX = dim_scene/modelOfGraph->columnCount();
-        //spaceY = 50;
     }
     else{
         dim_scene = lengthOfLargestCol*60;
         spaceX = dim_scene/modelOfGraph->columnCount();
-        //spaceY = 50;
     }
 
     scene->setSceneRect(0,0, dim_scene, dim_scene);
@@ -102,8 +100,6 @@ void GraphView::generateGraphUsingDatas()
     for(int col=0; col < listOfDVOfAllColumns.size(); col++){
         int indexInColumn = 0;
 
-        //int spaceX = GRAPHICS_VIEW_DIMENSION/modelOfGraph->columnCount();
-        //int spaceY = GRAPHICS_VIEW_DIMENSION/list.at(col).size();
         spaceY = dim_scene/listOfDVOfAllColumns.at(col).size();
         qDebug() << "spaceY pour col"<<col << " " << spaceY;
         for(auto dv : listOfDVOfAllColumns.at(col).keys()){
