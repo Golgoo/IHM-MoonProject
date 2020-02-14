@@ -94,12 +94,14 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
             }
             qreal width = scene()->views().first()->width();
             qreal height = scene()->views().first()->height();
-            if (pos().x() >= width * 1.2465 * Node::ratio - radius) {
+
+            /*if (pos().x() >= width * 1.2465 * Node::ratio - radius) {
+
                 this->setX(width * 1.2465 * Node::ratio - radius);
             }
             if (pos().y() >= height * 1.2465 *  Node::ratio - radius) {
                 this->setY(height  * 1.2465 * Node::ratio - radius);
-            }
+            }*/
 
             for (Edge *edge : getEdges()) {
                 edge->adjust();
@@ -110,7 +112,6 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     default:
         break;
     };
-    qDebug() << "Pos du sommet manipulé " << pos().x() << " " << pos().y();
 
     return QGraphicsItem::itemChange(change, value);
 }
