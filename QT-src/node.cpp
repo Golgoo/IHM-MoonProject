@@ -68,11 +68,8 @@ void Node::setPosDansEveryNode(int pos){
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event){
-        qDebug() << "J'ai des tongues " << this;
-        qDebug() << "Je suis le sommet " <<  this->getName();
         Node *node = this;
         sigEmet->emitLastSelectedNodeSignal(node->getPosDansEveryNode());
-        qDebug() << "Yo voici ma couleur " << node->getColor();
 }
 
 
@@ -88,13 +85,12 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
             }
             qreal width = scene()->views().first()->width();
             qreal height = scene()->views().first()->height();
-            //qDebug() << "RATIO : " << Node::ratio;
-            if (pos().x() >= width * 1.2465 * Node::ratio - radius) {
+            /*if (pos().x() >= width * 1.2465 * Node::ratio - radius) {
                 this->setX(width * 1.2465 * Node::ratio - radius);
             }
             if (pos().y() >= height *1.2465 *  Node::ratio - radius) {
                 this->setY(height  * 1.2465 * Node::ratio - radius);
-            }
+            }*/
 
             for (Edge *edge : getEdges()) {
                 edge->adjust();
@@ -105,7 +101,6 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value) {
     default:
         break;
     };
-    qDebug() << "Pos du sommet manipulé " << pos().x() << " " << pos().y();
 
     return QGraphicsItem::itemChange(change, value);
 }

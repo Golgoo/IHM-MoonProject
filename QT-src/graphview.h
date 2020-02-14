@@ -24,8 +24,6 @@ private:
      qreal initial_ratio = 1;
      void wheelEvent ( QWheelEvent * event ) override; /* override pour traiter les scrolls de molette pour le zoom du graphe*/
 private slots:
-    void scalingTime(qreal x); /*redimensionne la scène pour zoom*/
-    void animFinished(); /* traitement fin d'animation de zoom*/
 
 public:
     GraphView(QWidget *parent);

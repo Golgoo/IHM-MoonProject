@@ -177,6 +177,5 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value) {
 }
 
 void Edge::mousePressEvent(QGraphicsSceneMouseEvent *event){
-        //qDebug() << "Je suis l'arête " <<  this;
         sigEmet->emitLastSelectedEdgeSignal(this);
 }
