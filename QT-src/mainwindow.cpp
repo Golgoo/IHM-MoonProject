@@ -24,13 +24,14 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(ui->groupBox);
     this->resize(900,400);
     QMainWindow::statusBar()->resize(30,15);
-    QColor myColor;
-    //QObject::connect(this, SIGNAL(testSignal(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
     myTablet = new QColorDialog();
+    /*à chaque nouvelle sélection d'une couleur dans la tablette, on envoie la couleur sélectionné*/
     QObject::connect(myTablet, SIGNAL(currentColorChanged(const QColor)), this, SLOT(onColorTabletChanged(const QColor)));
 
-//-----------------------------------------------
+
     _rdm_gene_dial = new generation_dialog(this);
+
+    /*Les différentes vue possible pour les données*/
     _view_actions_group = new QActionGroup(this);
     _view_actions_group->addAction(ui->actionTabulaire);
     _view_actions_group->addAction(ui->actionGraphique);
@@ -58,11 +59,15 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 void MainWindow::on_actionGenerate_triggered()
 {
     currentFile.clear();
+    /*On éxécute l'utilitaire pour générer données aléatoirement*/
     int execution_code = _rdm_gene_dial->exec();
     if(execution_code == QDialog::Accepted){
         if(_rdm_gene_dial->process_generation()>0){
             qDebug() << "GENERATION TERMINEE _____________";
+
             reload_model(_rdm_gene_dial->getTemporaryFilename());
+
+            /*Partie génération des représentations de données*/
             ui->graphicsView->setModel(_model);
             ui->graphicsView->generateGraphUsingDatas();
             connectForlastSelectedObjects();
@@ -74,18 +79,14 @@ void MainWindow::on_actionGenerate_triggered()
 
 
 void MainWindow::updateLastSelectedNode(int id_sommet){
-    qDebug() << "yeeeeeeahhhhhh " << id_sommet;
     lastSelectedSommet = id_sommet;
     lastSelect = VERTEX;
     Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
-    ui->selectedObjLabel->setText("A sélectionné "+node->getName());
+    ui->selectedObjLabel->setText("A sélectionné le noeud : "+node->getName()+ " pondération : "+ QString("%1").arg(node->getPonderation()));
 }
 
 void MainWindow::updateLastSelectedEdge(Edge &e){
-    qDebug() << "mon slot capte l'edge " << &e << e.getName();
-    qDebug() << "ahaahahahahaha" << (ui->selectedObjLabel == nullptr);
-    ui->selectedObjLabel->setText("A sélectionné "+e.getName());
-
+    ui->selectedObjLabel->setText("A sélectionné l'arête : "+e.getName());
     lastSelectedEdge = &e;
     lastSelect = EDGE;
 }
@@ -109,39 +110,28 @@ void MainWindow::on_actionOpen_triggered()
     file.close();
 
     DataModel *model;
-    /*try  {
-        model = new DataModel(filename);
-    } catch (ModelExeption &e) {
-        qDebug() << "ERREUR FICHIER NON CONFORME";
-        QMessageBox::warning(this, "Warning", "Fichier non conforme !");
-        model = nullptr;
-        return;
-    }*/
     model = new DataModel(filename);
+    /*On vérifie conformité du modèle (matrice bien formé)*/
     if(!model->isConform()){
         delete model;
-        qDebug() << "HELOOOOOOOOOOOOOO";
         ui->tableView->setModel(nullptr);
         QMessageBox::warning(this, "Warning", "Fichier non conforme !");
         return;
     }
 
+    /*Dans le cas où le fichier et conforme*/
     ui->tableView->setModel(model);
-    //ui->graphicsView->generateGraphUsingDatas(&model);
-    //ui->graphicsView->setModell();
     ui->graphicsView->modelOfGraph = model;
-    pthread_yield();
-    qDebug() << "modèle finit de construire ??";
 
-    /*Rajouter ici model en paramètre d'une fonction qui génére graphe à partir des données*/
     qDebug() << "Le modèle possède " << ui->graphicsView->modelOfGraph->rowCount() << " rows et " << ui->graphicsView->modelOfGraph->columnCount() << " col";
     if (ui->graphicsView->modelOfGraph->rowCount()!=0 && ui->graphicsView->modelOfGraph->columnCount()!=0)
     {
+        /*On construit le graphe*/
         ui->graphicsView->setModel(model);
         ui->graphicsView->generateGraphUsingDatas();
         connectForlastSelectedObjects();
     }
-    set_status("chargement fichier + génération OK");
+    set_status("chargement fichier + génération graphe OK");
 }
 
 void MainWindow::connectForlastSelectedObjects(){
@@ -149,13 +139,11 @@ void MainWindow::connectForlastSelectedObjects(){
     for(Node *node : ui->graphicsView->getEveryNode()){
         EmetteurSignal *em = node->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedNode(int)), this, SLOT(updateLastSelectedNode(int)));
-        //qDebug() << "node dans EveryNode : " << node->getName();
     }
 
     for(Edge *edge : ui->graphicsView->getEveryEdge()){
         EmetteurSignal *em = edge->sigEmet;
         QObject::connect(em, SIGNAL(lastSelectedEdge(Edge&)), this, SLOT(updateLastSelectedEdge(Edge&)));
-        //qDebug() << "edge dans EveryEdge : " << edge->getName();
     }
 }
 
@@ -191,13 +179,15 @@ void MainWindow::set_status(QString status_text)
 
 void MainWindow::on_actionExport_triggered()
 {
-    set_status(QString("Dans fenêtre exportaion"));
+    /*On récupère destination de l'export*/
     QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
         if (!fileName.isNull())
         {
+            /*Extraction image du graphe*/
             QPixmap pixMap = this->ui->graphicsView->grab();
             pixMap.save(fileName);
-            qDebug() << fileName;
+
+            /*partie description des données*/
             QString descriptionfileName=fileName.split(".").first()+".txt";
             QFile file(descriptionfileName);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -218,32 +208,31 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionChanger_couleur_triggered()
 {
-    qDebug() << "Ahhhh une palette de couleur ?";
-
-    //QColor myColor = QColorDialog::getColor();
-    QColor myColor;
-
+    if(lastSelect == NOTHING){
+        QMessageBox::warning(this, "Warning", "Aucun objet sélectionné");
+        return;
+    }
     myTablet->exec();
 }
 
 void MainWindow::onColorTabletChanged(const QColor &color)
 {
-    /*Si aucun sommet sélectionner mieux vaut ne pas autoriser ouverture palette*/
     if(lastSelect == NOTHING)
         return;
 
     if(lastSelect == VERTEX){
-    qDebug() << "couleur gg " << color;
+        /*On change la couleur du sommet en même temps que la palette est ouverte*/
     Node *node = ui->graphicsView->getEveryNode().at(lastSelectedSommet);
     node->setColor(color);
-    qDebug() << "Le sommet d'indice " << lastSelectedSommet << " a la couleur " << ui->graphicsView->getEveryNode().at(lastSelectedSommet)->getColor();
     node->update();
     }
 
     if(lastSelect == EDGE){
+        /*Change couleur arête*/
         for(Edge *e :getEveryEdgeOfLine(lastSelectedEdge->getCorrespondingLine())){
             e->setColor(color);
             e->update();
+            /*change couleur ligne de la table à laquelle appartient l'arête*/
             ui->graphicsView->modelOfGraph->setColorOfLine(lastSelectedEdge->getCorrespondingLine(), color);
         }
     }
@@ -261,19 +250,11 @@ QList<Edge*> MainWindow::getEveryEdgeOfLine(int num_line){
 void MainWindow::hide_tabular_view() const
 {
     ui->tableView->hide();
-    /*ui->pushButton->hide();
-    ui->pushButton_2->hide();
-    ui->pushButton_3->hide();
-    ui->pushButton_4->hide();*/
 }
 
 void MainWindow::show_tabular_view() const
 {
     ui->tableView->show();
-    /*ui->pushButton->show();
-    ui->pushButton_2->show();
-    ui->pushButton_3->show();
-    ui->pushButton_4->show();*/
 }
 
 void MainWindow::hide_graphic_view() const
