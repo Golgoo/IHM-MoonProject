@@ -179,13 +179,23 @@ void MainWindow::set_status(QString status_text)
 
 void MainWindow::on_actionExport_triggered()
 {
+    QString selectedFilter;
     /*On récupère destination de l'export*/
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)",&selectedFilter );
         if (!fileName.isNull())
         {
             /*Extraction image du graphe*/
             QPixmap pixMap = this->ui->graphicsView->grab();
+            qDebug() << "filtre choisi pour export " << selectedFilter;
             pixMap.save(fileName);
+
+            if(selectedFilter.compare("BMP Files (*.bmp)")==0)
+                pixMap.save(fileName+".bmp");
+            if(selectedFilter.compare("JPEG (*.JPEG)")==0)
+                pixMap.save(fileName+".jpeg");
+            if(selectedFilter.compare("PNG (*.png)")==0)
+                pixMap.save(fileName+".png");
+
 
             /*partie description des données*/
             QString descriptionfileName=fileName.split(".").first()+".txt";
