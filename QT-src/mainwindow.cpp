@@ -71,7 +71,7 @@ void MainWindow::on_actionGenerate_triggered()
             connectForlastSelectedObjects();
             /*---------------*/
         }else{
-            set_status("Unable to generate data");
+            set_status("Génération aléatoire échoué");
         }
     }
 }
@@ -92,6 +92,38 @@ void MainWindow::on_actionSaveTableur_triggered()
     }
 }
 
+void MainWindow::on_actionGraphe_triggered()
+{
+    QString selectedFilter;
+    /*On récupère destination de l'export*/
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)",&selectedFilter );
+        if (!fileName.isNull())
+        {
+            /*Extraction image du graphe*/
+            QPixmap pixMap = this->ui->graphicsView->grab();
+            qDebug() << "filtre choisi pour export " << selectedFilter;
+            pixMap.save(fileName);
+
+            if(selectedFilter.compare("BMP Files (*.bmp)")==0)
+                pixMap.save(fileName+".bmp");
+            if(selectedFilter.compare("JPEG (*.JPEG)")==0)
+                pixMap.save(fileName+".jpeg");
+            if(selectedFilter.compare("PNG (*.png)")==0)
+                pixMap.save(fileName+".png");
+
+
+            /*partie description des données*/
+            QString descriptionfileName=fileName.split(".").first()+".txt";
+            QFile file(descriptionfileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+               return;
+
+            QTextStream out(&file);
+            out << "File name:"<< fileName.split("/").last() <<"\nnumber of lines: "<< this->_model->rowCount()<<"\nnumber of columns: "<< this->_model->columnCount()<< "\nexport date: (day,mounth,year) " << QDate::currentDate().toString("dd.MM.yyyy") << "\nfichier csv de base: " << this->currentFile.split("/").last();
+            set_status(QString("Exportation du graphe réussi"));
+        }
+}
+
 
 void MainWindow::updateLastSelectedNode(int id_sommet){
     lastSelectedSommet = id_sommet;
@@ -109,7 +141,7 @@ void MainWindow::updateLastSelectedEdge(Edge &e){
 /*A partir d'ici voir toutes les instructions qu'on détaille pour les slots(ce qui suit...)*/
 void MainWindow::on_actionOpen_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier");
+    QString filename = QFileDialog::getOpenFileName(this, "Ouvrir le fichier", nullptr, "CSV Files (*.csv)");
     currentFile = filename;
     if(filename==""){
         QMessageBox::warning(this, "Warning", "Cannot open file");
@@ -162,7 +194,6 @@ void MainWindow::connectForlastSelectedObjects(){
     }
 }
 
-//---------------------------------------------------------
 void MainWindow::reload_model(QString filename)
 {
     if(_model != nullptr){
@@ -181,26 +212,34 @@ void MainWindow::on_read_operation_error(QString error)
 
 void MainWindow::on_read_operation_finished()
 {
-    //TODO : Stop feedback &| MAJ Status bar
     set_status("A fini de lire le fichier ouvert");
 }
 
 
 void MainWindow::set_status(QString status_text)
 {
-    //QMainWindow::statusBar()->showMessage(status_text);
     ui->statusbar->showMessage(status_text);
 }
 
 void MainWindow::on_actionExport_triggered()
 {
+    QString selectedFilter;
     /*On récupère destination de l'export*/
-    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)" );
+    QString fileName= QFileDialog::getSaveFileName(this, "Save image", QCoreApplication::applicationDirPath(), "BMP Files (*.bmp);;JPEG (*.JPEG);;PNG (*.png)",&selectedFilter );
         if (!fileName.isNull())
         {
             /*Extraction image du graphe*/
             QPixmap pixMap = this->ui->graphicsView->grab();
+            qDebug() << "filtre choisi pour export " << selectedFilter;
             pixMap.save(fileName);
+
+            if(selectedFilter.compare("BMP Files (*.bmp)")==0)
+                pixMap.save(fileName+".bmp");
+            if(selectedFilter.compare("JPEG (*.JPEG)")==0)
+                pixMap.save(fileName+".jpeg");
+            if(selectedFilter.compare("PNG (*.png)")==0)
+                pixMap.save(fileName+".png");
+
 
             /*partie description des données*/
             QString descriptionfileName=fileName.split(".").first()+".txt";

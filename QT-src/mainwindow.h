@@ -80,6 +80,12 @@ private slots:
     void on_actionGraphique_triggered();
     void on_actionGlobale_triggered();
 
+    /* sauvegarde CSV */
+    void on_actionSaveTableur_triggered();
+
+    /* Export du graphe */
+    void on_actionGraphe_triggered();
+
 signals:
     void testSignal(const QColor &color);
 

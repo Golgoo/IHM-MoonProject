@@ -228,8 +228,8 @@ selection-background-color: rgb(252, 233, 79);</string>
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
-     <normaloff>../../IHM-MoonProject-master/QT-src/Icons/cancel.icns</normaloff>../../IHM-MoonProject-master/QT-src/Icons/cancel.icns</iconset>
+    <iconset resource="ressources.qrc">
+     <normaloff>:/images/Icons/cancel.icns</normaloff>:/images/Icons/cancel.icns</iconset>
    </property>
    <property name="text">
     <string>Quitter</string>
